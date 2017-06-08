@@ -1,0 +1,8 @@
+--- a/etc/udev/rules.d/72-pvr-seat.rules	2017-04-24 10:03:49.000000000 +0300
++++ b/etc/udev/rules.d/72-pvr-seat.rules	2017-06-08 14:26:07.947974081 +0300
+@@ -4,4 +4,4 @@
+ # License Strictly Confidential.
+ #### ###########################################################################
+ # Rules for PowerVR device nodes
+-SUBSYSTEM=="drm", DEVPATH=="/devices/platform/soc/fd000000.gsx/drm/*", TAG+="seat", TAG+="master-of-seat", ENV{ID_AUTOSEAT}="1", ENV{ID_SEAT}="seat1"
++SUBSYSTEM=="drm", DEVPATH=="/devices/platform/passthrough/fd000000.gsx/drm/*", TAG+="seat", TAG+="master-of-seat", ENV{ID_AUTOSEAT}="1", ENV{ID_SEAT}="seat1"
