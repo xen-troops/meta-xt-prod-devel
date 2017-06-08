@@ -20,6 +20,17 @@ python do_unpack_append_rcar() {
     bb.build.exec_func('rcar_unpack_evaproprietary', d)
 }
 
+configure_versions_rcar() {
+    local local_conf="${S}/build/conf/local.conf"
+
+    cd ${S}
+    base_update_conf_value ${local_conf} PREFERRED_VERSION_libdrm "2.4.68"
+}
+
+python do_configure_append_rcar() {
+    bb.build.exec_func("configure_versions_rcar", d)
+}
+
 ################################################################################
 # Generic
 ################################################################################
