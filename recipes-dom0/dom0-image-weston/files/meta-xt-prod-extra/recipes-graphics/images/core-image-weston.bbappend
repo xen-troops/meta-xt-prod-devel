@@ -4,6 +4,7 @@ IMAGE_INSTALL_append = " \
     domu-dtb \
     libxenbe \
     displbe \
+    kmscube \
 "
 
 populate_append() {
