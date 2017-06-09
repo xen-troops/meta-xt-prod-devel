@@ -34,4 +34,4 @@ python do_configure_append_rcar() {
 ################################################################################
 # Generic
 ################################################################################
-XT_BB_IMAGE_TARGET = "core-image-weston"
+XT_BB_IMAGE_TARGET = "core-image-weston core-image-minimal-initramfs"
