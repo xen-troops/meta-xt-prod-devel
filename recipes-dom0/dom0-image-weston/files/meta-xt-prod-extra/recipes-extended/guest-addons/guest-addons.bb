@@ -16,6 +16,7 @@ SRC_URI = "\
   file://copy_test.sh \
   file://alive.sh \
   file://displ_be.cfg \
+  file://domu-nfs-coproc.cfg \
 "
 
 S = "${WORKDIR}"
