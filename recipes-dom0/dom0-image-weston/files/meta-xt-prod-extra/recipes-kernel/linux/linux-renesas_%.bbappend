@@ -42,5 +42,15 @@ do_install_append_salvator-x-h3-xt() {
     install -m 0644 ${B}/arch/${ARCH}/boot/dts/renesas/r8a7795-salvator-x-domu.dtb ${D}${base_prefix}/xen/domu.dtb
 }
 
+do_deploy_append() {
+    for DTB in ${KERNEL_DEVICETREE}
+        do
+              DTB_BASE_NAME=`basename ${DTB} | awk -F "." '{print $1}'`
+              DTB_NAME=`echo ${KERNEL_IMAGE_SYMLINK_NAME} | sed "s/${MACHINE}/${DTB_BASE_NAME}/g"`
+              DTB_SYMLINK_NAME=`echo ${DTB_NAME##*-}`
+              ln -sfr ${DEPLOYDIR}/${DTB_NAME}.dtb ${DEPLOYDIR}/${DTB_SYMLINK_NAME}.dtb
+        done
+}
+
 PACKAGES += "domu-dtb"
 FILES_domu-dtb = "${base_prefix}/xen/*"
