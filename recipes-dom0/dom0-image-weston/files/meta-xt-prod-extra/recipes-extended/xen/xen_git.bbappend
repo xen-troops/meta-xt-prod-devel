@@ -12,5 +12,10 @@ FLASK_POLICY_FILE_rcar = "xenpolicy-4.9-rc"
 do_deploy_append_rcar () {
     if [ -f ${D}/boot/xen ]; then
         uboot-mkimage -A arm64 -C none -T kernel -a 0x78080000 -e 0x78080000 -n "XEN" -d ${D}/boot/xen ${DEPLOYDIR}/xen-${MACHINE}.uImage
+        ln -sf ${DEPLOYDIR}/xen-${MACHINE}.uImage ${DEPLOYDIR}/xen-uImage
+    fi
+
+    if [ -f ${D}/boot/${FLASK_POLICY_FILE} ]; then
+        ln -sf ${DEPLOYDIR}/${FLASK_POLICY_FILE} ${DEPLOYDIR}/xenpolicy
     fi
 }
