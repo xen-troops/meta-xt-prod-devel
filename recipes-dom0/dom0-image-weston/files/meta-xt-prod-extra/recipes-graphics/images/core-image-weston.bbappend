@@ -5,6 +5,7 @@ IMAGE_INSTALL_append = " \
     libxenbe \
     displbe \
     kmscube \
+    sndbe \
 "
 
 populate_append() {
