@@ -1,9 +1,10 @@
-PVRKM_URL = "git://github.com/xen-troops/pvr_km.git"
-BRANCH = "vgpu-dev"
+PVRKM_URL = "git://git@git.epam.com/epmd-aepr/pvr_km_vgpu_img.git"
+BRANCH = "master"
 SRCREV = "${AUTOREV}"
 
-SRC_URI_r8a7795 = "${PVRKM_URL};protocol=http;branch=${BRANCH}"
-SRC_URI_r8a7796 = "${PVRKM_URL};protocol=http;branch=${BRANCH}"
+
+SRC_URI_r8a7795 = "${PVRKM_URL};protocol=ssh;branch=${BRANCH}"
+SRC_URI_r8a7796 = "${PVRKM_URL};protocol=ssh;branch=${BRANCH}"
 
 S = "${WORKDIR}/git"
 

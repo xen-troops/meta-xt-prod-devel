@@ -1,9 +1,3 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-
-SRC_URI_append = " \
-    file://72-pvr-seat.rules.patch \
-"
-
 PVRUM_URL = "git://git@git.epam.com/epmd-aepr/pvr_um_vgpu_img.git"
 BRANCH = "master"
 SRCREV = "${AUTOREV}"
