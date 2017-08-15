@@ -1,8 +1,18 @@
---- a/etc/udev/rules.d/72-pvr-seat.rules	2017-04-24 10:03:49.000000000 +0300
-+++ b/etc/udev/rules.d/72-pvr-seat.rules	2017-06-08 14:26:07.947974081 +0300
+--- a/build/linux/r8a7795_linux/udev.pvr.m4     2017-08-31 19:20:41.101620330 +0300
++++ b/build/linux/r8a7795_linux/udev.pvr.m4     2017-09-01 11:54:02.354274494 +0300
 @@ -4,4 +4,4 @@
- # License Strictly Confidential.
- #### ###########################################################################
- # Rules for PowerVR device nodes
--SUBSYSTEM=="drm", DEVPATH=="/devices/platform/soc/fd000000.gsx/drm/*", TAG+="seat", TAG+="master-of-seat", ENV{ID_AUTOSEAT}="1", ENV{ID_SEAT}="seat1"
-+SUBSYSTEM=="drm", DEVPATH=="/devices/platform/passthrough/fd000000.gsx/drm/*", TAG+="seat", TAG+="master-of-seat", ENV{ID_AUTOSEAT}="1", ENV{ID_SEAT}="seat1"
+ `# License Strictly Confidential.'
+ `#### ###########################################################################'
+ `# Rules for PowerVR device nodes'
+-`SUBSYSTEM=="drm", DEVPATH=="/devices/platform/soc/fd000000.gsx/drm/*", TAG+="seat", TAG+="master-of-seat", ENV{ID_AUTOSEAT}="1", ENV{ID_SEAT}="seat1"'
++`SUBSYSTEM=="drm", DEVPATH=="/devices/platform/passthrough/fd000000.gsx/drm/*", TAG+="seat", TAG+="master-of-seat", ENV{ID_AUTOSEAT}="1", ENV{ID_SEAT}="seat1"'
+
+--- a/build/linux/r8a7796_linux/udev.pvr.m4     2017-08-31 19:20:41.101620330 +0300
++++ b/build/linux/r8a7796_linux/udev.pvr.m4     2017-09-01 11:54:02.354274494 +0300
+@@ -4,4 +4,4 @@
+ `# License Strictly Confidential.'
+ `#### ###########################################################################'
+ `# Rules for PowerVR device nodes'
+-`SUBSYSTEM=="drm", DEVPATH=="/devices/platform/soc/fd000000.gsx/drm/*", TAG+="seat", TAG+="master-of-seat", ENV{ID_AUTOSEAT}="1", ENV{ID_SEAT}="seat1"'
++`SUBSYSTEM=="drm", DEVPATH=="/devices/platform/passthrough/fd000000.gsx/drm/*", TAG+="seat", TAG+="master-of-seat", ENV{ID_AUTOSEAT}="1", ENV{ID_SEAT}="seat1"'
+
