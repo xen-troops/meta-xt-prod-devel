@@ -575,7 +575,8 @@
 	sd-uhs-sdr104;
 	status = "okay";
 
-	iommus = <&ipmmu_ds1 35>;};
+	iommus = <&ipmmu_ds1 35>;
+};
 
 &scif1 {
 	pinctrl-0 = <&scif1_pins>;
@@ -814,10 +815,6 @@
 	status = "okay";
 
 	iommus = <&ipmmu_hc 5>;
-};
-
-&hsusb {
-	status = "okay";
 };
 
 &usb_dmac0 {
