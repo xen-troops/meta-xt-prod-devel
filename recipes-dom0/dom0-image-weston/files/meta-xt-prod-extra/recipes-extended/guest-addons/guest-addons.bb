@@ -11,11 +11,17 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 
 SRC_URI = "\
   file://domu.cfg \
+  file://domc.cfg \
   file://bridge-nfsroot.sh \
   file://bridge.sh \
   file://copy_test.sh \
   file://alive.sh \
+  file://cfg-pvgsx.sh \
+  file://cfg-pvback.sh \
+  file://dump_fw_log.sh \
+  file://pvr_debug_setup.sh \
   file://displ_be.cfg \
+  file://displ_be_drm.cfg \
   file://domu-nfs-coproc.cfg \
   file://snd_be.cfg \
 "
