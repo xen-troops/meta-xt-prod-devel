@@ -1101,38 +1101,6 @@
 
 &gsx {
 	xen,coproc;
-	iommus = <&ipmmu_pv0 0>, <&ipmmu_pv0 1>,
-			 <&ipmmu_pv0 2>, <&ipmmu_pv0 3>,
-			 <&ipmmu_pv0 4>, <&ipmmu_pv0 5>,
-			 <&ipmmu_pv0 6>, <&ipmmu_pv0 7>,
-			 <&ipmmu_pv1 0>, <&ipmmu_pv1 1>,
-			 <&ipmmu_pv1 2>, <&ipmmu_pv1 3>,
-			 <&ipmmu_pv1 4>, <&ipmmu_pv1 5>,
-			 <&ipmmu_pv1 6>, <&ipmmu_pv1 7>,
-			 <&ipmmu_pv2 0>, <&ipmmu_pv2 1>,
-			 <&ipmmu_pv2 2>, <&ipmmu_pv2 3>,
-			 <&ipmmu_pv2 4>, <&ipmmu_pv2 5>,
-			 <&ipmmu_pv2 6>, <&ipmmu_pv2 7>,
-			 <&ipmmu_pv3 0>, <&ipmmu_pv3 1>,
-			 <&ipmmu_pv3 2>, <&ipmmu_pv3 3>,
-			 <&ipmmu_pv3 4>, <&ipmmu_pv3 5>,
-			 <&ipmmu_pv3 6>, <&ipmmu_pv3 7>;
-};
-
-&ipmmu_pv0 {
-	status = "okay";
-};
-
-&ipmmu_pv1 {
-	status = "okay";
-};
-
-&ipmmu_pv2 {
-	status = "okay";
-};
-
-&ipmmu_pv3 {
-	status = "okay";
 };
 
 &ipmmu_hc {

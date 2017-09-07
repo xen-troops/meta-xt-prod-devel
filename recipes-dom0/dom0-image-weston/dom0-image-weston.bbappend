@@ -25,6 +25,7 @@ configure_versions_rcar() {
     base_update_conf_value ${local_conf} PREFERRED_VERSION_xen "4.9.0+git\%"
     base_update_conf_value ${local_conf} PREFERRED_VERSION_u-boot_rcar "v2015.04\%"
     base_update_conf_value ${local_conf} PREFERRED_VERSION_libdrm "2.4.68"
+    base_update_conf_value ${local_conf} PVR_NUM_OSID "4"
 }
 
 python do_configure_append_rcar() {
