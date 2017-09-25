@@ -16,7 +16,7 @@ do_fetch[depends] += "domu-image-weston:do_${BB_DEFAULT_TASK}"
 SRC_URI_rcar = "repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/dom0.xml;scmdata=keep"
 XT_QUIRK_PATCH_SRC_URI_rcar = "file://${S}/meta-renesas/meta-rcar-gen3/docs/sample/patch/patch-for-linaro-gcc/0001-rcar-gen3-add-readme-for-building-with-Linaro-Gcc.patch;patchdir=meta-renesas"
 XT_BB_LAYERS_FILE_rcar = "meta-xt-prod-extra/conf/bblayers.conf.sample"
-XT_BB_LOCAL_CONF_FILE_rcar = "meta-rcar-gen3/doc/local-wayland.conf"
+XT_BB_LOCAL_CONF_FILE_rcar = "meta-xt-images-rcar-gen3/doc/local-wayland.conf"
 
 python do_unpack_append_rcar() {
     bb.build.exec_func('rcar_unpack_evaproprietary', d)
