@@ -23,7 +23,7 @@ generate_uboot_image() {
 }
 
 populate_vmlinux () {
-    find ${STAGING_KERNEL_BUILDDIR} -iname "vmlinux*" -exec mv {} ${DEPLOY_DIR_IMAGE} \;
+    find ${STAGING_KERNEL_BUILDDIR} -iname "vmlinux*" -exec mv {} ${DEPLOY_DIR_IMAGE} \; || true
 }
 
 IMAGE_POSTPROCESS_COMMAND += " generate_uboot_image; populate_vmlinux; "
