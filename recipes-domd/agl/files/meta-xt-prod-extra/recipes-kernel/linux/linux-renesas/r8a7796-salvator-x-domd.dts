@@ -552,7 +552,6 @@
 	mmc-hs400-1_8v;
 	bus-width = <8>;
 	non-removable;
-	power-domains = <&sysc R8A7796_PD_A3VC>;
 	status = "okay";
 };
 

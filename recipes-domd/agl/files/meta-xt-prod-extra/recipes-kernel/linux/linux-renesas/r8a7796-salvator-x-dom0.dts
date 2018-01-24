@@ -634,13 +634,6 @@
 	status = "okay";
 
 	iommus = <&ipmmu_ds1 34>;
-
-	/*
-	   FIXME: following is a hacky way to get A3VP power domain enabled from
-	  DomD. SDHI2 is choosen because onboard eMMC is going to be turned on
-	  always and overriding its native ALWAYS_ON power domain is not harmful
-	 */
-	power-domains = <&sysc R8A7796_PD_A3VC>;
 };
 
 &sdhi3 {
