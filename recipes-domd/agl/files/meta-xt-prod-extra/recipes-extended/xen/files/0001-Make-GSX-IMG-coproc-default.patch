@@ -1,0 +1,25 @@
+From 612034f4267f16d8656d91e5bea63fd786b7c027 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Wed, 27 Sep 2017 14:26:06 +0300
+Subject: [PATCH] Make GSX IMG coproc default
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ xen/arch/arm/coproc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/xen/arch/arm/coproc/Kconfig b/xen/arch/arm/coproc/Kconfig
+index 23e5290767fa..dc8d96570607 100644
+--- a/xen/arch/arm/coproc/Kconfig
++++ b/xen/arch/arm/coproc/Kconfig
+@@ -1,6 +1,6 @@
+ choice
+ 	prompt "GPU virtualization"
+-	default COPROC_GSX6XX
++	default COPROC_GSX_IMG
+ 	depends on HAS_COPROC
+ 
+ 	config COPROC_GSX6XX
+-- 
+2.7.4
+

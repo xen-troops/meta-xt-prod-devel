@@ -1,0 +1,37 @@
+From 0cbe35c191e1c0bf95c9c3a02ad78a135d3452a6 Mon Sep 17 00:00:00 2001
+From: Andrii Chepurnyi <andrii_chepurnyi@epam.com>
+Date: Fri, 17 Nov 2017 17:06:46 +0200
+Subject: [PATCH] HACK: If partition name wasn't present use device name in
+ search
+
+This HACK proposed to overcome partition name absence on
+virtual drives under XEN.
+
+Change-Id: I62b884078434ded525ce3e5674cf3dc173602122
+Signed-off-by: Andrii Chepurnyi <andrii_chepurnyi@epam.com>
+---
+ init/init_first_stage.cpp | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/init/init_first_stage.cpp b/init/init_first_stage.cpp
+index bcc8d1b1a..5a146b538 100644
+--- a/init/init_first_stage.cpp
++++ b/init/init_first_stage.cpp
+@@ -188,11 +188,12 @@ coldboot_action_t FirstStageMount::ColdbootCallback(uevent* uevent) {
+         return COLDBOOT_CONTINUE;
+     }
+ 
+-    if (uevent->partition_name) {
++    if (uevent->partition_name || uevent->device_name) {
+         // Matches partition name to create device nodes.
+         // Both required_devices_partition_names_ and uevent->partition_name have A/B
+         // suffix when A/B is used.
+-        auto iter = required_devices_partition_names_.find(uevent->partition_name);
++        auto iter = required_devices_partition_names_.find((uevent->partition_name) ?
++                uevent->partition_name : uevent->device_name);
+         if (iter != required_devices_partition_names_.end()) {
+             LOG(VERBOSE) << __FUNCTION__ << "(): found partition: " << *iter;
+             required_devices_partition_names_.erase(iter);
+-- 
+2.11.0
+

@@ -1,0 +1,147 @@
+/dts-v1/;
+
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	soc {
+		#address-cells = <2>;
+		#size-cells = <2>;
+
+		gsx: gsx@fd000000 {
+			compatible = "renesas,gsx";
+			reg = <0 0xfd000000 0 0x3ffff>;
+			interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
+			/*clocks = <&cpg CPG_MOD 112>;*/
+			/*power-domains = <&sysc R8A7795_PD_3DG_E>;*/
+		};
+	};
+
+	firmware {
+		android {
+			compatible = "android,firmware";
+
+			fstab {
+				compatible = "android,fstab";
+
+				vendor {
+					compatible = "android,vendor";
+					dev = "/dev/block/xvdb";
+					type = "ext4";
+					mnt_flags = "ro,barrier=1";
+					fsmgr_flags = "wait,slotselect,avb";
+				};
+			};
+		};
+	};
+
+	vspm_if {
+		compatible = "renesas,vspm_if";
+	};
+
+	ion {
+		compatible = "renesas,ion-rcar";
+
+		heap_rcar_custom@0 {
+			heap-name = "rcar custom";
+		};
+	};
+
+	passthrough {
+		compatible = "simple-bus";
+		ranges;
+		#address-cells = <2>;
+		#size-cells = <2>;
+
+		vspbc: vspm@fe920000 {
+			compatible = "renesas,vspm";
+			reg = <0 0xfe920000 0 0x8000>, <0 0xfe92f000 0 0x200>;
+			interrupts = <GIC_SPI 465 IRQ_TYPE_LEVEL_HIGH>;
+			renesas,#ch = <4>;
+			renesas,#rpf = <31>;
+			renesas,#rpf_clut = <6>;
+			renesas,#wpf_rot = <0>;
+			renesas,has-lut;
+			renesas,has-clu;
+			renesas,has-hgo;
+			renesas,has-bru;
+			renesas,#read_outstanding = <0>;
+			renesas,#start_reservation = <2>;
+			renesas,#burst_access = <1>;
+		};
+
+		vspbd: vspm@fe960000 {
+			compatible = "renesas,vspm";
+			reg = <0 0xfe960000 0 0x8000>, <0 0xfe96f000 0 0x200>;
+			interrupts = <GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>;
+			renesas,#ch = <3>;
+			renesas,#rpf = <31>;
+			renesas,#rpf_clut = <6>;
+			renesas,#wpf_rot = <0>;
+			renesas,has-bru;
+			renesas,#read_outstanding = <0>;
+			renesas,#start_reservation = <2>;
+			renesas,#burst_access = <0>;
+		};
+
+		vspi0: vspm@fe9a0000 {
+			compatible = "renesas,vspm";
+			reg = <0 0xfe9a0000 0 0x8000>, <0 0xfe9af000 0 0x200>;
+			interrupts = <GIC_SPI 444 IRQ_TYPE_LEVEL_HIGH>;
+			renesas,#ch = <0>;
+			renesas,#rpf = <1>;
+			renesas,#rpf_clut = <1>;
+			renesas,#wpf_rot = <1>;
+			renesas,has-sru;
+			renesas,has-uds;
+			renesas,has-lut;
+			renesas,has-clu;
+			renesas,has-hst;
+			renesas,has-hsi;
+			renesas,has-hgo;
+			renesas,has-hgt;
+			renesas,has-shp;
+			renesas,#read_outstanding = <2>;
+			renesas,#start_reservation = <2>;
+		};
+
+		vspi1: vspm@fe9b0000 {
+			compatible = "renesas,vspm";
+			reg = <0 0xfe9b0000 0 0x8000>, <0 0xfe9bf000 0 0x200>;
+			interrupts = <GIC_SPI 445 IRQ_TYPE_LEVEL_HIGH>;
+			renesas,#ch = <1>;
+			renesas,#rpf = <1>;
+			renesas,#rpf_clut = <1>;
+			renesas,#wpf_rot = <1>;
+			renesas,has-sru;
+			renesas,has-uds;
+			renesas,has-lut;
+			renesas,has-clu;
+			renesas,has-hst;
+			renesas,has-hsi;
+			renesas,has-hgo;
+			renesas,has-hgt;
+			renesas,has-shp;
+			renesas,#read_outstanding = <2>;
+			renesas,#start_reservation = <2>;
+		};
+
+		fdp0: fdpm@fe940000 {
+			compatible = "renesas,fdpm";
+			reg = <0 0xfe940000 0 0x2400>, <0 0xfe950000 0 0x200>;
+			interrupts = <GIC_SPI 262 IRQ_TYPE_LEVEL_HIGH>;
+			renesas,#ch = <0>;
+		};
+
+		fdp1: fdpm@fe944000 {
+			compatible = "renesas,fdpm";
+			reg = <0 0xfe944000 0 0x2400>, <0 0xfe951000 0 0x200>;
+			interrupts = <GIC_SPI 263 IRQ_TYPE_LEVEL_HIGH>;
+			renesas,#ch = <1>;
+		};
+
+	};
+};

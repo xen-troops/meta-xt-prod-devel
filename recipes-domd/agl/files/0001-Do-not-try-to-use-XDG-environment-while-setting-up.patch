@@ -1,0 +1,29 @@
+From 13abdd7af02592cf90f79b88b4ba3ebfa8fd9ee4 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Fri, 22 Sep 2017 11:11:57 +0300
+Subject: [PATCH] Do not try to use XDG environment while setting up
+
+We want to point to the exact directory with the proprietary
+SW, not to be forced to use ~/.config/user-dirs.dirs
+
+Change-Id: I686d22ec71135c5eddc1da247f8c2d700c8261d7
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ meta-agl-bsp/meta-rcar-gen3/scripts/setup_mm_packages.sh | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/meta-agl/meta-agl-bsp/meta-rcar-gen3/scripts/setup_mm_packages.sh b/meta-agl/meta-agl-bsp/meta-rcar-gen3/scripts/setup_mm_packages.sh
+index 8bc2c35749c5..10535221abc7 100644
+--- a/meta-agl/meta-agl-bsp/meta-rcar-gen3/scripts/setup_mm_packages.sh
++++ b/meta-agl/meta-agl-bsp/meta-rcar-gen3/scripts/setup_mm_packages.sh
+@@ -5,7 +5,6 @@ ZIP_2="R-Car_Gen3_Series_Evaluation_Software_Package_of_Linux_Drivers-20170427.z
+ 
+ COPY_SCRIPT="$METADIR/meta-renesas-rcar-gen3/meta-rcar-gen3/docs/sample/copyscript/copy_evaproprietary_softwares.sh"
+ 
+-test -f ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs && source ${XDG_CONFIG_HOME:-~/.config}/user-dirs.dirs
+ DOWNLOAD_DIR=${XDG_DOWNLOAD_DIR:-$HOME/Downloads}
+ EXTRACT_DIR=$METADIR/binary-tmp
+ 
+-- 
+2.7.4
+

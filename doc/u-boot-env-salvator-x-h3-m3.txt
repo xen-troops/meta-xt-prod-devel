@@ -1,0 +1,87 @@
+Boot storage device setting
+===================================
+In order to make it possible to boot from various storage devices,
+e.g. SD, eMMC etc, a some settings need to be done in the environment:
+setenv boot_dev=<dev-name>, where <dev-name> is the name of the
+storage device without "/dev/", e.g.
+"setenv boot_dev memcblk0" to boot from eMMC
+
+setenv boot_dev mmcblk1
+setenv set_boot_dev 'fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device ${boot_dev}'
+
+Salvator-X-H3/M3
+===================================
+
+setenv bootdelay 3
+setenv baudrate 115200
+
+for tftp boot:
+===================================
+
+setenv boot_dev nfs
+setenv bootcmd run bootcmd_xen_tftp
+setenv bootcmd_xen_tftp 'run xen_load_tftp; run dtb_load_tftp; run kernel_load_tftp; run xenpolicy_load_tftp; run initramfs_load_tftp; bootm 0x48080000 0x76000000 0x48000000'
+
+setenv dtb_load_tftp 'tftp 0x48000000 dom0.dtb; run set_boot_dev'
+setenv xen_load_tftp tftp 0x48080000 xen-uImage
+setenv initramfs_load_tftp tftp 0x76000000 uInitramfs
+setenv kernel_load_tftp tftp 0x7a000000 Image
+setenv xenpolicy_load_tftp tftp 0x7c000000 xenpolicy
+
+for SD card boot:
+===================================
+
+setenv boot_dev mmcblk1
+setenv bootcmd run bootcmd_xen_mmc
+setenv bootcmd_xen_mmc 'run mmc_xen_load; run mmc_dtb_load; run mmc_kernel_load; run mmc_xenpolicy_load; run mmc_initramfs_load; bootm 0x48080000 0x76000000 0x48000000'
+
+setenv mmc_dtb_load 'ext2load mmc 0:1 0x48000000 /boot/dom0.dtb; run set_boot_dev'
+setenv mmc_initramfs_load ext2load mmc 0:1 0x76000000 /boot/uInitramfs
+setenv mmc_kernel_load ext2load mmc 0:1 0x7a000000 /boot/Image
+setenv mmc_xen_load ext2load mmc 0:1 0x48080000 /boot/xen-uImage
+setenv mmc_xenpolicy_load ext2load mmc 0:1 0x7c000000 /boot/xenpolicy
+
+for eMMC boot:
+===================================
+
+setenv boot_dev mmcblk0
+setenv bootcmd run bootcmd_xen_emmc
+setenv bootcmd_xen_emmc 'run emmc_xen_load; run emmc_dtb_load; run emmc_kernel_load; run emmc_xenpolicy_load; run emmc_initramfs_load; bootm 0x48080000 0x76000000 0x48000000'
+
+setenv emmc_dtb_load 'ext2load mmc 1:1 0x48000000 /boot/dom0.dtb; run set_boot_dev'
+setenv emmc_initramfs_load ext2load mmc 1:1 0x76000000 /boot/uInitramfs
+setenv emmc_kernel_load ext2load mmc 1:1 0x7a000000 /boot/Image
+setenv emmc_xen_load ext2load mmc 1:1 0x48080000 /boot/xen-uImage
+setenv emmc_xenpolicy_load ext2load mmc 1:1 0x7c000000 /boot/xenpolicy
+
+Bootloaders from eMMC:
+===================================
+In case of boot SoC from the eMMC boot partition 1 (50MHz x8 bus width mode) instead of Serial Flash,
+we have an ability to flash bootloader image(s) right here in U-Boot (images must be in raw binary format).
+Partitions and offsets the images need to be flashed to were retrieved here:
+https://github.com/renesas-rcar/flash_writer/blob/rcar_gen3/docs/application-note.md#348-write-to-the-s-record-format-images-to-the-emmc
+
+setenv flash_bootparam_sa0 'tftp 0x48000000 bootparam_sa0.bin; mmc dev 1 1; mmc write 0x48000000 0x0 0x1E;'
+setenv flash_bl2 'tftp 0x48000000 bl2.bin; mmc dev 1 1; mmc write 0x48000000 0x1E 0x162;'
+setenv flash_cert_header_sa6 'tftp 0x48000000 cert_header_sa6_emmc.bin; mmc dev 1 1; mmc write 0x48000000 0x180 0x80;'
+setenv flash_bl31 'tftp 0x48000000 bl31.bin; mmc dev 1 1; mmc write 0x48000000 0x200 0xE00;'
+setenv flash_tee 'tftp 0x48000000 tee.bin; mmc dev 1 1; mmc write 0x48000000 0x1000 0x400;'
+setenv flash_u_boot 'tftp 0x48000000 u-boot.bin; mmc dev 1 2; mmc write 0x48000000 0x0 0x800;'
+setenv flash_loaders 'run flash_bootparam_sa0; run flash_bl2; run flash_cert_header_sa6; run flash_bl31; run flash_tee; run flash_u_boot;'
+
+setenv ethact ravb
+
+N.B. Either do not set MAC address (should be shipped
+with u-boot environment already) or put any other MAC address
+which will not make conflicts on your network
+(see stickers on your board):
+
+setenv ethaddr 2E:09:0A:00:A0:41
+
+setenv ipaddr 192.168.1.10
+setenv serverip 192.168.1.100
+
+setenv bootrags
+
+saveenv
+

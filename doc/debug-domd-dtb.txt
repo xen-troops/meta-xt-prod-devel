@@ -1,0 +1,13 @@
+1. Dom0 before creating domain:
+
+export LIBXL_DEBUG_DUMP_DTB=/tmp/domd.dtb
+
+2. After domain has been created:
+cat /tmp/domd.dtb | hexdump -ve '16/1 "%02x " "\n"'
+
+3. Copy console output to /tmp/domd.dtb.hex on your host.
+
+4. On host:
+xxd -r -p /tmp/domd.dtb.hex /tmp/domd.dtb
+dtc -I dtb -O dts -o /tmp/domd.dts /tmp/domd.dtb
+

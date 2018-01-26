@@ -1,0 +1,1 @@
+part /boot --source bootimg-partition --fstype=ext4 --label boot --active --align 1 --size 64

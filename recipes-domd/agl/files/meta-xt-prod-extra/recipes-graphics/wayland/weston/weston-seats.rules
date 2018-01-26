@@ -1,0 +1,2 @@
+ENV{ID_VENDOR_ID}=="1fd2", ENV{ID_MODEL_ID}=="6103", DEVPATH=="/devices/platform/soc/ee0a0100.usb/usb1/*", ENV{WL_OUTPUT}="HDMI-A-1"
+ENV{ID_VENDOR_ID}=="1fd2", ENV{ID_MODEL_ID}=="6103", DEVPATH=="/devices/platform/soc/ee0c0100.usb/usb2/*", ENV{WL_OUTPUT}="HDMI-A-2"

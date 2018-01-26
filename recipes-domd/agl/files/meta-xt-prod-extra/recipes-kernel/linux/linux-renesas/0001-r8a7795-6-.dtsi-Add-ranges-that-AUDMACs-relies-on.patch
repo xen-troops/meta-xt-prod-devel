@@ -1,0 +1,49 @@
+From 367c9f6357a3493368e7ca499928cb5f3472ab9d Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <olekstysh@gmail.com>
+Date: Tue, 24 Jan 2017 21:06:12 +0200
+Subject: [PATCH] r8a7795(6).dtsi: Add ranges that AUDMACs relies on
+
+The 1:1 translations based on these ranges should reach IPMMU pagetables
+for AUDMACs to work through it.
+The one possible way to do it is to describe them in the device tree.
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ arch/arm64/boot/dts/renesas/r8a7795.dtsi | 4 +++-
+ arch/arm64/boot/dts/renesas/r8a7796.dtsi | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/renesas/r8a7795.dtsi b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+index 94262a160bcc..aa14a3327dcf 100644
+--- a/arch/arm64/boot/dts/renesas/r8a7795.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+@@ -1619,7 +1619,9 @@
+ 				<0 0xec5a0000 0 0x100>,  /* ADG */
+ 				<0 0xec540000 0 0x1000>, /* SSIU */
+ 				<0 0xec541000 0 0x280>,  /* SSI */
+-				<0 0xec740000 0 0x200>;  /* Audio DMAC peri peri*/
++				<0 0xec740000 0 0x200>,  /* Audio DMAC peri peri*/
++				<0 0xec000000 0 0x1000>,
++				<0 0xec008000 0 0x1000>;
+ 			reg-names = "scu", "adg", "ssiu", "ssi", "audmapp";
+ 
+ 			clocks = <&cpg CPG_MOD 1005>,
+diff --git a/arch/arm64/boot/dts/renesas/r8a7796.dtsi b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
+index afdd69dbe7c4..523f67df7d6d 100644
+--- a/arch/arm64/boot/dts/renesas/r8a7796.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
+@@ -2186,7 +2186,9 @@
+ 				<0 0xec5a0000 0 0x100>,  /* ADG */
+ 				<0 0xec540000 0 0x1000>, /* SSIU */
+ 				<0 0xec541000 0 0x280>,  /* SSI */
+-				<0 0xec740000 0 0x200>;  /* Audio DMAC peri peri*/
++				<0 0xec740000 0 0x200>,  /* Audio DMAC peri peri*/
++				<0 0xec000000 0 0x1000>,
++				<0 0xec008000 0 0x1000>;
+ 			reg-names = "scu", "adg", "ssiu", "ssi", "audmapp";
+ 
+ 			clocks = <&cpg CPG_MOD 1005>,
+-- 
+2.7.4
+

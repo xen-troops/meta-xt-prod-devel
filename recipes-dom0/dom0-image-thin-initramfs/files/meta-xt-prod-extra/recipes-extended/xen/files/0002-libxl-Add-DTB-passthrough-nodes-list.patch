@@ -1,0 +1,107 @@
+From 0d5024b627b7dae21b6b667d3881b695e61dd948 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Thu, 5 Oct 2017 14:51:07 +0300
+Subject: [PATCH 2/2] libxl: Add DTB passthrough nodes list
+
+Some platforms need more nodes from partial device tree in
+addition to "passthrough" node which are given to domain by
+default.
+
+Specify in domain configuration file which values should be added
+by providing "dtb_passthrough_nodes" list of strings separated by
+comas.
+
+Signed-off-by: Iurii Konovalenko <iurii.konovalenko@globallogic.com>
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ tools/libxl/libxl_arm.c     | 20 ++++++++++++++++----
+ tools/libxl/libxl_types.idl |  1 +
+ tools/xl/xl_parse.c         |  7 +++++++
+ 3 files changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/tools/libxl/libxl_arm.c b/tools/libxl/libxl_arm.c
+index 449b10e8aed4..82fc25d6cb0b 100644
+--- a/tools/libxl/libxl_arm.c
++++ b/tools/libxl/libxl_arm.c
+@@ -804,9 +804,10 @@ static int copy_node_by_path(libxl__gc *gc, const char *path,
+  *  - /passthrough node
+  *  - /aliases node
+  */
+-static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt)
++static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt,
++                            const libxl_domain_build_info *info)
+ {
+-    int r;
++    int i, r;
+ 
+     r = copy_node_by_path(gc, "/passthrough", fdt, pfdt);
+     if (r < 0) {
+@@ -820,6 +821,16 @@ static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt)
+         return r;
+     }
+ 
++    for (i = 0; i < libxl_string_list_length(&info->dt_passthrough_nodes);
++         i++) {
++        r = copy_node_by_path(gc, info->dt_passthrough_nodes[i], fdt, pfdt);
++        if (r < 0 && r != -FDT_ERR_NOTFOUND) {
++            LOG(ERROR, "Can't copy the node \"%s\" from the partial FDT",
++                info->dt_passthrough_nodes[i]);
++            return r;
++        }
++    }
++
+     return 0;
+ }
+ 
+@@ -857,7 +868,8 @@ static int check_partial_fdt(libxl__gc *gc, void *fdt, size_t size)
+     return ERROR_FAIL;
+ }
+ 
+-static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt)
++static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt,
++                            const libxl_domain_build_info *info)
+ {
+     /*
+      * We should never be here when the partial device tree is not
+@@ -989,7 +1001,7 @@ next_resize:
+         FDT( make_hypervisor_node(gc, fdt, vers) );
+ 
+         if (pfdt) {
+-            FDT( copy_partial_fdt(gc, fdt, pfdt) );
++            FDT( copy_partial_fdt(gc, fdt, pfdt, info) );
+             FDT( copy_coprocs_nodes(gc, fdt, pfdt, info) );
+         }
+ 
+diff --git a/tools/libxl/libxl_types.idl b/tools/libxl/libxl_types.idl
+index 07fa9d1202c4..d4c9d5070a2a 100644
+--- a/tools/libxl/libxl_types.idl
++++ b/tools/libxl/libxl_types.idl
+@@ -511,6 +511,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
+     ("device_tree",      string),
+     ("coprocs",          Array(libxl_device_coproc, "num_coprocs")),
+     ("dt_compatible",    libxl_string_list),
++    ("dt_passthrough_nodes", libxl_string_list),
+     ("acpi",             libxl_defbool),
+     ("u", KeyedUnion(None, libxl_domain_type, "type",
+                 [("hvm", Struct(None, [("firmware",         string),
+diff --git a/tools/xl/xl_parse.c b/tools/xl/xl_parse.c
+index bc76bdfa8f5e..96deae9f18a2 100644
+--- a/tools/xl/xl_parse.c
++++ b/tools/xl/xl_parse.c
+@@ -1805,6 +1805,13 @@ skip_vfb:
+             exit(-ERROR_FAIL);
+     }
+ 
++    e = xlu_cfg_get_list_as_string_list(config, "dt_passthrough_nodes",
++                                        &b_info->dt_passthrough_nodes, 1);
++    if (e && e != ESRCH) {
++            fprintf(stderr,"xl: Unable to parse dt_passthrough_nodes\n");
++            exit(-ERROR_FAIL);
++    }
++
+     if (!xlu_cfg_get_list(config, "usbctrl", &usbctrls, 0, 0)) {
+         d_config->num_usbctrls = 0;
+         d_config->usbctrls = NULL;
+-- 
+2.7.4
+
