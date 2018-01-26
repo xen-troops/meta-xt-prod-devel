@@ -2,7 +2,7 @@ require inc/xt_shared_env.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-BRANCH = "ces2018"
+BRANCH = "master"
 SRCREV = "${AUTOREV}"
 
 SRC_URI = " \

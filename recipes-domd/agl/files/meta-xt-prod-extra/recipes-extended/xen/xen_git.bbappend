@@ -7,7 +7,7 @@ XEN_REL_rcar = "4.9"
 
 SRCREV_rcar = "${AUTOREV}"
 
-SRC_URI_rcar = "git://github.com/xen-troops/xen.git;protocol=https;branch=vgpu-dev"
+SRC_URI_rcar = "git://github.com/xen-troops/xen.git;protocol=https;branch=master"
 
 ################################################################################
 # Generic

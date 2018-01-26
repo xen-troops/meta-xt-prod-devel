@@ -4,7 +4,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 do_fetch[depends] += "domd-agl-demo-platform:do_${BB_DEFAULT_TASK}"
 
 SRC_URI = " \
-    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_ces2018/dom0.xml;scmdata=keep \
+    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/dom0.xml;scmdata=keep \
 "
 
 ###############################################################################
