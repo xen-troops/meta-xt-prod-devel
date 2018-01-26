@@ -3,7 +3,7 @@ SRCREV = "${AUTOREV}"
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI_append = " \
-    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_ces2018/doma.xml;scmdata=keep \
+    repo://git@gitpct.epam.com/epmd-aepr/android_manifest.git;protocol=ssh;branch=master;manifest=doma.xml;scmdata=keep \
     file://0001-HACK-If-partition-name-wasn-t-present-use-device-nam.patch;patchdir=system/core \
 "
 # put it out of the source tree, so it can be reused after cleanup

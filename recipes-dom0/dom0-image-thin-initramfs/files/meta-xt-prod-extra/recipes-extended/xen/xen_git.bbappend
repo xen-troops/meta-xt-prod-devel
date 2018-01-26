@@ -8,7 +8,7 @@ XEN_REL = "4.9"
 SRCREV = "${AUTOREV}"
 
 SRC_URI = " \
-    git://github.com/xen-troops/xen.git;protocol=https;branch=vgpu-dev \
+    git://github.com/xen-troops/xen.git;protocol=https;branch=master \
     file://0001-libxl-Add-DTB-compatible-list-to-config-file.patch \
     file://0002-libxl-Add-DTB-passthrough-nodes-list.patch \
 "
