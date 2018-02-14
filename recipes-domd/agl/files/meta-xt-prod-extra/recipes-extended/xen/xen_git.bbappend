@@ -3,7 +3,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 ################################################################################
 # Renesas R-Car
 ################################################################################
-XEN_REL_rcar = "4.9"
+XEN_REL_rcar = "4.10.0"
 
 SRCREV_rcar = "${AUTOREV}"
 
@@ -19,7 +19,7 @@ SRC_URI_append = " \
     file://0001-Make-GSX-IMG-coproc-default.patch \
 "
 
-FLASK_POLICY_FILE = "xenpolicy-${XEN_REL}-rc"
+FLASK_POLICY_FILE = "xenpolicy-${XEN_REL}"
 
 do_deploy_append_rcar () {
     if [ -f ${D}/boot/xen ]; then
