@@ -5,12 +5,15 @@ IMAGE_INSTALL_append = " \
     xen-xencommons \
     xen-xenstat \
     xen-misc \
-    guest-addons \
-    guest-addons-run-doma \
-    guest-addons-run-domd \
-    guest-addons-run-domf \
-    guest-addons-run-vcpu_pin \
-    guest-addons-run-set_root_dev \
+    dom0 \
+    dom0-run-vcpu_pin \
+    dom0-run-set_root_dev \
+    doma \
+    doma-run \
+    domd \
+    domd-run \
+    domf \
+    domf-run \
     domd-install-artifacts \
     doma-install-artifacts \
     domf-install-artifacts \
