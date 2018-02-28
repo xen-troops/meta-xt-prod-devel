@@ -27,4 +27,7 @@ STORAGE_PART="${BOOT_STORAGE}${PART_PREFIX}"
 # now make up the configuration
 echo "Mangling domain configuration: setting storage to ${BOOT_STORAGE}"
 sed -i "s/STORAGE_PART/${STORAGE_PART}/g" ${DOM_CFG_DIR}/domd.cfg
-sed -i "s/STORAGE_PART/${STORAGE_PART}/g" ${DOM_CFG_DIR}/domf.cfg
+
+if [ -f ${DOM_CFG_DIR}/domf.cfg ] ; then
+    sed -i "s/STORAGE_PART/${STORAGE_PART}/g" ${DOM_CFG_DIR}/domf.cfg
+fi

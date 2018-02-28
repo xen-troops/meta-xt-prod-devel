@@ -8,16 +8,17 @@ IMAGE_INSTALL_append = " \
     dom0 \
     dom0-run-vcpu_pin \
     dom0-run-set_root_dev \
-    doma \
-    doma-run \
     domd \
     domd-run \
-    domf \
-    domf-run \
     domd-install-artifacts \
-    doma-install-artifacts \
-    domf-install-artifacts \
 "
+python __anonymous () {
+    guests = d.getVar("XT_GUESTS_INSTALL", True).split()
+    if "doma" in guests :
+        d.appendVar("IMAGE_INSTALL", " doma doma-run doma-install-artifacts")
+    if "domf" in guests :
+        d.appendVar("IMAGE_INSTALL", " domf domf-run domf-install-artifacts")
+}
 
 generate_uboot_image() {
     ${STAGING_BINDIR_NATIVE}/uboot-mkimage -A arm64 -O linux -T ramdisk -C gzip -n "uInitramfs" \

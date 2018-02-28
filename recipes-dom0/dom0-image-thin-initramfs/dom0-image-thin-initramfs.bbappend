@@ -2,8 +2,17 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 
 do_fetch[depends] += "domd-agl-demo-platform:do_${BB_DEFAULT_TASK}"
-do_fetch[depends] += "domu-image-android:do_${BB_DEFAULT_TASK}"
-do_fetch[depends] += "domu-image-fusion:do_${BB_DEFAULT_TASK}"
+
+XT_GUESTS_BUILD ?= "doma domf"
+XT_GUESTS_INSTALL ?= "doma domf"
+
+python __anonymous () {
+    guests = d.getVar('XT_GUESTS_BUILD', True).split()
+    if "doma" in guests :
+        d.appendVarFlag("do_fetch", "depends", " domu-image-android:do_${BB_DEFAULT_TASK} ")
+    if "domf" in guests :
+        d.appendVarFlag("do_fetch", "depends", " domu-image-fusion:do_${BB_DEFAULT_TASK} ")
+}
 
 ################################################################################
 # Generic ARMv8
@@ -42,6 +51,8 @@ add_to_local_conf() {
     base_update_conf_value ${local_conf} SERIAL_CONSOLE "115200 hvc0"
 
     base_update_conf_value ${local_conf} PREFERRED_VERSION_xen "4.10.0+git\%"
+
+    base_update_conf_value ${local_conf} XT_GUESTS_INSTALL ${XT_GUESTS_INSTALL}
 }
 
 python do_configure_append() {
