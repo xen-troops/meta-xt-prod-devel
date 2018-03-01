@@ -18,6 +18,8 @@ python __anonymous () {
         d.appendVar("IMAGE_INSTALL", " doma doma-run doma-install-artifacts")
     if "domf" in guests :
         d.appendVar("IMAGE_INSTALL", " domf domf-run domf-install-artifacts")
+    if "domr" in guests :
+        d.appendVar("IMAGE_INSTALL", " domr domr-run domr-install-artifacts")
 }
 
 generate_uboot_image() {

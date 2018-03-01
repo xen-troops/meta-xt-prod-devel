@@ -12,6 +12,8 @@ python __anonymous () {
         d.appendVarFlag("do_fetch", "depends", " domu-image-android:do_${BB_DEFAULT_TASK} ")
     if "domf" in guests :
         d.appendVarFlag("do_fetch", "depends", " domu-image-fusion:do_${BB_DEFAULT_TASK} ")
+    if "domr" in guests :
+        d.appendVarFlag("do_fetch", "depends", " domu-image-litmusrt:do_${BB_DEFAULT_TASK} ")
 }
 
 ################################################################################
