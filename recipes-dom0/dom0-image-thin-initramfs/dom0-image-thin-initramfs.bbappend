@@ -52,7 +52,7 @@ add_to_local_conf() {
 
     base_update_conf_value ${local_conf} PREFERRED_VERSION_xen "4.10.0+git\%"
 
-    base_update_conf_value ${local_conf} XT_GUESTS_INSTALL ${XT_GUESTS_INSTALL}
+    base_update_conf_value ${local_conf} XT_GUESTS_INSTALL "${XT_GUESTS_INSTALL}"
 }
 
 python do_configure_append() {
