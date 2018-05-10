@@ -1,0 +1,30 @@
+From 024ce2d10dfdbb4fedfc9070821277edc3ffef7e Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Thu, 10 May 2018 19:57:28 +0300
+Subject: [PATCH] salvator-x: Don't disable RAVB module
+
+The point is that Linux driver relies on MAC address which
+is stored in MAHR/MALR registers. But if we power off corresponding
+IP we lose this information.
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ board/renesas/salvator-x/salvator-x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/board/renesas/salvator-x/salvator-x.c b/board/renesas/salvator-x/salvator-x.c
+index 38c72d2..791981b 100644
+--- a/board/renesas/salvator-x/salvator-x.c
++++ b/board/renesas/salvator-x/salvator-x.c
+@@ -91,7 +91,7 @@ void board_cleanup_preboot_os(void)
+ {
+ 	/* Stop the used sys-module clocks */
+ 	/* EHTERAVB */
+-	mstp_setbits_le32(SMSTPCR8, SMSTPCR8, ETHERAVB_MSTP812);
++	/*mstp_setbits_le32(SMSTPCR8, SMSTPCR8, ETHERAVB_MSTP812);*/
+ 	/* eMMC */
+ 	mstp_setbits_le32(SMSTPCR3, SMSTPCR3, SD1_MSTP313 | SD2_MSTP312);
+ 	/* SDHI0, 3 */
+-- 
+2.7.4
+
