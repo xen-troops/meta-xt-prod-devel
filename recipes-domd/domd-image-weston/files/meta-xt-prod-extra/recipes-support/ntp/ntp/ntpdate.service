@@ -1,0 +1,15 @@
+[Unit]
+Description=Network Time Service (one-shot ntpdate mode)
+Wants=network-online.target
+After=network-online.target
+After=connman.service
+After=dnsmasq.service
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/bin/ntpdate-sync silent
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,16 @@
+[Unit]
+Description=Sound backend
+Requires=pulseaudio.service
+After=pulseaudio.service
+
+[Service]
+Type=simple
+ExecStartPre=/bin/sleep 1
+ExecStart=/usr/bin/snd_be
+ExecStartPost=/usr/bin/xenstore-write drivers/sndbe/status ready
+ExecStop=/usr/bin/xenstore-write drivers/sndbe/status dead
+ExecStopPost=/usr/bin/xenstore-write drivers/sndbe/status dead
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

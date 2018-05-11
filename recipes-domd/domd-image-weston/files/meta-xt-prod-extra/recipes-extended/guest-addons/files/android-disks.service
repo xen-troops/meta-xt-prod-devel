@@ -1,0 +1,14 @@
+[Unit]
+Description=Android domain disks setup
+Requires=proc-xen.mount
+After=proc-xen.mount
+After=network-online.target
+After=remote-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStart=/xt/scripts/android-disks.sh
+
+[Install]
+WantedBy=multi-user.target
