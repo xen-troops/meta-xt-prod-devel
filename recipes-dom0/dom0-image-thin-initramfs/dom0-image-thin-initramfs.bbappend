@@ -1,7 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 
-do_fetch[depends] += "domd-agl-demo-platform:do_${BB_DEFAULT_TASK}"
+do_fetch[depends] += "domd-image-weston:do_${BB_DEFAULT_TASK}"
 
 XT_GUESTS_BUILD ?= "doma domf"
 XT_GUESTS_INSTALL ?= "doma domf"

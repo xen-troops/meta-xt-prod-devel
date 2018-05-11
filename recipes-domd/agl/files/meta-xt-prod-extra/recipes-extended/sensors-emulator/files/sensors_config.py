@@ -1,5 +1,0 @@
-# emulator data update time
-EMULATOR_UPDATE_TIME = 0.1
-
-SERVER_LISTEN_HOST = ''
-SERVER_LISTEN_PORT = 8010

@@ -1,6 +1,0 @@
-[NetDev]
-Name=xenbr0
-Kind=bridge
-
-[Bridge]
-ForwardDelaySec=0
