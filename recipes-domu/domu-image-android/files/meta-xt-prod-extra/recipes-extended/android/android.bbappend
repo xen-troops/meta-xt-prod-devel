@@ -1,11 +1,9 @@
 SRCREV = "${AUTOREV}"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-
 SRC_URI_append = " \
-    repo://git@gitpct.epam.com/epmd-aepr/android_manifest.git;protocol=ssh;branch=master;manifest=doma.xml;scmdata=keep \
-    file://0001-HACK-If-partition-name-wasn-t-present-use-device-nam.patch;patchdir=system/core \
+    repo://git@gitpct.epam.com/epmd-aepr/android_manifest.git;protocol=ssh;branch=android-bsp-v1.2.0-oreo-8.1-ED4991288;manifest=doma.xml;scmdata=keep \
 "
+
 # put it out of the source tree, so it can be reused after cleanup
 ANDROID_OUT_DIR_COMMON_BASE = "${SSTATE_DIR}/../${PN}-${ANDROID_PRODUCT}-${ANDROID_VARIANT}-${SOC_FAMILY}-out"
 
@@ -26,9 +24,10 @@ ANDROID_UNPACKED_KERNEL_NAME ?= "vmlinux"
 
 SOC_FAMILY_r8a7795 = "r8a7795"
 SOC_FAMILY_r8a7796 = "r8a7796"
+SOC_FAMILY_r8a77965 = "r8a77965"
 
 ANDROID_VARIANT_rcar = "userdebug"
-ANDROID_PRODUCT_salvator = "salvator"
+ANDROID_PRODUCT_rcar = "xenvm"
 
 ################################################################################
 # Deploy images
@@ -56,6 +55,6 @@ do_install() {
     install -m 0744 "${ANDROID_ARTIFACTS_DIR}/${ANDROID_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}"
     install -m 0744 "${ANDROID_ARTIFACTS_DIR}/${ANDROID_UNPACKED_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}"
     ln -sfr "${DEPLOY_DIR_IMAGE}/${ANDROID_UNPACKED_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}/Image"
-    find ${ANDROID_ARTIFACTS_DIR}obj/KERNEL_OBJ -iname "vmlinux" -exec tar -cJvf ${DEPLOY_DIR_IMAGE}/vmlinux.tar.xz {} \;
+    find ${ANDROID_ARTIFACTS_DIR}obj/KERNEL_OBJ -iname "vmlinux" -exec tar -cJvf ${DEPLOY_DIR_IMAGE}/vmlinux.tar.xz {} \; || true
 }
 
