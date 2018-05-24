@@ -6,33 +6,30 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 ###############################################################################
 # these will be populated into the inner build system on do_unpack_xt_extras
 # N.B. xt_shared_env.inc MUST be listed AFTER meta-xt-prod-extra
-XT_QUIRK_UNPACK_SRC_URI += "\
+XT_QUIRK_UNPACK_SRC_URI += " \
     file://xt_shared_env.inc;subdir=repo/meta-xt-prod-extra/inc \
     file://meta-xt-prod-extra;subdir=repo \
 "
 
-XT_QUIRK_BB_ADD_LAYER += " \
+XT_QUIRK_BB_ADD_LAYER_append = " \
+    meta-golang \
     meta-xt-prod-extra \
 "
-
-FUSION_GIT = "fusion_git"
-
-SRC_URI = " \
-    repo://gerrit.automotivelinux.org/gerrit/AGL/AGL-repo;protocol=https;branch=dab;manifest=dab_4.0.2.xml;scmdata=keep;name=agl-repo \
-    git://github.com/xen-troops/agl-fusion.git;destsuffix=${FUSION_GIT};protocol=https;branch=master;name=fusion \
-    git://github.com/mem/oe-meta-go.git;protocol=https;destsuffix=repo/oe-meta-go;branch=master;name=metago \
+################################################################################
+# Generic ARMv8
+################################################################################
+SRC_URI += " \
+    repo://github.com/iartemenko/manifests;protocol=https;branch=pr_devel;manifest=prod_devel/domf.xml;scmdata=keep \
 "
 
-XT_QUIRK_UNPACK_SRC_URI += " \
-    file://${WORKDIR}/${FUSION_GIT}/meta-agl-telemetry;subdir=repo/meta-agl-devel \
-    file://${WORKDIR}/${FUSION_GIT}/meta-app-container;subdir=repo \
-    file://${WORKDIR}/${FUSION_GIT}/agl-telemetry;subdir=repo/meta-agl-devel/templates/feature \
+SRC_URI += " \
+    git://github.com/madisongh/meta-golang.git;protocol=https;destsuffix=repo/meta-golang;branch=rocko;name=metago \
 "
 
-SRCREV_fusion = "${AUTOREV}"
 SRCREV_metago = "${AUTOREV}"
 
-XT_AGL_FEATURES += "agl-telemetry"
+XT_BB_LAYERS_FILE = "meta-xt-prod-extra/doc/bblayers.conf.domf-image-minimal"
+XT_BB_LOCAL_CONF_FILE = "meta-xt-prod-extra/doc/local.conf.domf-image-minimal"
 
 configure_versions() {
     local local_conf="${S}/build/conf/local.conf"

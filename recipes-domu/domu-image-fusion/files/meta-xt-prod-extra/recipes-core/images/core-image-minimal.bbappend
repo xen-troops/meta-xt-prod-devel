@@ -1,5 +1,8 @@
 IMAGE_INSTALL_append = " \
     tzdata \
+    runc \
+    netns \
+    aosservicemanager \
 "
 
 populate_vmlinux () {
