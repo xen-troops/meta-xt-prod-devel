@@ -11,6 +11,7 @@ SRC_URI_append = " \
 "
 
 SRC_URI_append_rcar = " \
+    file://0008-soc-Extend-always-on-logic-to-H3-ES3.0.patch \
     file://0001-firmware-Add-xHCI-Host-Controller-firmware.patch \
 "
 
