@@ -164,15 +164,19 @@
 };
 
 &ipmmu_pv0 {
+	status = "okay";
 };
 
 &ipmmu_pv1 {
+	status = "okay";
 };
 
 &ipmmu_pv2 {
+	status = "okay";
 };
 
 &ipmmu_pv3 {
+	status = "okay";
 };
 
 &ipmmu_ir {
@@ -280,10 +284,6 @@
 		 <&ipmmu_vc1 8>,
 		 <&ipmmu_vc0 12>,
 		 <&ipmmu_vc1 12>;
-};
-
-&gsx {
-/* Do not use ipmmu for this SoC revision with gpu sharing enabled */
 };
 
 &ehci0 {
@@ -404,6 +404,22 @@
 		imr-lx4@fe890000 {
 			xen,passthrough;
 			iommus = <&ipmmu_vc0 1>;
+		};
+
+		gsx_domd {
+			xen,passthrough;
+			iommus = <&ipmmu_pv0 0>,
+				 <&ipmmu_pv1 0>,
+				 <&ipmmu_pv2 0>,
+				 <&ipmmu_pv3 0>;
+		};
+
+		gsx_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv0 1>,
+				 <&ipmmu_pv1 1>,
+				 <&ipmmu_pv2 1>,
+				 <&ipmmu_pv3 1>;
 		};
 	};
 };
