@@ -1,4 +1,4 @@
-From e56777901ad42371a12fff28670ab892b554804b Mon Sep 17 00:00:00 2001
+From ecf48cf35ffa529614c8b14785f49f4aa0742a10 Mon Sep 17 00:00:00 2001
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 Date: Thu, 5 Oct 2017 13:43:47 +0300
 Subject: [PATCH 1/2] libxl: Add DTB compatible list to config file
@@ -18,10 +18,10 @@ Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
  3 files changed, 42 insertions(+), 8 deletions(-)
 
 diff --git a/tools/libxl/libxl_arm.c b/tools/libxl/libxl_arm.c
-index 924b7113e65b..449b10e8aed4 100644
+index 04ff60c..d0a2ebe 100644
 --- a/tools/libxl/libxl_arm.c
 +++ b/tools/libxl/libxl_arm.c
-@@ -290,20 +290,46 @@ static int fdt_property_regs(libxl__gc *gc, void *fdt,
+@@ -287,20 +287,46 @@ static int fdt_property_regs(libxl__gc *gc, void *fdt,
  
  static int make_root_properties(libxl__gc *gc,
                                  const libxl_version_info *vers,
@@ -75,7 +75,7 @@ index 924b7113e65b..449b10e8aed4 100644
      if (res) return res;
  
      res = fdt_property_cell(fdt, "interrupt-parent", PHANDLE_GIC);
-@@ -936,7 +962,7 @@ next_resize:
+@@ -930,7 +956,7 @@ next_resize:
  
          FDT( fdt_begin_node(fdt, "") );
  
@@ -85,22 +85,22 @@ index 924b7113e65b..449b10e8aed4 100644
          FDT( make_cpus_node(gc, fdt, info->max_vcpus, ainfo) );
          FDT( make_psci_node(gc, fdt) );
 diff --git a/tools/libxl/libxl_types.idl b/tools/libxl/libxl_types.idl
-index d8c087943281..07fa9d1202c4 100644
+index 76ea36b..368dcff 100644
 --- a/tools/libxl/libxl_types.idl
 +++ b/tools/libxl/libxl_types.idl
-@@ -510,6 +510,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
+@@ -521,6 +521,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
+     # Note that the partial device tree should avoid to use the phandle
      # 65000 which is reserved by the toolstack.
      ("device_tree",      string),
-     ("coprocs",          Array(libxl_device_coproc, "num_coprocs")),
 +    ("dt_compatible",    libxl_string_list),
      ("acpi",             libxl_defbool),
-     ("u", KeyedUnion(None, libxl_domain_type, "type",
-                 [("hvm", Struct(None, [("firmware",         string),
+     ("bootloader",       string),
+     ("bootloader_args",  libxl_string_list),
 diff --git a/tools/xl/xl_parse.c b/tools/xl/xl_parse.c
-index 41bf297e30df..bc76bdfa8f5e 100644
+index 663449c..357b2f5 100644
 --- a/tools/xl/xl_parse.c
 +++ b/tools/xl/xl_parse.c
-@@ -1798,6 +1798,13 @@ skip_vfb:
+@@ -2331,6 +2331,13 @@ skip_vfb:
          }
      }
  
