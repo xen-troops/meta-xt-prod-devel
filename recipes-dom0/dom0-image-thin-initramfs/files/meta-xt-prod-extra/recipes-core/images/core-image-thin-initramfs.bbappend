@@ -1,5 +1,7 @@
 DEPENDS += "u-boot-mkimage-native"
 
+inherit deploy
+
 #Add Xen and additional packages to build
 IMAGE_INSTALL_append = " \
     xen-xencommons \
@@ -12,6 +14,9 @@ IMAGE_INSTALL_append = " \
     domd-run \
     domd-install-artifacts \
 "
+
+XT_GUESTS_INSTALL = "doma domf"
+
 python __anonymous () {
     guests = d.getVar("XT_GUESTS_INSTALL", True).split()
     if "doma" in guests :
@@ -24,7 +29,7 @@ python __anonymous () {
 
 generate_uboot_image() {
     ${STAGING_BINDIR_NATIVE}/uboot-mkimage -A arm64 -O linux -T ramdisk -C gzip -n "uInitramfs" \
-        -d ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.cpio.gz ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.cpio.gz.uInitramfs
+        -d ${DEPLOYDIR}-image-complete/${IMAGE_LINK_NAME}.cpio.gz ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.cpio.gz.uInitramfs
     ln -sfr  ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}${IMAGE_NAME_SUFFIX}.cpio.gz.uInitramfs ${DEPLOY_DIR_IMAGE}/uInitramfs
 }
 
