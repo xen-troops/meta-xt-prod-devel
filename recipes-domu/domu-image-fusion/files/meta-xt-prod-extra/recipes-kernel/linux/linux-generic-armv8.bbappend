@@ -2,7 +2,7 @@ require inc/xt_shared_env.inc
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-BRANCH = "master"
+BRANCH = "yocto-3.7-migration"
 SRCREV = "${AUTOREV}"
 
 SRC_URI = " \
