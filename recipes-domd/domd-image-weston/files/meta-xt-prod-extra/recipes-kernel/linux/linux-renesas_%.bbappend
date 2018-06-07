@@ -16,6 +16,21 @@ SRC_URI_append_rcar = " \
 
 DEPLOYDIR="${XT_DIR_ABS_SHARED_BOOT_DOMD}"
 
+##############################################################################
+# Salvator-XS H3
+###############################################################################
+SRC_URI_append_salvator-xs-h3-xt = " \
+    file://r8a7795-salvator-xs-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-salvator-xs-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-salvator-xs-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+"
+
+KERNEL_DEVICETREE_salvator-xs-h3-xt = " \
+    renesas/r8a7795-salvator-xs-dom0.dtb \
+    renesas/r8a7795-salvator-xs-domd.dtb \
+    renesas/r8a7795-salvator-xs-doma.dtb \
+"
+
 do_deploy_append() {
     for DTB in ${KERNEL_DEVICETREE}
         do
