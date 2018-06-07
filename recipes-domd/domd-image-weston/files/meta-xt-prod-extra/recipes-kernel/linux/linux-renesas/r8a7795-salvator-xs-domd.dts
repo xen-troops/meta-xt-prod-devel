@@ -1,0 +1,75 @@
+/*
+ * Device Tree Source for the Salvator-X 2nd version board with R-Car H3 ES2.0
+ * running XEN hypervisor
+ *
+ * Copyright (C) 2018 Renesas Electronics Corp.
+ *
+ * This file is licensed under the terms of the GNU General Public License
+ * version 2.  This program is licensed "as is" without any warranty of any
+ * kind, whether express or implied.
+ */
+
+#include "r8a7795-salvator-xs.dts"
+
+/*
+ * The device tree compiler (DTC) is allocating the phandle from 1 to
+ * onwards. Reserve a high value for the GIC phandle.
+ */
+#define PHANDLE_GIC (65000)
+
+/ {
+	soc {
+		//this must point to Xen interrupt-parent
+		interrupt-parent = <PHANDLE_GIC>;
+
+		/* Thermal is not under Linux control */
+		/delete-node/thermal-zones;
+	};
+
+	passthrough {
+	};
+
+	/delete-node/reserved-memory;
+
+	/delete-node/mmngr;
+	/delete-node/mmngrbuf;
+};
+
+/delete-node/&avs;
+/delete-node/&adsp;
+
+&i2c_dvfs {
+	status = "disabled";
+};
+
+&dmac0 {
+	/delete-property/iommus;
+};
+
+&dmac1 {
+	/delete-property/iommus;
+};
+
+&dmac2 {
+	/delete-property/iommus;
+};
+&audma0 {
+	/delete-property/iommus;
+};
+
+&audma1 {
+	/delete-property/iommus;
+};
+
+/* Xen will provide its own GIC, mask ours */
+&gic {
+	compatible = "";
+};
+
+&scif2 {
+	status = "disabled";
+};
+
+&tsc {
+    status = "disabled";
+};
