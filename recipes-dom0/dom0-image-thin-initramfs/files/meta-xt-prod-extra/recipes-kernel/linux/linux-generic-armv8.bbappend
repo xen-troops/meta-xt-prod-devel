@@ -1,6 +1,6 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-BRANCH = "master"
+BRANCH = "yocto-3.7-migration"
 SRCREV = "${AUTOREV}"
 
 SRC_URI = " \
