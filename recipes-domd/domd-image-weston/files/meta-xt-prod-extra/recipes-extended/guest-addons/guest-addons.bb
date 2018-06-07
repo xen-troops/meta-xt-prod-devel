@@ -80,6 +80,7 @@ RDEPENDS_${PN}-bridge-config = " \
 
 DM_CONFIG_salvator-x-m3-xt = "dm-salvator-x-m3.cfg"
 DM_CONFIG_salvator-x-h3-xt = "dm-salvator-x-h3.cfg"
+DM_CONFIG_salvator-xs-h3-xt = "dm-salvator-x-h3.cfg"
 
 do_install() {
     install -d ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
