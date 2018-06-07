@@ -17,6 +17,7 @@ S = "${WORKDIR}"
 
 DOM0_ALLOWED_PCPUS_salvator-x-m3-xt = "2-5"
 DOM0_ALLOWED_PCPUS_salvator-x-h3-xt = "4-7"
+DOM0_ALLOWED_PCPUS_salvator-xs-h3-xt = "4-7"
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/start_guest.sh \
