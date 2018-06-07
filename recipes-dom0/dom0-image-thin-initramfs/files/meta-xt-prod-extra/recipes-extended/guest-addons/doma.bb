@@ -10,6 +10,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 SRC_URI = "\
     file://doma-salvator-x-m3.cfg \
     file://doma-salvator-x-h3.cfg \
+    file://doma-salvator-xs-h3.cfg \
     file://guest_doma \
 "
 
@@ -17,6 +18,7 @@ S = "${WORKDIR}"
 
 DOMA_CONFIG_salvator-x-m3-xt = "doma-salvator-x-m3.cfg"
 DOMA_CONFIG_salvator-x-h3-xt = "doma-salvator-x-h3.cfg"
+DOMA_CONFIG_salvator-xs-h3-xt = "doma-salvator-xs-h3.cfg"
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg \
