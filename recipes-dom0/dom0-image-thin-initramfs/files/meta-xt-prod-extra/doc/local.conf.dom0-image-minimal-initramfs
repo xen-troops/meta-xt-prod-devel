@@ -218,6 +218,9 @@ PACKAGECONFIG_append_pn-nativesdk-qemu = " sdl"
 # this doesn't mean anything to you.
 CONF_VERSION = "1"
 
+# For virtualization
+DISTRO_FEATURES_append = " virtualization"
+
 DEPLOY_DIR = "${TMPDIR}/deploy"
 IMAGE_ROOTFS = "${TMPDIR}/rootfs"
 XT_SHARED_ROOTFS_DIR = "${IMAGE_ROOTFS}/shared_rootfs"
