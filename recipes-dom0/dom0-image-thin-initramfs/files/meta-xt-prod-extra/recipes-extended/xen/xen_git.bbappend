@@ -4,7 +4,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 # We only need Xen tools, so we can start domains
 ################################################################################
 XEN_REL = "4.10"
-
+PV = "${XEN_REL}.0+git${SRCPV}"
 SRCREV = "${AUTOREV}"
 
 SRC_URI = " \
