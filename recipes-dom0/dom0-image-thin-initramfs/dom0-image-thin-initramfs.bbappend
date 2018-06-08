@@ -45,13 +45,11 @@ add_to_local_conf() {
 
     cd ${S}
 
-    # FIXME: although we do not install Xen we still run as Xen
-    # domain, so serial console, used for login shell must be the
-    # virtual one, e.g. hvc0
-    # FIXME: meta-virtualization layer will also update this
-    # when DISTRO_FEATURES has "xen" in it. But in our case it is not set,
-    # so still set up the console on our own
-    base_update_conf_value ${local_conf} SERIAL_CONSOLE "115200 hvc0"
+    # hvc0 is not a serial console, so is not processes properly by a modern
+    # start_getty script which is installed for sysvinit based systems.
+    # Instead a distro feature xen should be enabled in a configuration, so a
+    # direct call to getty with hvc0 is installed into inittab by meta-viltualization.
+    base_update_conf_value ${local_conf} SERIAL_CONSOLE ""
 
     base_update_conf_value ${local_conf} PREFERRED_VERSION_xen "4.10.0+git\%"
 
