@@ -1,5 +1,14 @@
 LICENSE = "CLOSED"
 
+BBCLASSEXTEND = "native"
+
+do_fetch[noexec] = "1"
+do_configure[noexec] = "1"
+
+do_compile() {
+    :
+}
+
 # FIXME: if not forced and sstate cache is used then an old version of
 # this package (read old DomU kernel images) can be used from cache
 # regardless of the fact that binaries may have actually changed, e.g.
