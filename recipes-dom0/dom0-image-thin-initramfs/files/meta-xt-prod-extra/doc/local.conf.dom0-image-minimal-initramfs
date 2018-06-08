@@ -220,6 +220,7 @@ CONF_VERSION = "1"
 
 # For virtualization
 DISTRO_FEATURES_append = " virtualization"
+DISTRO_FEATURES_append = " xen"
 
 DEPLOY_DIR = "${TMPDIR}/deploy"
 IMAGE_ROOTFS = "${TMPDIR}/rootfs"
