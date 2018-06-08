@@ -22,6 +22,20 @@ XT_QUIRK_BB_ADD_LAYER += " \
 
 XT_BB_IMAGE_TARGET = "core-image-weston"
 
+
+# Dom0 is a generic ARMv8 machine w/o machine overrides,
+# but still needs to know which system we are building,
+# e.g. Salvator-X M3 or H3, for instance
+# So, we provide machine overrides from this build the domain.
+# The same is true for Android build.
+addtask domd_install_machine_overrides after do_configure before do_compile
+python do_domd_install_machine_overrides() {
+    bb.debug(1, "Installing machine overrides")
+
+    d.setVar('XT_BB_CMDLINE', "-f domd-install-machine-overrides")
+    bb.build.exec_func("build_yocto_exec_bitbake", d)
+}
+
 ################################################################################
 # Renesas R-Car
 ################################################################################

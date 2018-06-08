@@ -1,7 +1,8 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 
-do_fetch[depends] += "domd-agl-demo-platform:do_${BB_DEFAULT_TASK}"
+do_configure[depends] += "domd-image-weston:do_domd_install_machine_overrides"
+do_compile[depends] += "domd-image-weston:do_${BB_DEFAULT_TASK}"
 
 SRC_URI = " \
     repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/dom0.xml;scmdata=keep \
