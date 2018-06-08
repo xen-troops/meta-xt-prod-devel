@@ -19,12 +19,6 @@ EXTRA_IMAGEDEPENDS += " arm-trusted-firmware"
 # u-boot
 DEPENDS += " u-boot"
 
-# Dom0 is a generic ARMv8 machine w/o machine overrides,
-# but still needs to know which system we are building,
-# e.g. Salvator-X M3 or H3, for instance
-# So, we provide machine overrides from this build to Dom0
-EXTRA_IMAGEDEPENDS += " domd-install-machine-overrides"
-
 # Do not support secure environment
 IMAGE_INSTALL_remove = " \
     optee-linuxdriver \
