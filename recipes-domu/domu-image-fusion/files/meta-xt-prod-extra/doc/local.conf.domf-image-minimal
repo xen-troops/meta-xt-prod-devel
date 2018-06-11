@@ -220,8 +220,13 @@ CONF_VERSION = "1"
 
 # For virtualization
 DISTRO_FEATURES_append = " virtualization"
-DISTRO_FEATURES_append = " systemd"
 DISTRO_FEATURES_append = " xen"
+
+# For systemd
+DISTRO_FEATURES_append = " systemd"
+DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
+VIRTUAL-RUNTIME_init_manager = "systemd"
+VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
 
 DEPLOY_DIR = "${TMPDIR}/deploy"
 IMAGE_ROOTFS = "${TMPDIR}/rootfs"
