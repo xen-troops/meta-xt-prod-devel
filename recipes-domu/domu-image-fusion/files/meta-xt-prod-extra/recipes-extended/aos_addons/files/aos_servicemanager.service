@@ -1,0 +1,14 @@
+[Unit]
+Description=AOS Service Manager
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+WorkingDirectory=/var/aos
+ExecStart=/usr/bin/aos_servicemanager
+
+[Install]
+WantedBy=multi-user.target
