@@ -27,6 +27,7 @@ DEPENDS += "\
 RDEPENDS_${PN} += "\
 	runc \
 	netns \
+	aos-addons \
 "
 
 RDEPENDS_${PN}-dev += "bash"
