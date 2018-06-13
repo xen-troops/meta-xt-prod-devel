@@ -6,12 +6,13 @@ After=proc-xen.mount weston.service
 [Service]
 Type=simple
 Environment="XDG_RUNTIME_DIR=/run/user/0"
-ExecStartPre=/bin/sleep 1
+ExecStartPre=/usr/bin/weston-info
 ExecStart=/usr/bin/displ_be
 ExecStartPost=/usr/bin/xenstore-write drivers/displbe/status ready
 ExecStop=/usr/bin/xenstore-write drivers/displbe/status dead
 ExecStopPost=/usr/bin/xenstore-write drivers/displbe/status dead
 Restart=always
+RestartSec=4
 
 [Install]
 WantedBy=multi-user.target
