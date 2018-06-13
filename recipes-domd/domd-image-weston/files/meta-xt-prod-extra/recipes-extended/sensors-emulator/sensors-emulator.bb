@@ -32,6 +32,7 @@ RDEPENDS_${PN} = " \
     python3-compression \
     python3-argparse \
     python3-textutils \
+    python3-netserver \
 "
 
 inherit systemd
