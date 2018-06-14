@@ -27,6 +27,10 @@ DEPENDS += "\
 RDEPENDS_${PN} += "\
 	runc \
 	netns \
+	openssl \
+	ca-certificates \
+	python3 \
+	iptables \
 "
 
 RDEPENDS_${PN}-dev += "bash"
