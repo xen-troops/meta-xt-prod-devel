@@ -2,7 +2,6 @@
 Description=Network Time Service (one-shot ntpdate mode)
 Wants=network-online.target
 After=network-online.target
-After=connman.service
 After=dnsmasq.service
 
 [Service]
