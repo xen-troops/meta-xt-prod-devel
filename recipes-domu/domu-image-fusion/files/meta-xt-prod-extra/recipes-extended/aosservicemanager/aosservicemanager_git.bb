@@ -4,7 +4,7 @@ LICENSE = "CLOSED"
 
 GO_IMPORT = "gitpct.epam.com/epmd-aepr/aos_servicemanager"
 
-SRCREV = "${AUTOREV}"
+SRCREV = "demo_0.1"
 SRC_URI = "git://git@${GO_IMPORT}.git;protocol=ssh;destsuffix=${PN}-${PV}/src/${GO_IMPORT}"
 
 inherit go
