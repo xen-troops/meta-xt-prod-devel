@@ -1,0 +1,7 @@
+{
+    "CACert": "/var/aos/fcrypt/rootCA.crt.pem",
+    "ClientCert": "/var/aos/fcrypt/vehicle1_online.crt.pem",
+    "ClientKey": "/var/aos/fcrypt/vehicle1_online.key.pem",
+    "OfflinePrivKey": "/var/aos/fcrypt/vehicle1_offline.key.der",
+    "OfflineCert": "/var/aos/fcrypt/vehicle1_offline.crt.pem"
+}

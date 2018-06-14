@@ -27,6 +27,7 @@ DEPENDS += "\
 RDEPENDS_${PN} += "\
 	runc \
 	netns \
+	aos-addons \
 	openssl \
 	ca-certificates \
 	python3 \
