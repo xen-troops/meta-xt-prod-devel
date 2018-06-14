@@ -1,11 +1,11 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI += " \
-    file://depend_resolved.conf \
+    file://depend.conf \
 "
 
 FILES_${PN} += " \
-    ${sysconfdir}/systemd/system/dnsmasq.service.d/depend_resolved.conf \
+    ${sysconfdir}/systemd/system/dnsmasq.service.d/depend.conf \
 "
 
 do_install_append() {
@@ -24,7 +24,7 @@ do_install_append() {
     # Use resolve.conf provided by systemd-resolved
     echo "resolv-file=/run/systemd/resolve/resolv.conf" >> ${D}${sysconfdir}/dnsmasq.conf
 
-    # Add dependency on systemd-resolved
+    # Add actual dependencies
     install -d ${D}${sysconfdir}/systemd/system/dnsmasq.service.d
-    install -m 0644 ${WORKDIR}/depend_resolved.conf ${D}${sysconfdir}/systemd/system/dnsmasq.service.d/
+    install -m 0644 ${WORKDIR}/depend.conf ${D}${sysconfdir}/systemd/system/dnsmasq.service.d/
 }
