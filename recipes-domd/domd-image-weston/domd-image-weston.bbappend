@@ -3,7 +3,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 FILESEXTRAPATHS_prepend := "${THISDIR}/../../recipes-domx:"
 
 SRC_URI = " \
-    repo://github.com/iartemenko/manifests;protocol=https;branch=pr_devel;manifest=prod_devel/domd.xml;scmdata=keep \
+    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/domd.xml;scmdata=keep \
 "
 
 SRC_URI_append = " \
