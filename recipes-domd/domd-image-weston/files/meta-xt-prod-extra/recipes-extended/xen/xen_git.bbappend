@@ -10,6 +10,13 @@ SRCREV_rcar = "${AUTOREV}"
 
 SRC_URI_rcar = "git://github.com/xen-troops/xen.git;protocol=https;branch=rel-RELEASE-4.10.0-xt0.3.coproc_remove"
 
+# N.B. as Xen doesn't support partial .cfg as kernel does
+# we need to patch it to select disable IPMMU PGT sharing for
+# H3 v2.0 and M3 machines
+SRC_URI_append_m3_h3_v2 = " \
+    0001-ipmmu-vmsa-Disable-CONFIG_RCAR_IPMMU_PGT_IS_SHARED.patch \
+"
+
 ################################################################################
 # Generic
 ################################################################################

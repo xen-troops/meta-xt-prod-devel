@@ -70,6 +70,10 @@
 	status = "disabled";
 };
 
+&sata {
+	status = "disabled";
+};
+
 &tsc {
     status = "disabled";
 };
