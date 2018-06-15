@@ -19,7 +19,7 @@ XT_QUIRK_BB_ADD_LAYER_append = " \
 # Generic ARMv8
 ################################################################################
 SRC_URI += " \
-    repo://github.com/iartemenko/manifests;protocol=https;branch=pr_devel;manifest=prod_devel/domf.xml;scmdata=keep \
+    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/domf.xml;scmdata=keep \
 "
 
 SRC_URI += " \
