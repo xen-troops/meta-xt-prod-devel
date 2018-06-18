@@ -15,7 +15,7 @@ IMAGE_INSTALL_append = " \
     domd-install-artifacts \
 "
 
-XT_GUESTS_INSTALL = "doma domf"
+XT_GUESTS_INSTALL ?= "doma domf"
 
 python __anonymous () {
     guests = d.getVar("XT_GUESTS_INSTALL", True).split()
