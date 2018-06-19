@@ -6,8 +6,7 @@ LICENSE = "CLOSED"
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
-SRCREV = "${AUTOREV}"
-SRC_URI = "git://git@gitpct.epam.com/epmd-aepr/aos_servicemanager.git;protocol=ssh;branch=master"
+SRC_URI = "git://git@gitpct.epam.com/epmd-aepr/aos_servicemanager.git;protocol=ssh;branch=master;tag=demo_0.1"
 S = "${WORKDIR}/git"
 
 SRC_URI += " \
