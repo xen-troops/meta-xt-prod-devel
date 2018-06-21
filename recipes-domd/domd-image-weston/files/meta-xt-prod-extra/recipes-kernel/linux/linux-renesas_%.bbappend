@@ -79,9 +79,9 @@ SRC_URI_append_salvator-x-m3-xt = " \
 "
 
 KERNEL_DEVICETREE_salvator-x-m3-xt = " \
-    renesas/r8a7796-salvator-x-dom0.dts \
-    renesas/r8a7796-salvator-x-domd.dts \
-    renesas/r8a7795-salvator-x-4x2g-doma.dts \
+    renesas/r8a7796-salvator-x-dom0.dtb \
+    renesas/r8a7796-salvator-x-domd.dtb \
+    renesas/r8a7795-salvator-x-4x2g-doma.dtb \
 "
 
 do_deploy_append() {
