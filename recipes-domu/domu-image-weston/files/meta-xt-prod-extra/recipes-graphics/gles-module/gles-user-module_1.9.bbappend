@@ -12,6 +12,7 @@ DEPENDS += " gles-module-egl-headers wayland-native"
 RDEPENDS_${PN} += "python"
 
 do_install_append() {
+    sed -i 's/soc/passthrough/g' ${D}/etc/udev/rules.d/72-pvr-seat.rules
     install -d ${DEPLOY_DIR_IMAGE}/xt-rcar
     cp -rf ${D}/* ${DEPLOY_DIR_IMAGE}/xt-rcar
 }
