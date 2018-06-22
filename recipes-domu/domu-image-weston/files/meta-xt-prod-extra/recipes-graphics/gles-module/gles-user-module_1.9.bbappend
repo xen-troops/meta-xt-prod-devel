@@ -10,3 +10,8 @@ SRC_URI_remove = " \
 EXTRA_OEMAKE += "PVRSRV_VZ_NUM_OSID=${XT_PVR_NUM_OSID}"
 DEPENDS += " gles-module-egl-headers wayland-native"
 RDEPENDS_${PN} += "python"
+
+do_install_append() {
+    install -d ${DEPLOY_DIR_IMAGE}/xt-rcar
+    cp -rf ${D}/* ${DEPLOY_DIR_IMAGE}/xt-rcar
+}
