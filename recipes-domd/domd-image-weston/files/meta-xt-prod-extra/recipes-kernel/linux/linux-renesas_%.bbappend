@@ -24,12 +24,14 @@ SRC_URI_append_salvator-xs-h3-xt = " \
     file://r8a7795-salvator-xs-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-xs-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-xs-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-salvator-xs-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-xs-h3-xt = " \
     renesas/r8a7795-salvator-xs-dom0.dtb \
     renesas/r8a7795-salvator-xs-domd.dtb \
     renesas/r8a7795-salvator-xs-doma.dtb \
+    renesas/r8a7795-salvator-xs-domu.dtb \
 "
 
 ##############################################################################
@@ -39,12 +41,14 @@ SRC_URI_append_salvator-x-h3-4x2g-xt = " \
     file://r8a7795-salvator-x-4x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-x-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-x-4x2g-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-x-h3-4x2g-xt = " \
     renesas/r8a7795-salvator-x-4x2g-dom0.dtb \
     renesas/r8a7795-salvator-x-4x2g-domd.dtb \
     renesas/r8a7795-salvator-x-4x2g-doma.dtb \
+    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
 "
 
 ##############################################################################
@@ -76,12 +80,14 @@ SRC_URI_append_salvator-x-m3-xt = " \
     file://r8a7796-salvator-x-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7796-salvator-x-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-x-4x2g-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7796-salvator-x-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-x-m3-xt = " \
     renesas/r8a7796-salvator-x-dom0.dtb \
     renesas/r8a7796-salvator-x-domd.dtb \
     renesas/r8a7795-salvator-x-4x2g-doma.dtb \
+    renesas/r8a7796-salvator-x-domu.dtb \
 "
 
 do_deploy_append() {
