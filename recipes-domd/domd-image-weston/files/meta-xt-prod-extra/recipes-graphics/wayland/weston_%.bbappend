@@ -56,9 +56,17 @@ do_install_append_r8a7796() {
 }
 
 do_install_append_r8a7796() {
-    sed -e '$a\\' \
-        -e '$a\[output]' \
-        -e '$a\name=VGA-1' \
-        -e '$a\transform=270' \
-        -i ${D}/${sysconfdir}/xdg/weston/weston.ini
+    # DomU based product doesn't need transform
+    if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
+        sed -e '$a\\' \
+            -e '$a\[output]' \
+            -e '$a\name=VGA-1' \
+            -i ${D}/${sysconfdir}/xdg/weston/weston.ini
+    else
+        sed -e '$a\\' \
+            -e '$a\[output]' \
+            -e '$a\name=VGA-1' \
+            -e '$a\transform=${TRANSFORM}' \
+            -i ${D}/${sysconfdir}/xdg/weston/weston.ini
+    fi
 }
