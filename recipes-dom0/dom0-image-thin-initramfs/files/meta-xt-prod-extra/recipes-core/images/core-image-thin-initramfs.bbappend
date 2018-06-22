@@ -25,6 +25,8 @@ python __anonymous () {
         d.appendVar("IMAGE_INSTALL", " domf domf-run domf-install-artifacts")
     if "domr" in guests :
         d.appendVar("IMAGE_INSTALL", " domr domr-run domr-install-artifacts")
+    if "domu" in guests :
+        d.appendVar("IMAGE_INSTALL", " domu domu-run domu-install-artifacts")
 }
 
 generate_uboot_image() {
