@@ -1,0 +1,11 @@
+--- a/include/khronos/EGL/eglext.h	2017-08-31 13:48:37.044870571 +0300
++++ b/include/khronos/EGL/eglext.h	2017-08-31 14:16:14.638091569 +0300
+@@ -948,6 +948,8 @@
+ #endif /* KHRONOS_SUPPORT_INT64 */
+ #endif /* EGL_NV_system_time */
+ 
++#include <EGL/eglmesaext.h>
++
+ #ifndef EGL_TIZEN_image_native_buffer
+ #define EGL_TIZEN_image_native_buffer 1
+ #define EGL_NATIVE_BUFFER_TIZEN           0x32A0
