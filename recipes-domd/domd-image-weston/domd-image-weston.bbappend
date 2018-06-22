@@ -107,6 +107,11 @@ configure_versions_rcar() {
     base_update_conf_value ${local_conf} DEFAULT_TIMEZONE "US/Pacific"
 
     base_update_conf_value ${local_conf} XT_GUESTS_INSTALL "${XT_GUESTS_INSTALL}"
+
+    # DomU based product doesn't need ivi-shell
+    if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
+        base_set_conf_value ${local_conf} DISTRO_FEATURES_remove "ivi-shell"
+    fi
 }
 
 python do_configure_append_rcar() {
