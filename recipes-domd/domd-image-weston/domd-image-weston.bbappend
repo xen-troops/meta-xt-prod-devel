@@ -105,6 +105,8 @@ configure_versions_rcar() {
 
     # set default timezone to Las Vegas
     base_update_conf_value ${local_conf} DEFAULT_TIMEZONE "US/Pacific"
+
+    base_update_conf_value ${local_conf} XT_GUESTS_INSTALL "${XT_GUESTS_INSTALL}"
 }
 
 python do_configure_append_rcar() {
