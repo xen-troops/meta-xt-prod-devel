@@ -7,7 +7,7 @@ FILESEXTRAPATHS_append := ":${THISDIR}/${PN}"
 # This is a workaround as display manager and backend are still
 # built with ivi-extensions.
 python __anonymous () {
-    guests = d.getVar("XT_GUESTS_INSTALL", True).split()
+    guests = (d.getVar("XT_GUESTS_INSTALL", True) or "").split()
     if "domu" not in guests :
         d.appendVar("EXTRA_OECONF", " --enable-ivi-shell")
 }
