@@ -15,6 +15,8 @@ python __anonymous () {
         d.appendVarFlag("do_compile", "depends", " domu-image-fusion:do_${BB_DEFAULT_TASK} ")
     if "domr" in guests :
         d.appendVarFlag("do_compile", "depends", " domu-image-litmusrt:do_${BB_DEFAULT_TASK} ")
+    if "domu" in guests :
+        d.appendVarFlag("do_compile", "depends", " domu-image-weston:do_${BB_DEFAULT_TASK} ")
 }
 
 ################################################################################
