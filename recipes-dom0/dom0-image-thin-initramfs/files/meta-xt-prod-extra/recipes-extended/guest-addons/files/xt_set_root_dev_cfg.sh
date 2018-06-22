@@ -31,3 +31,7 @@ sed -i "s/STORAGE_PART/${STORAGE_PART}/g" ${DOM_CFG_DIR}/domd.cfg
 if [ -f ${DOM_CFG_DIR}/domf.cfg ] ; then
     sed -i "s/STORAGE_PART/${STORAGE_PART}/g" ${DOM_CFG_DIR}/domf.cfg
 fi
+
+if [ -f ${DOM_CFG_DIR}/domu.cfg ] ; then
+   sed -i "s/STORAGE_PART/${STORAGE_PART}/g" ${DOM_CFG_DIR}/domu.cfg
+fi
