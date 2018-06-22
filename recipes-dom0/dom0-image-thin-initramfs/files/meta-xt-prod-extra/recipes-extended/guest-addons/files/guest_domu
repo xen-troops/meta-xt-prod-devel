@@ -1,0 +1,106 @@
+#!/bin/sh
+#
+# xencommons    Script to start DomU guest
+#
+# Author:       Andrii Anisov <andrii_anisov@epam.com>
+#
+# chkconfig: 2345 70 10
+# description: Starts and stops Guest domain (DomU)
+### BEGIN INIT INFO
+# Provides:          guest_domu
+# Required-Start:    $guest_domd
+# Should-Start:
+# Required-Stop:     $guest_domd
+# Should-Stop:
+# Default-Start:     2 3 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop DomU
+# Description:       Starts and stops Guest domain (DomU)
+### END INIT INFO
+
+DOMAIN_NAME="DomU"
+SCRIPT_NAME="start_guest.sh"
+SCRIPT_PATH="/xt/scripts"
+GUEST="domu"
+GUEST_DEPENDENCIES="displbe bridge"
+
+# not running in Xen dom0 or domU
+if ! test -d /proc/xen ; then
+        exit 0
+fi
+
+do_start () {
+    echo "Starting ${DOMAIN_NAME}"
+    if xl domid ${DOMAIN_NAME} &> /dev/null; then
+        echo "${DOMAIN_NAME} is already running"
+        exit 0
+    fi
+
+    PID=`ps -ef | grep ${SCRIPT_NAME} | grep ${GUEST} | awk '{print $1;}' `
+
+    if [ ! -z $PID ] ; then
+        echo "${DOMAIN_NAME} start is waiting for backends"
+        exit 0
+    fi
+
+    ${SCRIPT_PATH}/${SCRIPT_NAME} ${GUEST} ${GUEST_DEPENDENCIES} &
+    echo "${DOMAIN_NAME} is scheduled to run"
+}
+
+do_stop () {
+    echo "Stopping ${DOMAIN_NAME}"
+
+    PID=`ps -ef | grep ${SCRIPT_NAME} | grep ${GUEST} | awk '{print $1;}' `
+
+    if [ ! -z $PID ] ; then
+        kill -SIGTERM PID
+    fi
+
+    if ! xl domid ${DOMAIN_NAME} &> /dev/null ; then
+        echo "${DOMAIN_NAME} is not running"
+        exit 0
+    fi
+    xl shutdown ${DOMAIN_NAME}
+}
+
+do_status () {
+    if ! xl domid ${DOMAIN_NAME} &> /dev/null ; then
+        echo "${DOMAIN_NAME} is not running"
+
+        PID=`ps -ef | grep ${SCRIPT_NAME} | grep ${GUEST} | awk '{print $1;}' `
+
+        if [ ! -z $PID ] ; then
+            echo "${DOMAIN_NAME} start is waiting for backends"
+        fi
+
+        exit 0
+    else
+        xl list ${DOMAIN_NAME}
+    fi
+}
+
+case "$1" in
+  start)
+        do_start
+        ;;
+  status)
+        do_status
+        ;;
+  stop)
+        do_stop
+        ;;
+  reload)
+        echo >&2 'Reload not available; use force-reload'; exit 1
+        ;;
+  force-reload|restart)
+        do_stop
+        do_start
+        ;;
+  *)
+        # do not advertise unreasonable commands that there is no reason
+        # to use with this device
+        echo $"Usage: $0 {start|stop|status|restart|force-reload}"
+        exit 1
+esac
+
+exit $?
