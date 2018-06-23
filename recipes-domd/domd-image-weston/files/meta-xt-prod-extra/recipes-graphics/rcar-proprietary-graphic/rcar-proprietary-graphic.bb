@@ -11,9 +11,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 S = "${WORKDIR}/xt-rcar"
 GLES = "gsx"
 
-SRC_URI_r8a7795 = "file://rcar-proprietary-graphic-salvator-x-h3-xt-domd.tar.gz"
-SRC_URI_r8a7796 = "file://rcar-proprietary-graphic-salvator-x-m3-xt-domd.tar.gz"
-SRC_URI_r8a77965 = "file://rcar-proprietary-graphic-salvator-x-m3n-xt-domd.tar.gz"
+SRC_URI = "file://rcar-proprietary-graphic-${MACHINE}-domd.tar.gz"
 
 inherit update-rc.d systemd
 
