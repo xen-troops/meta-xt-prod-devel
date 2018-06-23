@@ -97,7 +97,14 @@ FILES_${PN} = " \
     ${libdir}/pkgconfig/* \
 "
 
-PROVIDES = "virtual/libgles2 virtual/egl kernel-module-gles gles-user-module"
+PROVIDES = " \
+    virtual/libgles2 \
+    virtual/egl \
+    kernel-module-gles \
+    gles-user-module \
+    gles-module-egl-headers \
+"
+
 RPROVIDES_${PN} += " \
     kernel-module-pvrsrvkm \
     kernel-module-dc-linuxfb \
