@@ -1,0 +1,492 @@
+/*
+ * Device Tree Source for the Salvator-X 2nd version board with R-Car H3 ES2.0
+ * running XEN hypervisor
+ *
+ * Copyright (C) 2018 Renesas Electronics Corp.
+ *
+ * This file is licensed under the terms of the GNU General Public License
+ * version 2.  This program is licensed "as is" without any warranty of any
+ * kind, whether express or implied.
+ */
+
+#include "r8a7795-salvator-xs.dts"
+
+/ {
+
+	model = "Renesas Salvator-XS version board based on r8a7795 ES3.0+ with 8GiB (4 x 2 GiB), running XEN hypervisor";
+	compatible = "renesas,salvator-xs", "renesas,r8a7795";
+
+	chosen {
+		bootargs = "dom0_mem=256M console=dtuart dtuart=serial0 dom0_max_vcpus=4 bootscrub=0 flask_enforcing=1 loglvl=all cpufreq=xen:ondemand";
+		xen,dom0-bootargs = "console=hvc0 ignore_loglevel";
+		/delete-property/stdout-path;
+		modules {
+			#address-cells = <2>;
+			#size-cells = <2>;
+			module@1 {
+				compatible = "xen,linux-zimage", "xen,multiboot-module";
+				reg = <0x0 0x7a000000 0x0 0x02000000>;
+			};
+			module@2 {
+				compatible = "xen,xsm-policy", "xen,multiboot-module";
+				reg = <0x0 0x7c000000 0x0 0x10000>;
+			};
+		};
+	};
+
+	memory@48000000 {
+		device_type = "memory";
+		/* first 128MB is reserved for secure area. */
+		reg = <0x0 0x48000000 0x0 0x78000000>,
+		      <0x5 0x00000000 0x0 0x80000000>,
+		      <0x6 0x00000000 0x0 0x80000000>,
+		      <0x7 0x00000000 0x0 0x80000000>;
+	};
+
+	/delete-node/memory@500000000;
+	/delete-node/memory@600000000;
+	/delete-node/memory@700000000;
+	/delete-node/reserved-memory;
+
+	mailbox: mailbox@0 {
+		compatible = "arm,smc-mbox";
+		#mbox-cells = <1>;
+		arm,func-ids = <0x82000001>, <0x82000002>;
+		method = "smc";
+	};
+
+	sram: sram@47FFF000 {
+		compatible = "mmio-sram";
+		reg = <0x0 0x47FFF000 0x0 0x1000>;
+
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges = <0 0x0 0x47FFF000 0x1000>;
+
+		scp_shmem: scp_shmem@0 {
+			compatible = "mmio-sram";
+			reg = <0x0 0x200>;
+		};
+	};
+
+	scpi {
+		compatible = "arm,scpi";
+		mboxes = <&mailbox 0>;
+		shmem = <&scp_shmem>;
+
+		clocks {
+			compatible = "arm,scpi-clocks";
+
+			scpi_dvfs: scpi_dvfs@0 {
+			compatible = "arm,scpi-dvfs-clocks";
+			#clock-cells = <1>;
+			clock-indices = <0>, <1>;
+			clock-output-names = "cpu_a57_clk", "cpu_a53_clk";
+			};
+		};
+	};
+
+	/delete-node/mmngr;
+	/delete-node/mmngrbuf;
+};
+
+&a57_0 {
+	clocks = <&scpi_dvfs 0>;
+	/delete-property/cpu-supply;
+};
+
+&a57_1 {
+	clocks = <&scpi_dvfs 0>;
+};
+
+&a57_2 {
+	clocks = <&scpi_dvfs 0>;
+};
+
+&a57_3 {
+	clocks = <&scpi_dvfs 0>;
+};
+
+&a53_0 {
+	/delete-property/clocks;
+};
+
+&a53_1 {
+	/delete-property/clocks;
+};
+
+&a53_2 {
+	/delete-property/clocks;
+};
+
+&a53_3 {
+	/delete-property/clocks;
+};
+
+/delete-node/&avs;
+&i2c_dvfs {
+	status = "disabled";
+};
+/delete-node/&adsp;
+
+
+/* ============================ Enabled IPMMUs ===============================*/
+&ipmmu_mm {
+	status = "okay";
+};
+
+&ipmmu_vi0 {
+	status = "okay";
+};
+
+&ipmmu_vi1 {
+	status = "okay";
+};
+
+&ipmmu_vp0 {
+	compatible = "renesas,ipmmu-r8a7795";
+	status = "okay";
+};
+
+&ipmmu_vp1 {
+	compatible = "renesas,ipmmu-r8a7795";
+	status = "okay";
+};
+
+&ipmmu_vc0 {
+	compatible = "renesas,ipmmu-r8a7795";
+	status = "okay";
+};
+
+&ipmmu_vc1 {
+	compatible = "renesas,ipmmu-r8a7795";
+	status = "okay";
+};
+
+&ipmmu_pv0 {
+	status = "okay";
+};
+
+&ipmmu_pv1 {
+	status = "okay";
+};
+
+&ipmmu_pv2 {
+	status = "okay";
+};
+
+&ipmmu_pv3 {
+	status = "okay";
+};
+
+&ipmmu_ir {
+};
+
+&ipmmu_hc {
+	status = "okay";
+};
+
+&ipmmu_rt {
+};
+
+&ipmmu_mp0 {
+	status = "okay";
+};
+
+&ipmmu_ds0 {
+	status = "okay";
+};
+
+&ipmmu_ds1 {
+	status = "okay";
+};
+
+/*=========================== Bus masters linked to IPMMUS ===================*/
+
+&vin0 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin1 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin2 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin3 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&fcpvd0 {
+	iommus = <&ipmmu_vi0 8>;
+};
+
+&fcpvd1 {
+	iommus = <&ipmmu_vi0 9>;
+};
+
+&vin4 {
+	iommus = <&ipmmu_vi1 1>;
+};
+
+&vin5 {
+	iommus = <&ipmmu_vi1 1>;
+};
+
+&vin6 {
+	iommus = <&ipmmu_vi1 1>;
+};
+
+&vin7 {
+	iommus = <&ipmmu_vi1 1>;
+};
+
+&fcpvd2 {
+	iommus = <&ipmmu_vi1 10>;
+};
+
+&hdmi0 {
+	iommus = <&ipmmu_vi1 12>;
+};
+
+&hdmi1 {
+	iommus = <&ipmmu_vi1 13>;
+};
+
+&fdp0 {
+	iommus = <&ipmmu_vp0 0>;
+};
+
+&vspbd {
+	iommus = <&ipmmu_vp0 5>;
+};
+
+&vspi0 {
+	iommus = <&ipmmu_vp0 8>;
+};
+
+&fdp1 {
+	iommus = <&ipmmu_vp1 1>;
+};
+
+&vspbc {
+	iommus = <&ipmmu_vp1 7>;
+};
+
+&vspi1 {
+	iommus = <&ipmmu_vp1 9>;
+};
+
+&fcpcs {
+	iommus = <&ipmmu_vc0 8>,
+		 <&ipmmu_vc1 8>,
+		 <&ipmmu_vc0 12>,
+		 <&ipmmu_vc1 12>;
+};
+
+&ehci0 {
+	iommus = <&ipmmu_hc 4>;
+};
+
+&ohci0 {
+	iommus = <&ipmmu_hc 4>;
+};
+
+&ehci1 {
+	iommus = <&ipmmu_hc 5>;
+};
+
+&ohci1 {
+	iommus = <&ipmmu_hc 5>;
+};
+
+&ehci2 {
+	iommus = <&ipmmu_hc 6>;
+};
+
+&ohci2 {
+	iommus = <&ipmmu_hc 6>;
+};
+
+&ehci3 {
+	iommus = <&ipmmu_hc 7>;
+};
+
+&ohci3 {
+	iommus = <&ipmmu_hc 7>;
+};
+
+&usb_dmac0 {
+	iommus = <&ipmmu_hc 9>;
+};
+
+&usb_dmac1 {
+	iommus = <&ipmmu_hc 10>;
+};
+
+&xhci0 {
+	iommus = <&ipmmu_hc 12>;
+};
+
+&usb_dmac0 {
+	iommus = <&ipmmu_hc 14>;
+};
+
+&usb_dmac1 {
+	iommus = <&ipmmu_hc 15>;
+};
+
+&avb {
+	iommus = <&ipmmu_ds0 16>;
+};
+
+&sdhi0 {
+	iommus = <&ipmmu_ds1 32>;
+};
+
+&sdhi2 {
+	iommus = <&ipmmu_ds1 34>;
+};
+
+&sdhi3 {
+	iommus = <&ipmmu_ds1 35>;
+};
+
+/* ============================ Xen pass through section =====================*/
+&csi20			{ xen,passthrough; };
+&csi40			{ xen,passthrough; };
+&du			{ xen,passthrough; };
+&usb_dmac2		{ xen,passthrough; };
+&usb_dmac3		{ xen,passthrough; };
+&usb_dmac0		{ xen,passthrough; };
+&usb_dmac1		{ xen,passthrough; };
+&dmac0			{ xen,passthrough; };
+&dmac1			{ xen,passthrough; };
+&dmac2			{ xen,passthrough; };
+&audma0			{ xen,passthrough; };
+&audma1			{ xen,passthrough; };
+&avb			{ xen,passthrough; };
+&fdp0			{ xen,passthrough; };
+&fdp1			{ xen,passthrough; };
+&gpio0			{ xen,passthrough; };
+&gpio1			{ xen,passthrough; };
+&gpio2			{ xen,passthrough; };
+&gpio3			{ xen,passthrough; };
+&gpio4			{ xen,passthrough; };
+&gpio5			{ xen,passthrough; };
+&gpio6			{ xen,passthrough; };
+&gpio7			{ xen,passthrough; };
+&gsx			{ xen,passthrough; };
+&hdmi0			{ xen,passthrough; };
+&hdmi1			{ xen,passthrough; };
+&i2c2			{ xen,passthrough; };
+&i2c4			{ xen,passthrough; };
+
+/ {
+	soc {
+		imr-lx4@fe860000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc1 0>;
+		 };
+
+		imr-lx4@fe870000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc1 0>;
+		};
+
+		imr-lx4@fe880000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 1>;
+		};
+
+		imr-lx4@fe890000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 1>;
+		};
+
+		gsx_domd {
+			xen,passthrough;
+			iommus = <&ipmmu_pv0 0>,
+				 <&ipmmu_pv1 0>,
+				 <&ipmmu_pv2 0>,
+				 <&ipmmu_pv3 0>;
+		};
+
+		gsx_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv0 1>,
+				 <&ipmmu_pv1 1>,
+				 <&ipmmu_pv2 1>,
+				 <&ipmmu_pv3 1>;
+		};
+	};
+};
+
+&intc_ex		{ xen,passthrough; };
+&mfis_as		{ xen,passthrough; };
+&pciec1			{ xen,passthrough; };
+&pciec0			{ xen,passthrough; };
+&sdhi0			{ xen,passthrough; };
+&sdhi2			{ xen,passthrough; };
+&sdhi3			{ xen,passthrough; };
+&scif1			{ xen,passthrough; };
+&src0			{ xen,passthrough; };
+&src1			{ xen,passthrough; };
+&src2			{ xen,passthrough; };
+&src3			{ xen,passthrough; };
+&src4			{ xen,passthrough; };
+&src5			{ xen,passthrough; };
+&src6			{ xen,passthrough; };
+&src7			{ xen,passthrough; };
+&src8			{ xen,passthrough; };
+&src9			{ xen,passthrough; };
+&ssi0			{ xen,passthrough; };
+&ssi1			{ xen,passthrough; };
+&ssi2			{ xen,passthrough; };
+&ssi3			{ xen,passthrough; };
+&ssi4			{ xen,passthrough; };
+&ssi5			{ xen,passthrough; };
+&ssi6			{ xen,passthrough; };
+&ssi7			{ xen,passthrough; };
+&ssi8			{ xen,passthrough; };
+&ssi9			{ xen,passthrough; };
+&usb2_phy0		{ xen,passthrough; };
+&usb2_phy3		{ xen,passthrough; };
+&hsusb			{ xen,passthrough; };
+&hsusb3			{ xen,passthrough; };
+&xhci0			{ xen,passthrough; };
+&usb3_peri0		{ xen,passthrough; };
+&ohci0			{ xen,passthrough; };
+&ehci0			{ xen,passthrough; };
+&ohci1			{ xen,passthrough; };
+&ehci1			{ xen,passthrough; };
+&ohci2			{ xen,passthrough; };
+&ehci2			{ xen,passthrough; };
+&ohci3			{ xen,passthrough; };
+&ehci3			{ xen,passthrough; };
+&ivdp1c			{ xen,passthrough; };
+&vdpb			{ xen,passthrough; };
+&vcplf			{ xen,passthrough; };
+&vin0			{ xen,passthrough; };
+&vin1			{ xen,passthrough; };
+&vin2			{ xen,passthrough; };
+&vin3			{ xen,passthrough; };
+&vin4			{ xen,passthrough; };
+&vin5			{ xen,passthrough; };
+&vin6			{ xen,passthrough; };
+&vin7			{ xen,passthrough; };
+&vspd0			{ xen,passthrough; };
+&vspd1			{ xen,passthrough; };
+&vspd2			{ xen,passthrough; };
+&vspbc			{ xen,passthrough; };
+&vspbd			{ xen,passthrough; };
+&vspi0			{ xen,passthrough; };
+&vspi1			{ xen,passthrough; };
+
+&fcpvd0			{ xen,passthrough; };
+&fcpvd1			{ xen,passthrough; };
+&fcpvd2			{ xen,passthrough; };
+&fcpcs			{ xen,passthrough; };
+
