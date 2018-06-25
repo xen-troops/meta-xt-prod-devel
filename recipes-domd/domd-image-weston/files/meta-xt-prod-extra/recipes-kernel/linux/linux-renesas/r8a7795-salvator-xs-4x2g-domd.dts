@@ -1,5 +1,5 @@
 /*
- * Device Tree Source for the Salvator-X 2nd version board with R-Car H3 ES2.0
+ * Device Tree Source for the Salvator-X 2nd version board with R-Car H3 ES3.0
  * running XEN hypervisor
  *
  * Copyright (C) 2018 Renesas Electronics Corp.
@@ -67,6 +67,10 @@
 };
 
 &scif2 {
+	status = "disabled";
+};
+
+&sata {
 	status = "disabled";
 };
 
