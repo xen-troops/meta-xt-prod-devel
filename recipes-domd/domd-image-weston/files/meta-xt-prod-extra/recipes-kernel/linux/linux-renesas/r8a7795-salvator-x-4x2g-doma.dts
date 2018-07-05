@@ -31,10 +31,10 @@
 
 				vendor {
 					compatible = "android,vendor";
-					dev = "/dev/block/xvdb";
+					dev = "/dev/block/xvda2";
 					type = "ext4";
 					mnt_flags = "ro,barrier=1";
-					fsmgr_flags = "wait,slotselect,avb";
+					fsmgr_flags = "wait,avb";
 				};
 			};
 		};
