@@ -2,6 +2,7 @@
 
 MOUNT_POINT="/tmp/mntpoint"
 CUR_STEP=1
+DOMA_PART_N=4
 
 usage()
 {
@@ -71,19 +72,28 @@ partition_image()
 {
 	print_step "Make partitions"
 
-	sudo parted -s $1 mklabel msdos
+	sudo parted -s $1 mklabel msdos || true
 
-	sudo parted -s $1 mkpart primary ext4 1MiB 257MiB
-	sudo parted -s $1 mkpart primary ext4 257MiB 2257MiB
-	sudo parted -s $1 mkpart primary ext4 2257MiB 3415MiB
-	sudo parted -s $1 mkpart extended 3415MiB 100% 
-	sudo parted -s $1 mkpart logical ext4 3416MiB 5515MiB
-	sudo parted -s $1 mkpart logical ext4 5516MiB 5773MiB
-	sudo parted -s $1 mkpart logical ext4 5774MiB 5775MiB
-	sudo parted -s $1 mkpart logical ext4 5776MiB 100%
+	sudo parted -s $1 mkpart primary ext4 1MiB 257MiB || true
+	sudo parted -s $1 mkpart primary ext4 257MiB 2257MiB || true
+	sudo parted -s $1 mkpart primary ext4 2257MiB 3415MiB || true
+	sudo parted -s $1 mkpart primary 3415MiB 100% || true
 	sudo parted $1 print
-
 	sudo partprobe $1
+
+	local android_disk=$1$DOMA_PART_N
+
+	print_step "Make Android partitions on "$android_disk
+
+	# parted gerates error on all operation with "nested" disk, guard it with || true
+
+	sudo parted $android_disk -s mklabel gpt || true
+	sudo parted $android_disk -s mkpart xvda1 ext4 1MB  3148MB || true
+	sudo parted $android_disk -s mkpart xvda2 ext4 3149MB  3418MB || true
+	sudo parted $android_disk -s mkpart xvda3 ext4 3419MB  3420MB || true
+	sudo parted $android_disk -s mkpart xvda4 ext4 3421MB  100% || true
+	sudo parted $android_disk -s print
+	sudo partprobe $android_disk || true
 }
 
 ###############################################################################
@@ -146,19 +156,24 @@ mkfs_doma()
 	local img_output_file=$1
 	local loop_dev=$2
 
-	mkfs_one $img_output_file $loop_dev 8 doma_user
+	mkfs_one $img_output_file $loop_dev 4 doma_user
 }
 
 mkfs_image()
 {
 	local img_output_file=$1
 	local loop_dev=$2
-	sudo losetup -P $loop_dev $img_output_file
 
 	mkfs_boot $img_output_file $loop_dev
 	mkfs_domd $img_output_file $loop_dev
 	mkfs_domf $img_output_file $loop_dev
+
+	local out_adev=$img_output_file$DOMA_PART_N
+	sudo losetup -d $loop_dev
+	sudo losetup -P -f $out_adev
+	loop_dev=`sudo losetup -j $out_adev | cut -d":" -f1`
 	mkfs_doma $img_output_file $loop_dev
+	sudo losetup -d $loop_dev
 }
 
 ###############################################################################
@@ -281,9 +296,9 @@ unpack_doma()
 	local loop_base=$2
 	local img_output_file=$3
 
-	local part_system=5
-	local part_vendor=6
-	local part_misc=7
+	local part_system=1
+	local part_vendor=2
+	local part_misc=3
 
 	local raw_system="/tmp/system.raw"
 	local raw_vendor="/tmp/vendor.raw"
@@ -305,12 +320,9 @@ unpack_doma()
 	sudo dd if=$raw_vendor of=${loop_base}p${part_vendor} bs=1M
 
 	echo "Wipe out DomA/misc"
-	sudo dd if=/dev/zero of=${loop_base}p${part_misc} || true
+	sudo dd if=/dev/zero of=${loop_base}p${part_misc} bs=1M count=1 || true
 
 	rm -f $raw_system $raw_vendor
-
-	echo "Put label for system partition"
-	label_one ${loop_base} ${part_system} doma_sys
 }
 
 unpack_image()
@@ -322,7 +334,14 @@ unpack_image()
 	unpack_dom0 $db_base_folder $loop_dev $img_output_file
 	unpack_domd $db_base_folder $loop_dev $img_output_file
 	unpack_domf $db_base_folder $loop_dev $img_output_file
+
+	local out_adev=$img_output_file$DOMA_PART_N
+	sudo umount $out_adev || true
+	sudo losetup -d $loop_dev
+	sudo losetup -P -f $out_adev
+	loop_dev=`sudo losetup -j $out_adev | cut -d":" -f1`
 	unpack_doma $db_base_folder $loop_dev $img_output_file
+	sudo losetup -d $loop_dev
 }
 
 ###############################################################################
@@ -334,7 +353,6 @@ make_image()
 	local db_base_folder=$1
 	local img_output_file=$2
 	local image_sg_gb=${3:-16}
-	local loop_dev="/dev/loop0"
 
 	print_step "Preparing image at ${img_output_file}"
 	ls ${img_output_file}?* | xargs -n1 sudo umount -l -f || true
@@ -343,11 +361,17 @@ make_image()
 
 	inflate_image $img_output_file $image_sg_gb
 	partition_image $img_output_file
-	mkfs_image $img_output_file $loop_dev
-	unpack_image $db_base_folder $loop_dev $img_output_file
 
-	sync
-	sudo losetup -d $loop_dev || true
+	sudo losetup -P -f $img_output_file
+	loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
+	mkfs_image $img_output_file $loop_dev
+	# $loop_dev closed by mkfs_image
+
+	sudo losetup -P -f $img_output_file
+	loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
+	unpack_image $db_base_folder $loop_dev $img_output_file
+	# $loop_dev closed by unpack_image
+
 	print_step "Done"
 }
 
@@ -356,27 +380,34 @@ unpack_domain()
 	local db_base_folder=$1
 	local img_output_file=$2
 	local domain=$3
-	local loop_dev="/dev/loop0"
+
 
 	print_step "Unpacking single domain: $domain"
 
 	sudo umount -f ${img_output_file}* || true
-	sudo losetup -d $loop_dev || true
-
 	case $domain in
 		dom0)
+			sudo losetup -P -f $img_output_file
+			loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
 			mkfs_boot $img_output_file $loop_dev
 			unpack_dom0 $db_base_folder $loop_dev $img_output_file
 		;;
 		domd)
+			sudo losetup -P -f $img_output_file
+			loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
 			mkfs_domd $img_output_file $loop_dev
 			unpack_domd $db_base_folder $loop_dev $img_output_file
 		;;
 		domf)
+			sudo losetup -P -f $img_output_file
+			loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
 			mkfs_domf $img_output_file $loop_dev
 			unpack_domf $db_base_folder $loop_dev $img_output_file
 		;;
 		doma)
+			sudo losetup -P -f $img_output_file$DOMA_PART_N
+			img_output_file=$img_output_file$DOMA_PART_N
+			loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
 			mkfs_doma $img_output_file $loop_dev
 			unpack_doma $db_base_folder $loop_dev $img_output_file
 		;;
@@ -384,7 +415,7 @@ unpack_domain()
 		exit 1
 		;;
 	esac
-
+	sudo losetup -d $loop_dev
 	sync
 	print_step "Done"
 }
