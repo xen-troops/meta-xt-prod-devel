@@ -334,7 +334,7 @@ make_image()
 	local db_base_folder=$1
 	local img_output_file=$2
 	local image_sg_gb=${3:-16}
-	local loop_dev="/dev/loop0"
+	local loop_dev=`sudo losetup -f`
 
 	print_step "Preparing image at ${img_output_file}"
 	ls ${img_output_file}?* | xargs -n1 sudo umount -l -f || true
