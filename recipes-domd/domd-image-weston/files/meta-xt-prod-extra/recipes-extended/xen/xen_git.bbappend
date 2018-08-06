@@ -4,11 +4,11 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 # Renesas R-Car
 ################################################################################
 
-XEN_REL_rcar = "4.10"
+XEN_REL_rcar = "4.11"
 PV = "${XEN_REL}.0+git${SRCPV}"
 SRCREV_rcar = "${AUTOREV}"
 
-SRC_URI_rcar = "git://github.com/xen-troops/xen.git;protocol=https;branch=master"
+SRC_URI_rcar = "git://github.com/xen-troops/xen.git;protocol=https;branch=xen-4.11-migration"
 
 # N.B. as Xen doesn't support partial .cfg as kernel does
 # we need to patch it to select disable IPMMU PGT sharing for
