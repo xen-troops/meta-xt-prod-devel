@@ -3,12 +3,12 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 ################################################################################
 # We only need Xen tools, so we can start domains
 ################################################################################
-XEN_REL = "4.10"
+XEN_REL = "4.11"
 PV = "${XEN_REL}.0+git${SRCPV}"
 SRCREV = "${AUTOREV}"
 
 SRC_URI = " \
-    git://github.com/xen-troops/xen.git;protocol=https;branch=master \
+    git://github.com/xen-troops/xen.git;protocol=https;branch=xen-4.11-migration \
     file://0001-libxl-Add-DTB-compatible-list-to-config-file.patch \
     file://0002-libxl-Add-DTB-passthrough-nodes-list.patch \
 "
