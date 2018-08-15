@@ -1,0 +1,27 @@
+From f1df65ee6901390ccaac0e7d0a4162764bd6f0dc Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Tue, 14 Aug 2018 21:41:43 +0300
+Subject: [PATCH 3/4] Revert "clk: renesas: r8a7795: Remove clock that supplies
+ i2c-dvfs"
+
+This reverts commit 400720e380191ef3e8eaeda83bef087be78d0ed3.
+---
+ drivers/clk/renesas/r8a7795-cpg-mssr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/renesas/r8a7795-cpg-mssr.c b/drivers/clk/renesas/r8a7795-cpg-mssr.c
+index 1be1fbb..07df1fe 100644
+--- a/drivers/clk/renesas/r8a7795-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a7795-cpg-mssr.c
+@@ -247,7 +247,7 @@ static struct mssr_mod_clk r8a7795_mod_clks[] __initdata = {
+ 	DEF_MOD("i2c6",			 918,	R8A7795_CLK_S0D6),
+ 	DEF_MOD("i2c5",			 919,	R8A7795_CLK_S0D6),
+ 	DEF_MOD("adg",			 922,	R8A7795_CLK_S0D1),
+-	/*DEF_MOD("i2c-dvfs",		 926,	R8A7795_CLK_CP),*/
++	DEF_MOD("i2c-dvfs",		 926,	R8A7795_CLK_CP),
+ 	DEF_MOD("i2c4",			 927,	R8A7795_CLK_S0D6),
+ 	DEF_MOD("i2c3",			 928,	R8A7795_CLK_S0D6),
+ 	DEF_MOD("i2c2",			 929,	R8A7795_CLK_S3D2),
+-- 
+2.7.4
+
