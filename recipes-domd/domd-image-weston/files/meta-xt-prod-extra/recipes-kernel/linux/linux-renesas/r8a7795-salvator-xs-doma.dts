@@ -8,6 +8,8 @@
 	#size-cells = <2>;
 
 	passthrough {
+                compatible = "simple-bus";
+                ranges;
 		#address-cells = <2>;
 		#size-cells = <2>;
 
