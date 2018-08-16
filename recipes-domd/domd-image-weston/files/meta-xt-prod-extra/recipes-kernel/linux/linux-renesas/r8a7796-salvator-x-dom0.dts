@@ -15,7 +15,7 @@
 	compatible = "renesas,salvator-x", "renesas,r8a7796";
 
 	chosen {
-		bootargs = "dom0_mem=256M console=dtuart dtuart=serial0 dom0_max_vcpus=4 bootscrub=0 flask_enforcing=1 loglvl=all cpufreq=xen:ondemand";
+		bootargs = "dom0_mem=256M console=dtuart dtuart=serial0 dom0_max_vcpus=4 bootscrub=0 flask_enforcing=1 loglvl=all cpufreq=none";
 		xen,dom0-bootargs = "console=hvc0 ignore_loglevel";
 		/delete-property/stdout-path;
 		modules {
@@ -42,79 +42,37 @@
 	/delete-node/memory@600000000;
 	/delete-node/reserved-memory;
 
-	mailbox: mailbox@0 {
-		compatible = "arm,smc-mbox";
-		#mbox-cells = <1>;
-		arm,func-ids = <0x82000001>, <0x82000002>;
-		method = "smc";
-	};
-
-	sram: sram@47FFF000 {
-		compatible = "mmio-sram";
-		reg = <0x0 0x47FFF000 0x0 0x1000>;
-
-		#address-cells = <1>;
-		#size-cells = <1>;
-		ranges = <0 0x0 0x47FFF000 0x1000>;
-
-		scp_shmem: scp_shmem@0 {
-			compatible = "mmio-sram";
-			reg = <0x0 0x200>;
-		};
-	};
-
-	scpi {
-		compatible = "arm,scpi";
-		mboxes = <&mailbox 0>;
-		shmem = <&scp_shmem>;
-
-		clocks {
-			compatible = "arm,scpi-clocks";
-
-			scpi_dvfs: scpi_dvfs@0 {
-				compatible = "arm,scpi-dvfs-clocks";
-				#clock-cells = <1>;
-				clock-indices = <0>, <1>;
-				clock-output-names = "cpu_a57_clk", "cpu_a53_clk";
-			};
-		};
-	};
-
 	/delete-node/mmngr;
 	/delete-node/mmngrbuf;
+
+	/*
+	 * When creating DT for the guest domain Xen inserts only dummy CPU nodes.
+	 * And the number of these inserted CPU nodes is equal to the number of
+	 * vCPUs assigned to this domain. All CPU properties which original DT has,
+	 * such as OPP, clock, regulator, etc are not passed to the guest’s DT.
+	 *
+	 * Example of guest vCPU node:
+	 *
+	 * cpu@0 {
+	 *     device_type = "cpu";
+	 *     compatible = "arm,armv8";
+	 *     enable-method = "psci";
+	 *     reg = <0x0>;
+	 * };
+	 *
+	 * This results in the fact that all features expecting a57_x or a53_x
+	 * CPU nodes to be present get broken. This is why we have to explicitly
+	 * remove the following.
+	 */
+	soc {
+		/delete-node/thermal-zones;
+		/delete-node/pmu_a57;
+		/delete-node/pmu_a53;
+	};
 };
 
-&a57_0 {
-	clocks = <&scpi_dvfs 0>;
-	/delete-property/cpu-supply;
-};
-
-&a57_1 {
-	clocks = <&scpi_dvfs 0>;
-};
-
-&a53_0 {
-	/delete-property/clocks;
-};
-
-&a53_1 {
-	/delete-property/clocks;
-};
-
-&a53_2 {
-	/delete-property/clocks;
-};
-
-&a53_3 {
-	/delete-property/clocks;
-};
-
-/delete-node/&avs;
 /delete-node/&adsp;
 
-&i2c_dvfs {
-	status = "disabled";
-};
 
 /* ============================ Enabled IPMMUs ===============================*/
 &ipmmu_mm {
@@ -317,4 +275,6 @@
 &fcpvd1			{ xen,passthrough; };
 &fcpvd2			{ xen,passthrough; };
 &fcpcs			{ xen,passthrough; };
+&tsc			{ xen,passthrough; };
+&i2c_dvfs		{ xen,passthrough; };
 
