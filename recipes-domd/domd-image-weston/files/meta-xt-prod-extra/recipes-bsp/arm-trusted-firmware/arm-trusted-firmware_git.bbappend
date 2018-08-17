@@ -1,6 +1,9 @@
-BRANCH = "Rev1.0.20_rev2.xt0.1"
-SRC_URI = "git://github.com/xen-troops/arm-trusted-firmware.git;branch=${BRANCH}"
-SRCREV = "${AUTOREV}"
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+
+SRC_URI += "\
+    file://0001-rcar-Use-UART-instead-of-Secure-DRAM-area-for-loggin.patch \
+    file://0002-tools-Produce-two-cert_header_sa6-images.patch \
+"
 
 do_deploy_append () {
     install -m 0644 ${S}/tools/dummy_create/bootparam_sa0.bin ${DEPLOYDIR}/bootparam_sa0.bin
