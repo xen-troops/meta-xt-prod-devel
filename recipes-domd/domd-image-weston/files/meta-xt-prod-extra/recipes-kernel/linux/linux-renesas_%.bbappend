@@ -64,12 +64,14 @@ SRC_URI_append_salvator-xs-h3-4x2g-xt = " \
     file://r8a7795-salvator-xs-4x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-xs-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-salvator-xs-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-xs-h3-4x2g-xt = " \
     renesas/r8a7795-salvator-xs-4x2g-dom0.dtb \
     renesas/r8a7795-salvator-xs-4x2g-domd.dtb \
     renesas/r8a7795-salvator-x-4x2g-domu.dtb \
+    renesas/r8a7795-salvator-xs-doma.dtb \
 "
 
 ##############################################################################
@@ -84,6 +86,7 @@ SRC_URI_append_salvator-xs-h3-2x2g-xt = " \
     file://r8a7795-salvator-xs-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-xs-2x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-salvator-xs-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-xs-h3-2x2g-xt = " \
@@ -91,6 +94,7 @@ KERNEL_DEVICETREE_salvator-xs-h3-2x2g-xt = " \
     renesas/r8a7795-salvator-xs-4x2g-domd.dtb \
     renesas/r8a7795-salvator-x-4x2g-domu.dtb \
     renesas/r8a7795-salvator-xs-2x2g-dom0.dtb \
+    renesas/r8a7795-salvator-xs-doma.dtb \
 "
 
 ##############################################################################
@@ -105,6 +109,7 @@ SRC_URI_append_salvator-xs-h3-xt = " \
     file://r8a7795-salvator-xs-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-xs-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-salvator-xs-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-xs-h3-xt = " \
@@ -112,6 +117,7 @@ KERNEL_DEVICETREE_salvator-xs-h3-xt = " \
     renesas/r8a7795-salvator-xs-4x2g-domd.dtb \
     renesas/r8a7795-salvator-x-4x2g-domu.dtb \
     renesas/r8a7795-salvator-xs-dom0.dtb \
+    renesas/r8a7795-salvator-xs-doma.dtb \
 "
 
 ##############################################################################
