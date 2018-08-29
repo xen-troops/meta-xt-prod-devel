@@ -1,16 +1,18 @@
 SRCREV = "${AUTOREV}"
 
 SRC_URI_append = " \
-    repo://git@gitpct.epam.com/epmd-aepr/android_manifest.git;protocol=ssh;branch=android-bsp-v1.2.0-oreo-8.1-ED4991288;manifest=doma.xml;scmdata=keep \
+    repo://git@gitpct.epam.com/epmd-aepr/android_manifest.git;protocol=ssh;branch=android-9.0.0_r3-ED4991288-xt0.1;manifest=doma.xml;scmdata=keep \
 "
 
 # put it out of the source tree, so it can be reused after cleanup
 ANDROID_OUT_DIR_COMMON_BASE = "${SSTATE_DIR}/../${PN}-${ANDROID_PRODUCT}-${ANDROID_VARIANT}-${SOC_FAMILY}-out"
+ANDROID_PRODUCT_OUT = "${ANDROID_OUT_DIR_COMMON_BASE}/target/product/${ANDROID_PRODUCT}"
 
 EXTRA_OEMAKE_append = " \
     TARGET_BOARD_PLATFORM=${SOC_FAMILY} \
     TARGET_SOC_REVISION=${SOC_REVISION} \
-    OUT_DIR_COMMON_BASE=${ANDROID_OUT_DIR_COMMON_BASE} \
+    OUT_DIR=${ANDROID_OUT_DIR_COMMON_BASE} \
+    PRODUCT_OUT=${ANDROID_PRODUCT_OUT} \
 "
 
 # Android adds the source directoy name to the out directory name, e.g. repo in our case,
