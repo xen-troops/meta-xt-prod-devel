@@ -2,6 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 BRANCH = "master"
 SRCREV = "${AUTOREV}"
+LINUX_VERSION = "4.14.35"
 
 SRC_URI = " \
     git://github.com/xen-troops/linux.git;branch=${BRANCH} \
