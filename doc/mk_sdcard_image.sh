@@ -338,6 +338,9 @@ unpack_image()
 	local out_adev=$img_output_file$DOMA_PART_N
 	sudo umount $out_adev || true
 	sudo losetup -d $loop_dev
+	while [[ ! (-b $out_adev) ]]; do
+		: # wait for $out_adev to appear
+	done
 	sudo losetup -P -f $out_adev
 	loop_dev=`sudo losetup -j $out_adev | cut -d":" -f1`
 	unpack_doma $db_base_folder $loop_dev $img_output_file
