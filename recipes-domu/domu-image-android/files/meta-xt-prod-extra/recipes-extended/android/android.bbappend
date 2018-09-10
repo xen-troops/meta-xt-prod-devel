@@ -5,7 +5,7 @@ SRC_URI_append = " \
 "
 
 # put it out of the source tree, so it can be reused after cleanup
-ANDROID_OUT_DIR_COMMON_BASE = "${SSTATE_DIR}/../${PN}-${ANDROID_PRODUCT}-${ANDROID_VARIANT}-${SOC_FAMILY}-out"
+ANDROID_OUT_DIR_COMMON_BASE = "${SSTATE_DIR}/../${ANDROID_PRODUCT}-${SOC_FAMILY}"
 ANDROID_PRODUCT_OUT = "${ANDROID_OUT_DIR_COMMON_BASE}/target/product/${ANDROID_PRODUCT}"
 
 EXTRA_OEMAKE_append = " \
