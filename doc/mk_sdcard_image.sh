@@ -2,7 +2,7 @@
 
 MOUNT_POINT="/tmp/mntpoint"
 CUR_STEP=1
-DOMA_PART_N=4
+DOMA_PART_N=p4
 
 usage()
 {
@@ -44,7 +44,6 @@ inflate_image()
 	fi
 
 	echo "Inflating image file at $dev of size ${size_gb}GB"
-	return 0
 
 	local inflate=1
 	if [ -e $1 ] ; then
@@ -61,7 +60,7 @@ inflate_image()
 		esac
 	fi
 	if [[ $inflate == 1 ]] ; then
-		sudo dd if=/dev/zero of=$dev bs=1M count=$(($size_gb*1024)) || exit 1
+		sudo dd if=/dev/zero of=$dev bs=1M count=0 seek=$(($size_gb*1024)) || exit 1
 	fi
 }
 
@@ -77,7 +76,7 @@ partition_image()
 	sudo parted -s $1 mkpart primary ext4 1MiB 257MiB || true
 	sudo parted -s $1 mkpart primary ext4 257MiB 2257MiB || true
 	sudo parted -s $1 mkpart primary ext4 2257MiB 3415MiB || true
-	sudo parted -s $1 mkpart primary 3415MiB 100% || true
+	sudo parted -s $1 mkpart primary 3415MiB 7838MiB || true
 	sudo parted $1 print
 	sudo partprobe $1
 
@@ -91,7 +90,7 @@ partition_image()
 	sudo parted $android_disk -s mkpart xvda1 ext4 1MB  3148MB || true
 	sudo parted $android_disk -s mkpart xvda2 ext4 3149MB  3418MB || true
 	sudo parted $android_disk -s mkpart xvda3 ext4 3419MB  3420MB || true
-	sudo parted $android_disk -s mkpart xvda4 ext4 3421MB  100% || true
+	sudo parted $android_disk -s mkpart xvda4 ext4 3421MB  4421MB || true
 	sudo parted $android_disk -s print
 	sudo partprobe $android_disk || true
 }
@@ -316,8 +315,8 @@ unpack_doma()
 	simg2img $system $raw_system
 	simg2img $vendor $raw_vendor
 
-	sudo dd if=$raw_system of=${loop_base}p${part_system} bs=1M
-	sudo dd if=$raw_vendor of=${loop_base}p${part_vendor} bs=1M
+	sudo dd if=$raw_system of=${loop_base}p${part_system} bs=1M status=progress
+	sudo dd if=$raw_vendor of=${loop_base}p${part_vendor} bs=1M status=progress
 
 	echo "Wipe out DomA/misc"
 	sudo dd if=/dev/zero of=${loop_base}p${part_misc} bs=1M count=1 || true
@@ -355,14 +354,12 @@ make_image()
 {
 	local db_base_folder=$1
 	local img_output_file=$2
-	local image_sg_gb=${3:-16}
 
 	print_step "Preparing image at ${img_output_file}"
 	ls ${img_output_file}?* | xargs -n1 sudo umount -l -f || true
 
 	sudo umount -f ${img_output_file}* || true
 
-	inflate_image $img_output_file $image_sg_gb
 	partition_image $img_output_file
 
 	sudo losetup -P -f $img_output_file
@@ -462,9 +459,17 @@ fi
 echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
 echo "Using device     : \"$ARG_DEPLOY_DEV\""
 
+image_sg_gb=${ARG_IMG_SIZE_GB:-16}
+inflate_image $ARG_DEPLOY_DEV $image_sg_gb
+
+sudo losetup -P -f $ARG_DEPLOY_DEV
+loop_dev_in=`sudo losetup -j $ARG_DEPLOY_DEV | cut -d":" -f1`
+
 if [ ! -z "${ARG_UNPACK_DOM}" ]; then
-	unpack_domain $ARG_DEPLOY_PATH $ARG_DEPLOY_DEV $ARG_UNPACK_DOM
+	unpack_domain $ARG_DEPLOY_PATH $loop_dev_in $ARG_UNPACK_DOM
 else
-	make_image $ARG_DEPLOY_PATH $ARG_DEPLOY_DEV $ARG_IMG_SIZE_GB
+	make_image $ARG_DEPLOY_PATH $loop_dev_in $ARG_IMG_SIZE_GB
 fi
 
+sudo losetup -d $loop_dev_in
+echo "Done all steps"
