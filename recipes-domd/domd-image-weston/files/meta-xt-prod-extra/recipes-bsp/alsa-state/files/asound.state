@@ -220,8 +220,8 @@ state.rsnddai0ak4613h {
 	control.14 {
 		iface MIXER
 		name 'DVC In Capture Volume'
-		value.0 0
-		value.1 0
+		value.0 6710885
+		value.1 6710885
 		comment {
 			access 'read write'
 			type INTEGER
