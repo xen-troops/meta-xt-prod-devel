@@ -27,6 +27,7 @@ SRC_URI = " \
     file://port-forward-systemd-networkd.conf \
     file://sndbe.service \
     file://sata_en.sh \
+    file://systemd-networkd-wait-online.conf \
 "
 
 S = "${WORKDIR}"
@@ -46,6 +47,7 @@ FILES_${PN}-bridge-config = " \
     ${sysconfdir}/systemd/network/xenbr0.network \
     ${sysconfdir}/systemd/system/systemd-networkd.service.d/xenbr0-systemd-networkd.conf \
     ${sysconfdir}/systemd/system/systemd-networkd.service.d/port-forward-systemd-networkd.conf \
+    ${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d/systemd-networkd-wait-online.conf \
 "
 
 SYSTEMD_PACKAGES = " \
@@ -111,6 +113,9 @@ do_install() {
     install -d ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d
     install -m 0644 ${WORKDIR}/xenbr0-systemd-networkd.conf ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d
     install -m 0644 ${WORKDIR}/port-forward-systemd-networkd.conf ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d
+
+    install -d ${D}${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d
+    install -m 0644 ${WORKDIR}/systemd-networkd-wait-online.conf ${D}${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d
 
     install -d ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_CFG}
     install -m 0744 ${WORKDIR}/${DM_CONFIG} ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_CFG}/dm.cfg
