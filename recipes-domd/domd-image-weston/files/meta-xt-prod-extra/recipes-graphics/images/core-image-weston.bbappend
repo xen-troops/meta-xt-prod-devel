@@ -40,3 +40,13 @@ populate_vmlinux () {
 
 IMAGE_POSTPROCESS_COMMAND += "populate_vmlinux; "
 
+remove_dns () {
+    rm -rf ${IMAGE_ROOTFS}/lib/systemd/system/named.service
+    rm -rf ${IMAGE_ROOTFS}/etc/default/bind9
+    rm -rf ${IMAGE_ROOTFS}/etc/bind
+    rm -rf ${IMAGE_ROOTFS}/usr/bin/bind9-config
+    rm -rf ${IMAGE_ROOTFS}/usr/sbin/named
+}
+
+ROOTFS_POSTPROCESS_COMMAND += "remove_dns; "
+
