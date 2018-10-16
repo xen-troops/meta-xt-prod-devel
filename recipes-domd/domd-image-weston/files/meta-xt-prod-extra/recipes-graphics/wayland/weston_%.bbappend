@@ -31,7 +31,7 @@ do_install_append_r8a7795() {
         sed -e '$a\\' \
             -e '$a\[output]' \
             -e '$a\name=HDMI-A-1' \
-            -e '$a\transform=270' \
+            -e '$a\transform=0' \
             -i ${D}/${sysconfdir}/xdg/weston/weston.ini
     fi
 
@@ -82,7 +82,7 @@ do_install_append_r8a7796() {
         sed -e '$a\\' \
             -e '$a\[output]' \
             -e '$a\name=VGA-1' \
-            -e '$a\transform=${TRANSFORM}' \
+            -e '$a\transform=0' \
             -i ${D}/${sysconfdir}/xdg/weston/weston.ini
     fi
 }
