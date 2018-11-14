@@ -2,7 +2,7 @@
 
 MOUNT_POINT="/tmp/mntpoint"
 CUR_STEP=1
-DOMA_PART_N=p4
+DOMA_PART_N=p3
 
 usage()
 {
@@ -10,7 +10,7 @@ usage()
 	echo "SD card image builder script for current development product."
 	echo "###############################################################################"
 	echo "Usage:"
-	echo "`basename "$0"` <-p image-folder> <-d image-file> [-s image-size-gb] [-u dom0|domd|domf|doma]"
+	echo "`basename "$0"` <-p image-folder> <-d image-file> [-s image-size-gb] [-u dom0|domd|doma]"
 	echo "	-p image-folder	Base daily build folder where artifacts live"
 	echo "	-d image-file	Output image file or physical device"
 	echo "	-s image-size	Optional, image size in GB"
@@ -75,7 +75,6 @@ partition_image()
 
 	sudo parted -s $1 mkpart primary ext4 1MiB 257MiB || true
 	sudo parted -s $1 mkpart primary ext4 257MiB 2257MiB || true
-	sudo parted -s $1 mkpart primary ext4 2257MiB 3415MiB || true
 	sudo parted -s $1 mkpart primary 3415MiB 7838MiB || true
 	sudo parted $1 print
 	sudo partprobe $1
@@ -142,14 +141,6 @@ mkfs_domd()
 	mkfs_one $img_output_file $loop_dev 2 domd
 }
 
-mkfs_domf()
-{
-	local img_output_file=$1
-	local loop_dev=$2
-
-	mkfs_one $img_output_file $loop_dev 3 domf
-}
-
 mkfs_doma()
 {
 	local img_output_file=$1
@@ -165,7 +156,6 @@ mkfs_image()
 
 	mkfs_boot $img_output_file $loop_dev
 	mkfs_domd $img_output_file $loop_dev
-	mkfs_domf $img_output_file $loop_dev
 
 	local out_adev=$img_output_file$DOMA_PART_N
 	sudo losetup -d $loop_dev
@@ -278,17 +268,6 @@ unpack_domd()
 	unpack_dom_from_tar $db_base_folder $loop_dev $img_output_file 2 domd
 }
 
-unpack_domf()
-{
-	local db_base_folder=$1
-	local loop_dev=$2
-	local img_output_file=$3
-
-	print_step  "Unpacking DomF"
-
-	unpack_dom_from_tar $db_base_folder $loop_dev $img_output_file 3 fusion
-}
-
 unpack_doma()
 {
 	local db_base_folder=$1
@@ -332,7 +311,6 @@ unpack_image()
 
 	unpack_dom0 $db_base_folder $loop_dev $img_output_file
 	unpack_domd $db_base_folder $loop_dev $img_output_file
-	unpack_domf $db_base_folder $loop_dev $img_output_file
 
 	local out_adev=$img_output_file$DOMA_PART_N
 	sudo umount $out_adev || true
@@ -397,12 +375,6 @@ unpack_domain()
 			loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
 			mkfs_domd $img_output_file $loop_dev
 			unpack_domd $db_base_folder $loop_dev $img_output_file
-		;;
-		domf)
-			sudo losetup -P -f $img_output_file
-			loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
-			mkfs_domf $img_output_file $loop_dev
-			unpack_domf $db_base_folder $loop_dev $img_output_file
 		;;
 		doma)
 			sudo losetup -P -f $img_output_file$DOMA_PART_N
