@@ -24,7 +24,8 @@ else
     BASE_DEV=`basename "$(readlink -f "/sys/class/block/${BOOT_STORAGE}/..")"`
 # get partition prefix, e.g. "" for sda2 or "p" for mmcblk1p2
     PART_PREFIX=`echo ${BOOT_STORAGE} | eval sed -e 's/${BASE_DEV}//g' | sed 's/[0-9]\+//'`
-    ln -s /dev/${BASE_DEV}${PART_PREFIX}4 $ADISKS_FOLDER/doma
+    # TO DO: Avoid using magic number, detect partition automatically
+    ln -s /dev/${BASE_DEV}${PART_PREFIX}3 $ADISKS_FOLDER/doma
 fi
 
 xenstore-write drivers/disks/status ready
