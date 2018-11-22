@@ -428,6 +428,23 @@ if [ -z "${ARG_DEPLOY_DEV}" ]; then
 	usage
 fi
 
+# Check that deploy path contains dom0, domd and doma
+dom0_name=`ls ${ARG_DEPLOY_PATH} | grep dom0-image-thin` || true
+domd_name=`ls ${ARG_DEPLOY_PATH} | grep domd` || true
+doma_name=`ls ${ARG_DEPLOY_PATH} | grep android` || true
+if [ -z "$dom0_name" ]; then
+	echo "Error: deploy path has no dom0."
+	exit 2
+fi
+if [ -z "$domd_name" ]; then
+	echo "Error: deploy path has no domd."
+	exit 2
+fi
+if [ -z "$doma_name" ]; then
+	echo "Error: deploy path has no doma."
+	exit 2
+fi
+
 echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
 echo "Using device     : \"$ARG_DEPLOY_DEV\""
 
