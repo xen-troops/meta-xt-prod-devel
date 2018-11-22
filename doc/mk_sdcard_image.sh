@@ -13,8 +13,8 @@ usage()
 	echo "`basename "$0"` <-p image-folder> <-d image-file> [-s image-size-gb] [-u dom0|domd|doma]"
 	echo "	-p image-folder	Base daily build folder where artifacts live"
 	echo "	-d image-file	Output image file or physical device"
-	echo "	-s image-size	Optional, image size in GB"
-	echo "  -u domain	Optional, unpack the domain specified"
+	echo "	-s image-size	Optional, image size in GiB"
+	echo "	-u domain	Optional, unpack the domain specified"
 
 	exit 1
 }
@@ -43,7 +43,7 @@ inflate_image()
 		return 0
 	fi
 
-	echo "Inflating image file at $dev of size ${size_gb}GB"
+	echo "Inflating image file at $dev of size ${size_gb}GiB"
 
 	local inflate=1
 	if [ -e $1 ] ; then
