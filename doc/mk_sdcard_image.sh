@@ -75,7 +75,7 @@ partition_image()
 
 	sudo parted -s $1 mkpart primary ext4 1MiB 257MiB || true
 	sudo parted -s $1 mkpart primary ext4 257MiB 2257MiB || true
-	sudo parted -s $1 mkpart primary 3415MiB 7838MiB || true
+	sudo parted -s $1 mkpart primary 2257MiB 6680MiB || true
 	sudo parted $1 print
 	sudo partprobe $1
 
@@ -448,7 +448,7 @@ fi
 echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
 echo "Using device     : \"$ARG_DEPLOY_DEV\""
 
-image_sg_gb=${ARG_IMG_SIZE_GB:-16}
+image_sg_gb=${ARG_IMG_SIZE_GB:-7}
 inflate_image $ARG_DEPLOY_DEV $image_sg_gb
 
 sudo losetup -P -f $ARG_DEPLOY_DEV
