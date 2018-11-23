@@ -349,8 +349,6 @@ make_image()
 	loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
 	unpack_image $db_base_folder $loop_dev $img_output_file
 	# $loop_dev closed by unpack_image
-
-	print_step "Done"
 }
 
 unpack_domain()
@@ -388,8 +386,6 @@ unpack_domain()
 		;;
 	esac
 	sudo losetup -d $loop_dev
-	sync
-	print_step "Done"
 }
 
 print_step "Checking for simg2img"
@@ -460,5 +456,7 @@ else
 	make_image $ARG_DEPLOY_PATH $loop_dev_in $ARG_IMG_SIZE_GB
 fi
 
+print_step "Syncing"
+sync
 sudo losetup -d $loop_dev_in
-echo "Done all steps"
+print_step "Done all steps"
