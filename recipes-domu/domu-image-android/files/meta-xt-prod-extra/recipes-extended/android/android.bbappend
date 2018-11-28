@@ -1,7 +1,7 @@
 SRCREV = "${AUTOREV}"
 
 SRC_URI_append = " \
-    repo://git@gitpct.epam.com/epmd-aepr/android_manifest.git;protocol=ssh;branch=android-9.0.0_r3-ED4991288-xt0.1;manifest=doma.xml;scmdata=keep \
+    repo://github.com/xen-troops/android_manifest;protocol=https;branch=android-9.0.0_r3-xt0.2;manifest=doma.xml;scmdata=keep \
 "
 
 # put it out of the source tree, so it can be reused after cleanup
