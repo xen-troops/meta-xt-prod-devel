@@ -50,7 +50,6 @@ do_install() {
         lz4 -d "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}"
         # copy uncompressed kernel to shared folder, so Dom0 can pick it up
         install -m 0744 "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}"
-        ln -sfr "${XT_DIR_ABS_SHARED_BOOT_DOMA}/${ANDROID_UNPACKED_KERNEL_NAME}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}/Image"
 
         # copy kernel to the deploy directory
         install -m 0744 "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}"
@@ -61,12 +60,12 @@ do_install() {
         install -m 0744 "${TARGET_PREBUILT_KERNEL}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}"
         # copy kernel to the deploy directory
         install -m 0744 "${TARGET_PREBUILT_KERNEL}" "${DEPLOY_DIR_IMAGE}"
-        ln -sfr "${DEPLOY_DIR_IMAGE}/${ANDROID_UNPACKED_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}/Image"
     fi
 
     # copy images to the deploy directory
     find "${ANDROID_PRODUCT_OUT}/" -maxdepth 1 -iname '*.img' -exec \
         cp -f --no-dereference --preserve=links {} "${DEPLOY_DIR_IMAGE}" \;
     ln -sfr "${DEPLOY_DIR_IMAGE}/${ANDROID_UNPACKED_KERNEL_NAME}" "${DEPLOY_DIR_IMAGE}/Image"
+    ln -sfr "${XT_DIR_ABS_SHARED_BOOT_DOMA}/${ANDROID_UNPACKED_KERNEL_NAME}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}/Image"
 }
 
