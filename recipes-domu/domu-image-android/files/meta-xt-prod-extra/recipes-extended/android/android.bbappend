@@ -1,7 +1,10 @@
 SRCREV = "${AUTOREV}"
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+
 SRC_URI_append = " \
     repo://github.com/xen-troops/android_manifest;protocol=https;branch=android-9.0.0_r3-xt0.2;manifest=doma.xml;scmdata=keep \
+    file://0001-Work-around-b-70221552.patch;patchdir=frameworks/base \
 "
 
 # put it out of the source tree, so it can be reused after cleanup
