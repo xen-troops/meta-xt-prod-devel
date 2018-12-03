@@ -9,37 +9,37 @@ storage device without "/dev/", e.g.
 setenv boot_dev mmcblk1
 setenv set_boot_dev 'fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device ${boot_dev}'
 
-Salvator-X-H3/M3
+Salvator-X(S)/H3ULCB/M3ULCB
 ===================================
 
 setenv bootdelay 3
 setenv baudrate 115200
 
-for tftp boot:
-===================================
-
-setenv boot_dev nfs
-setenv bootcmd run bootcmd_xen_tftp
-setenv bootcmd_xen_tftp 'run xen_load_tftp; run dtb_load_tftp; run kernel_load_tftp; run xenpolicy_load_tftp; run initramfs_load_tftp; bootm 0x48080000 0x76000000 0x48000000'
-
-setenv dtb_load_tftp 'tftp 0x48000000 dom0.dtb; run set_boot_dev'
-setenv xen_load_tftp tftp 0x48080000 xen-uImage
-setenv initramfs_load_tftp tftp 0x76000000 uInitramfs
-setenv kernel_load_tftp tftp 0x7a000000 Image
-setenv xenpolicy_load_tftp tftp 0x7c000000 xenpolicy
-
-for SD card boot:
+for SD0 card boot:
 ===================================
 
 setenv boot_dev mmcblk1
-setenv bootcmd run bootcmd_xen_mmc
-setenv bootcmd_xen_mmc 'run mmc_xen_load; run mmc_dtb_load; run mmc_kernel_load; run mmc_xenpolicy_load; run mmc_initramfs_load; bootm 0x48080000 0x76000000 0x48000000'
+setenv bootcmd run bootcmd_xen_mmc0
+setenv bootcmd_xen_mmc0 'run mmc0_xen_load; run mmc0_dtb_load; run mmc0_kernel_load; run mmc0_xenpolicy_load; run mmc0_initramfs_load; bootm 0x48080000 0x76000000 0x48000000'
 
-setenv mmc_dtb_load 'ext2load mmc 0:1 0x48000000 /boot/dom0.dtb; run set_boot_dev'
-setenv mmc_initramfs_load ext2load mmc 0:1 0x76000000 /boot/uInitramfs
-setenv mmc_kernel_load ext2load mmc 0:1 0x7a000000 /boot/Image
-setenv mmc_xen_load ext2load mmc 0:1 0x48080000 /boot/xen-uImage
-setenv mmc_xenpolicy_load ext2load mmc 0:1 0x7c000000 /boot/xenpolicy
+setenv mmc0_dtb_load 'ext2load mmc 0:1 0x48000000 /boot/dom0.dtb; run set_boot_dev'
+setenv mmc0_initramfs_load ext2load mmc 0:1 0x76000000 /boot/uInitramfs
+setenv mmc0_kernel_load ext2load mmc 0:1 0x7a000000 /boot/Image
+setenv mmc0_xen_load ext2load mmc 0:1 0x48080000 /boot/xen-uImage
+setenv mmc0_xenpolicy_load ext2load mmc 0:1 0x7c000000 /boot/xenpolicy
+
+for SD1 card boot (Salvator-X(S) only):
+===================================
+
+setenv boot_dev mmcblk2
+setenv bootcmd run bootcmd_xen_mmc1
+setenv bootcmd_xen_mmc1 'run mmc1_xen_load; run mmc1_dtb_load; run mmc1_kernel_load; run mmc1_xenpolicy_load; run mmc1_initramfs_load; bootm 0x48080000 0x76000000 0x48000000'
+
+setenv mmc1_dtb_load 'ext2load mmc 2:1 0x48000000 /boot/dom0.dtb; run set_boot_dev'
+setenv mmc1_initramfs_load ext2load mmc 2:1 0x76000000 /boot/uInitramfs
+setenv mmc1_kernel_load ext2load mmc 2:1 0x7a000000 /boot/Image
+setenv mmc1_xen_load ext2load mmc 2:1 0x48080000 /boot/xen-uImage
+setenv mmc1_xenpolicy_load ext2load mmc 2:1 0x7c000000 /boot/xenpolicy
 
 for eMMC boot:
 ===================================
@@ -81,7 +81,7 @@ setenv ethaddr 2E:09:0A:00:A0:41
 setenv ipaddr 192.168.1.10
 setenv serverip 192.168.1.100
 
-setenv bootrags
+setenv bootargs
 
 saveenv
 
