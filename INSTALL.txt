@@ -70,7 +70,7 @@ directory.
 
 6. Download and copy EVA proprietary packages to your local filesystem at some directory:
 
-For example,
+DomA prebuilts:
 
  - rcar-prebuilts-salvator-xs-h3-xt-doma.tar.gz
 
@@ -124,6 +124,19 @@ I.e. you should have such directories structure:
             ├── libsrv_um.so
             └── libusc.so
 
+DomD prebuilts:
+
+- rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz
+
+Copy it to "..PROPRIETARY_FOLDER_PATH.." folder.
+
+Due to the fact that the SoC is not actually changed for Salvator-XS board,
+you could reuse already provided binaries by making symlinks to corresponding archives.
+
+For example (Salvator-XS case),
+
+ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domd.tar.gz
+
 
 7. Edit local.conf:
 
@@ -134,6 +147,7 @@ and append the following:
 XT_GUESTS_INSTALL = "doma"
 XT_GUESTS_BUILD = "doma"
 XT_ANDROID_PREBUILDS_DIR = "..PROPRIETARY_FOLDER_PATH.."
+XT_RCAR_EVAPROPRIETARY_DIR = "..PROPRIETARY_FOLDER_PATH.."
 
 with the correct path to the archives set.
 
