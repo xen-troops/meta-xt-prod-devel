@@ -299,3 +299,35 @@ For example, domain config files located at:
 
 pack it back:
 sudo ./uirfs.sh pack uInitramfs initramfs
+
+2. Product image structure
+
+When you create image(or flash product to SD-card) using mk_sdcard_image.sh, volume structure of it will be
+the following:
+
+Device       Start      End Sectors  Size Id Type
+/dev/sdX1     2048   526335  524288  256M 83 Linux  <---- Ext4 boot partition used by U-Boot to load xen,
+                                                               Dom0 kernel, Dom0 initramfs
+/dev/sdX2   526336  4622335 4096000    2G 83 Linux  <---- Ext4 partition used by DomD
+/dev/sdX3  4622336 13680639 9058304  4,3G 83 Linux  <---- Virtualized block device for DomA
+
+/dev/sdX3 is not a typical partition. It contains complete disk device for DomA. To access its internal partitions
+you need to do the following:
+
+sudo losetup -P -f /dev/sdX3
+
+it will create new loop device(/dev/loopX), to retrive particular device name:
+
+echo `sudo losetup -j /dev/sdX3 | cut -d":" -f1`
+
+It will have following partitions:
+
+Device         Start     End Sectors   Size Type
+/dev/loopXp1    2048 6148095 6146048     3G Linux  <---- Ext4 android system partition
+/dev/loopXp2 6150144 6676479  526336   257M Linux  <---- Ext4 android vendor partition
+/dev/loopXp3 6678528 6680575    2048     1M Linux  <---- Raw android misc partition
+/dev/loopXp4 6681640 8634765 1953126 953,7M Linux  <---- Ext4 Android userdata partition
+
+To delete loop device:
+
+sudo losetup -d /dev/loopX
