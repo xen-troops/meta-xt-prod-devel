@@ -50,9 +50,14 @@ do_install() {
     install -d "${XT_DIR_ABS_SHARED_BOOT_DOMA}"
 
     if [ -z ${TARGET_PREBUILT_KERNEL} ];then
-        # uncompress lz4 packed kernel
-        lz4 -d "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}"
-        # copy uncompressed kernel to shared folder, so Dom0 can pick it up
+        local FILE_TYPE=$(file ${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME} -b | awk '{ print $1 }')
+        if [ ${FILE_TYPE} == "LZ4" ];then
+            # uncompress lz4 packed kernel
+            lz4 -d "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}"
+        else
+            ln -sfr "${ANDROID_PRODUCT_OUT}/${ANDROID_KERNEL_NAME}" "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}"
+        fi
+        # copy kernel to shared folder, so Dom0 can pick it up
         install -m 0744 "${ANDROID_PRODUCT_OUT}/${ANDROID_UNPACKED_KERNEL_NAME}" "${XT_DIR_ABS_SHARED_BOOT_DOMA}"
 
         # copy kernel to the deploy directory
