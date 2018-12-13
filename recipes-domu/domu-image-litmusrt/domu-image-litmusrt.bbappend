@@ -3,12 +3,8 @@ XT_QUIRK_BB_ADD_LAYER += " \
     meta-litmusrt \
 "
 
-# Set default poky revision to pyro
-BRANCH = "pyro"
-
 SRC_URI = " \
-    git://git.yoctoproject.org/poky;destsuffix=repo/poky;branch=${BRANCH} \
-    git://github.com/xen-troops/meta-litmusrt.git;destsuffix=repo/meta-litmusrt;branch=master \
+    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/domr.xml;scmdata=keep \
 "
 
 SRCREV = "${AUTOREV}"

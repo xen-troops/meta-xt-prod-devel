@@ -16,10 +16,6 @@ SRC_URI = " \
     repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=${XT_MANIFEST_FOLDER}/domu.xml;scmdata=keep \
 "
 
-SRC_URI_append = " \
-    git://github.com/kraj/meta-clang.git;destsuffix=repo/meta-clang;branch=rocko \
-"
-
 XT_QUIRK_UNPACK_SRC_URI += " \
     file://meta-xt-prod-extra;subdir=repo \
     file://xt_shared_env.inc;subdir=repo/meta-xt-prod-extra/inc \
@@ -27,7 +23,6 @@ XT_QUIRK_UNPACK_SRC_URI += " \
 
 XT_QUIRK_BB_ADD_LAYER += " \
     meta-xt-prod-extra \
-    meta-clang \
 "
 
 XT_BB_IMAGE_TARGET = "core-image-weston"
