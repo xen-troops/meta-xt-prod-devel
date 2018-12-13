@@ -12,7 +12,6 @@ XT_QUIRK_UNPACK_SRC_URI += " \
 "
 
 XT_QUIRK_BB_ADD_LAYER_append = " \
-    meta-golang \
     meta-xt-prod-extra \
 "
 ################################################################################
@@ -21,12 +20,6 @@ XT_QUIRK_BB_ADD_LAYER_append = " \
 SRC_URI += " \
     repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/domf.xml;scmdata=keep \
 "
-
-SRC_URI += " \
-    git://github.com/madisongh/meta-golang.git;protocol=https;destsuffix=repo/meta-golang;branch=rocko;name=metago \
-"
-
-SRCREV_metago = "${AUTOREV}"
 
 XT_BB_LAYERS_FILE = "meta-xt-prod-extra/doc/bblayers.conf.domf-image-minimal"
 XT_BB_LOCAL_CONF_FILE = "meta-xt-prod-extra/doc/local.conf.domf-image-minimal"

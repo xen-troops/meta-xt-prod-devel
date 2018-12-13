@@ -4,6 +4,10 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 # we need MACHINEOVERRIDES from DomD build
 do_configure[depends] += "domd-image-weston:do_domd_install_machine_overrides"
 
+SRC_URI = " \
+    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/domu_android_host_tools.xml;scmdata=keep \
+"
+
 XT_BB_LAYERS_FILE = "meta-xt-prod-extra/doc/bblayers.conf.domu-image-android"
 XT_BB_LOCAL_CONF_FILE = "meta-xt-prod-extra/doc/local.conf.domu-image-android"
 
