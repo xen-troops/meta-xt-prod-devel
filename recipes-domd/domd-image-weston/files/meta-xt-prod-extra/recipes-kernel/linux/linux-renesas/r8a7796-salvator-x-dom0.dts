@@ -15,7 +15,7 @@
 	compatible = "renesas,salvator-x", "renesas,r8a7796";
 
 	chosen {
-		bootargs = "dom0_mem=256M console=dtuart dtuart=serial0 dom0_max_vcpus=4 bootscrub=0 flask_enforcing=1 loglvl=all cpufreq=none sched=credit2";
+		bootargs = "dom0_mem=256M console=dtuart dtuart=serial0 dom0_max_vcpus=4 bootscrub=0 flask_enforcing=1 loglvl=all cpufreq=none sched=credit2 sched_ratelimit_us=100";
 		xen,dom0-bootargs = "console=hvc0 ignore_loglevel";
 		/delete-property/stdout-path;
 		modules {
