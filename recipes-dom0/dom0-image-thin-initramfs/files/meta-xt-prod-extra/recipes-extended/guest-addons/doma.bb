@@ -8,18 +8,16 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 
 SRC_URI = "\
-    file://doma-salvator-x-m3.cfg \
-    file://doma-salvator-x-h3.cfg \
-    file://doma-salvator-xs-h3.cfg \
+    file://doma-salvator-generic.cfg \
     file://doma-salvator-x-h3-4x2g.cfg \
     file://guest_doma \
 "
 
 S = "${WORKDIR}"
 
-DOMA_CONFIG_salvator-x-m3-xt = "doma-salvator-x-m3.cfg"
-DOMA_CONFIG_salvator-x-h3-xt = "doma-salvator-x-h3.cfg"
-DOMA_CONFIG_salvator-xs-h3-xt = "doma-salvator-xs-h3.cfg"
+DOMA_CONFIG_salvator-x-m3-xt = "doma-salvator-generic.cfg"
+DOMA_CONFIG_salvator-x-h3-xt = "doma-salvator-generic.cfg"
+DOMA_CONFIG_salvator-xs-h3-xt = "doma-salvator-generic.cfg"
 DOMA_CONFIG_salvator-x-h3-4x2g-xt = "doma-salvator-x-h3-4x2g.cfg"
 
 FILES_${PN} = " \
