@@ -11,5 +11,4 @@ RDEPENDS_packagegroup-xt-core-network = "\
     nftables \
     ntpdate-systemd \
     tzdata \
-    dhcp-client \
 "
