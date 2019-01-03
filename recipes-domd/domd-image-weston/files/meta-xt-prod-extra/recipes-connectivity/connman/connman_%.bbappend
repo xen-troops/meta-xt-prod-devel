@@ -5,6 +5,11 @@ SRC_URI += " \
     file://disable_dns_proxy.conf \
 "
 
+# Do not stop systemd-resolved service when we use connman as network manager.
+SRC_URI_remove = " \
+    file://0001-connman.service-stop-systemd-resolved-when-we-use-co.patch \
+"
+
 FILES_${PN} += " \
     ${sysconfdir}/main.conf \
     ${sysconfdir}/systemd/system/connman.service.d/disable_dns_proxy.conf \
