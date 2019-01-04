@@ -4,7 +4,7 @@ SRC_URI_append = " \
     file://display_manager.conf \
 "
 FILES_${PN} += " \
-    ${datadir}/dbus-1/session.d/display_manager.conf \
+    ${sysconfdir}/dbus-1/session.d/display_manager.conf \
 "
 
 do_install_append() {
