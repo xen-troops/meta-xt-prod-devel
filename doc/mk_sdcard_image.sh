@@ -3,6 +3,7 @@
 MOUNT_POINT="/tmp/mntpoint"
 CUR_STEP=1
 DOMA_PART_N=p3
+# see partition_image() for definition of sizes of partitions
 
 usage()
 {
@@ -83,6 +84,7 @@ partition_image()
 			DOMD_END=$((DOMD_START+2000))  # 2257
 			DOMA_START=$DOMD_END  # 2257
 			DOMA_END=$((DOMA_START+4423))  # 6680
+			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
 			doma_present=1
 		;;
 		ces2019)
@@ -93,6 +95,7 @@ partition_image()
 			DOMD_END=$((DOMD_START+4000))  # 4257
 			DOMA_START=$DOMD_END  # 4257
 			DOMA_END=$((DOMA_START+4423))  # 8680
+			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
 			doma_present=1
 		;;
 		*)
@@ -465,7 +468,7 @@ fi
 echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
 echo "Using device     : \"$ARG_DEPLOY_DEV\""
 
-image_sg_gb=${ARG_IMG_SIZE_GB:-7}
+image_sg_gb=${ARG_IMG_SIZE_GB:-DEFAULT_IMAGE_SIZE_GIB}
 inflate_image $ARG_DEPLOY_DEV $image_sg_gb
 
 loop_dev_in=`sudo losetup --find --partscan --show $ARG_DEPLOY_DEV`
