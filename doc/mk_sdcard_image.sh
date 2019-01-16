@@ -10,7 +10,7 @@ usage()
 	echo "SD card image builder script for current development product."
 	echo "###############################################################################"
 	echo "Usage:"
-	echo "`basename "$0"` <-p image-folder> <-d image-file> [-s image-size-gb] [-u dom0|domd|doma]"
+	echo "`basename "$0"` <-p image-folder> <-d image-file> [-s image-size] [-u dom0|domd|doma]"
 	echo "	-p image-folder	Base daily build folder where artifacts live"
 	echo "	-d image-file	Output image file or physical device"
 	echo "	-s image-size	Optional, image size in GiB"
@@ -95,20 +95,6 @@ partition_image()
 }
 
 ###############################################################################
-# Label partition
-###############################################################################
-
-label_one()
-{
-	local loop_base=$1
-	local part=$2
-	local label=$3
-	local loop_dev="${loop_base}p${part}"
-
-	sudo e2label $loop_dev $label
-}
-
-###############################################################################
 # Make file system
 ###############################################################################
 
@@ -146,6 +132,8 @@ mkfs_doma()
 	local img_output_file=$1
 	local loop_dev=$2
 
+	# Below we use 4 as number of partition inside android's partition.
+	# So it's partition 4 inside partition $DOMA_PART_N.
 	mkfs_one $img_output_file $loop_dev 4 doma_user
 }
 
@@ -445,7 +433,7 @@ loop_dev_in=`sudo losetup --find --partscan --show $ARG_DEPLOY_DEV`
 if [ ! -z "${ARG_UNPACK_DOM}" ]; then
 	unpack_domain $ARG_DEPLOY_PATH $loop_dev_in $ARG_UNPACK_DOM
 else
-	make_image $ARG_DEPLOY_PATH $loop_dev_in $ARG_IMG_SIZE_GB
+	make_image $ARG_DEPLOY_PATH $loop_dev_in
 fi
 
 print_step "Syncing"
