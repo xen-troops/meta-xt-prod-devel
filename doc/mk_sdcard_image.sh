@@ -79,19 +79,20 @@ partition_image()
 	sudo parted $1 print
 	sudo partprobe $1
 
-	local android_disk=$1$DOMA_PART_N
+	print_step "Make Android partitions on "$1$DOMA_PART_N
 
-	print_step "Make Android partitions on "$android_disk
+	local temp_dev=`sudo losetup --find --partscan --show $1$DOMA_PART_N`
 
 	# parted gerates error on all operation with "nested" disk, guard it with || true
+	sudo parted $temp_dev -s mklabel gpt || true
+	sudo parted $temp_dev -s mkpart xvda1 ext4 1MB  3148MB || true
+	sudo parted $temp_dev -s mkpart xvda2 ext4 3149MB  3418MB || true
+	sudo parted $temp_dev -s mkpart xvda3 ext4 3419MB  3420MB || true
+	sudo parted $temp_dev -s mkpart xvda4 ext4 3421MB  4421MB || true
+	sudo parted $temp_dev -s print
+	sudo partprobe $temp_dev || true
 
-	sudo parted $android_disk -s mklabel gpt || true
-	sudo parted $android_disk -s mkpart xvda1 ext4 1MB  3148MB || true
-	sudo parted $android_disk -s mkpart xvda2 ext4 3149MB  3418MB || true
-	sudo parted $android_disk -s mkpart xvda3 ext4 3419MB  3420MB || true
-	sudo parted $android_disk -s mkpart xvda4 ext4 3421MB  4421MB || true
-	sudo parted $android_disk -s print
-	sudo partprobe $android_disk || true
+	sudo losetup -d $temp_dev
 }
 
 ###############################################################################
