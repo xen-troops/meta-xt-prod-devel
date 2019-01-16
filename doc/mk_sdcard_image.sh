@@ -159,8 +159,7 @@ mkfs_image()
 
 	local out_adev=$img_output_file$DOMA_PART_N
 	sudo losetup -d $loop_dev
-	sudo losetup -P -f $out_adev
-	loop_dev=`sudo losetup -j $out_adev | cut -d":" -f1`
+	loop_dev=`sudo losetup --find --partscan --show $out_adev`
 	mkfs_doma $img_output_file $loop_dev
 	sudo losetup -d $loop_dev
 }
@@ -318,8 +317,7 @@ unpack_image()
 	while [[ ! (-b $out_adev) ]]; do
 		: # wait for $out_adev to appear
 	done
-	sudo losetup -P -f $out_adev
-	loop_dev=`sudo losetup -j $out_adev | cut -d":" -f1`
+	loop_dev=`sudo losetup --find --partscan --show $out_adev`
 	unpack_doma $db_base_folder $loop_dev $img_output_file
 	sudo losetup -d $loop_dev
 }
@@ -340,13 +338,11 @@ make_image()
 
 	partition_image $img_output_file
 
-	sudo losetup -P -f $img_output_file
-	loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
+	loop_dev=`sudo losetup --find --partscan --show $img_output_file`
 	mkfs_image $img_output_file $loop_dev
 	# $loop_dev closed by mkfs_image
 
-	sudo losetup -P -f $img_output_file
-	loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
+	loop_dev=`sudo losetup --find --partscan --show $img_output_file`
 	unpack_image $db_base_folder $loop_dev $img_output_file
 	# $loop_dev closed by unpack_image
 }
@@ -363,21 +359,18 @@ unpack_domain()
 	sudo umount -f ${img_output_file}* || true
 	case $domain in
 		dom0)
-			sudo losetup -P -f $img_output_file
-			loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
+			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
 			mkfs_boot $img_output_file $loop_dev
 			unpack_dom0 $db_base_folder $loop_dev $img_output_file
 		;;
 		domd)
-			sudo losetup -P -f $img_output_file
-			loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
+			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
 			mkfs_domd $img_output_file $loop_dev
 			unpack_domd $db_base_folder $loop_dev $img_output_file
 		;;
 		doma)
-			sudo losetup -P -f $img_output_file$DOMA_PART_N
 			img_output_file=$img_output_file$DOMA_PART_N
-			loop_dev=`sudo losetup -j $img_output_file | cut -d":" -f1`
+			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
 			mkfs_doma $img_output_file $loop_dev
 			unpack_doma $db_base_folder $loop_dev $img_output_file
 		;;
@@ -447,8 +440,7 @@ echo "Using device     : \"$ARG_DEPLOY_DEV\""
 image_sg_gb=${ARG_IMG_SIZE_GB:-7}
 inflate_image $ARG_DEPLOY_DEV $image_sg_gb
 
-sudo losetup -P -f $ARG_DEPLOY_DEV
-loop_dev_in=`sudo losetup -j $ARG_DEPLOY_DEV | cut -d":" -f1`
+loop_dev_in=`sudo losetup --find --partscan --show $ARG_DEPLOY_DEV`
 
 if [ ! -z "${ARG_UNPACK_DOM}" ]; then
 	unpack_domain $ARG_DEPLOY_PATH $loop_dev_in $ARG_UNPACK_DOM
