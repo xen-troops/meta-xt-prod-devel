@@ -263,7 +263,7 @@ PREFERRED_PROVIDER_libgbm-dev = "libgbm"
 BBMASK .= "|mesa-gl"
 
 # Enable Multimedia features
-#MACHINE_FEATURES_append = " multimedia"
+MACHINE_FEATURES_append = " multimedia"
 
 # for gstreamer omx plugins
 LICENSE_FLAGS_WHITELIST = "commercial"
@@ -271,7 +271,7 @@ LICENSE_FLAGS_WHITELIST = "commercial"
 #DISTRO_FEATURES_append = " mm-test"
 
 # for weston v4l2 renderer
-#DISTRO_FEATURES_append = " v4l2-renderer"
+DISTRO_FEATURES_append = " v4l2-renderer"
 
 # OMX H263 decoder library for Linux (RTM0AC0000XV263D30SL41C)
 #DISTRO_FEATURES_append = " h263dec_lib"
