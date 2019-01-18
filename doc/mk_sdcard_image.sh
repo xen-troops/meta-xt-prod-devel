@@ -363,7 +363,7 @@ unpack_domain()
 			mkfs_doma $img_output_file $loop_dev
 			unpack_doma $db_base_folder $loop_dev $img_output_file
 		;;
-		\?) echo "Invalid domain -$OPTARG" >&2
+		*) echo "Invalid domain $domain" >&2
 		exit 1
 		;;
 	esac
