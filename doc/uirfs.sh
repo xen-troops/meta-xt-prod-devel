@@ -49,7 +49,7 @@ unpack()
     fi
 
     echo "\n\tuInitramfs unpacked to:"
-    echo "\t $1"    
+    echo "\t $2"
 }
 
 pack()
