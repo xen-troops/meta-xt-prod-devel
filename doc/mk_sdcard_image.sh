@@ -7,12 +7,13 @@ DOMA_PART_N=p3
 usage()
 {
 	echo "###############################################################################"
-	echo "SD card image builder script for current development product."
+	echo "SD card image builder script v1.0"
 	echo "###############################################################################"
 	echo "Usage:"
-	echo "`basename "$0"` <-p image-folder> <-d image-file> [-s image-size] [-u dom0|domd|doma]"
+	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c devel|ces2019> [-s image-size] [-u dom0|domd|doma]"
 	echo "	-p image-folder	Base daily build folder where artifacts live"
 	echo "	-d image-file	Output image file or physical device"
+	echo "	-c config       Configuration of partitions for product: devel or ces2019"
 	echo "	-s image-size	Optional, image size in GiB"
 	echo "	-u domain	Optional, unpack the domain specified"
 
@@ -71,11 +72,41 @@ partition_image()
 {
 	print_step "Make partitions"
 
+	# Define partitions for different products.
+	# All numbers will be used as MiB (1024 KiB).
+	case $2 in
+		devel)
+			# prod-devel [1..257][257..2257][2257..6680]
+			DOM0_START=1
+			DOM0_END=$((DOM0_START+256))  # 257
+			DOMD_START=$DOM0_END
+			DOMD_END=$((DOMD_START+2000))  # 2257
+			DOMA_START=$DOMD_END  # 2257
+			DOMA_END=$((DOMA_START+4423))  # 6680
+			doma_present=1
+		;;
+		ces2019)
+			# prod-ces2019 [1..257][257..4257][4257..8680]
+			DOM0_START=1
+			DOM0_END=$((DOM0_START+256))  # 257
+			DOMD_START=$DOM0_END
+			DOMD_END=$((DOMD_START+4000))  # 4257
+			DOMA_START=$DOMD_END  # 4257
+			DOMA_END=$((DOMA_START+4423))  # 8680
+			doma_present=1
+		;;
+		*)
+			echo "Unknown configuration provided for -c."
+			exit 1
+		;;
+	esac
+
+	# create partitions
 	sudo parted -s $1 mklabel msdos || true
 
-	sudo parted -s $1 mkpart primary ext4 1MiB 257MiB || true
-	sudo parted -s $1 mkpart primary ext4 257MiB 2257MiB || true
-	sudo parted -s $1 mkpart primary 2257MiB 6680MiB || true
+	sudo parted -s $1 mkpart primary ext4 ${DOM0_START}MiB ${DOM0_END}MiB || true
+	sudo parted -s $1 mkpart primary ext4 ${DOMD_START}MiB ${DOMD_END}MiB || true
+	sudo parted -s $1 mkpart primary ${DOMA_START}MiB ${DOMA_END}MiB || true
 	sudo parted $1 print
 	sudo partprobe $1
 
@@ -319,13 +350,14 @@ make_image()
 {
 	local db_base_folder=$1
 	local img_output_file=$2
+	local config_for_partitions=$3
 
 	print_step "Preparing image at ${img_output_file}"
 	ls ${img_output_file}?* | xargs -n1 sudo umount -l -f || true
 
 	sudo umount -f ${img_output_file}* || true
 
-	partition_image $img_output_file
+	partition_image $img_output_file $config_for_partitions
 
 	loop_dev=`sudo losetup --find --partscan --show $img_output_file`
 	mkfs_image $img_output_file $loop_dev
@@ -380,11 +412,13 @@ fi
 
 print_step "Parsing input parameters"
 
-while getopts ":p:d:s:u:" opt; do
+while getopts ":p:d:c:s:u:" opt; do
 	case $opt in
 		p) ARG_DEPLOY_PATH="$OPTARG"
 		;;
 		d) ARG_DEPLOY_DEV="$OPTARG"
+		;;
+		c) ARG_CONFIGURATION="$OPTARG"
 		;;
 		s) ARG_IMG_SIZE_GB="$OPTARG"
 		;;
@@ -403,6 +437,11 @@ fi
 
 if [ -z "${ARG_DEPLOY_DEV}" ]; then
 	echo "No device/file name passed with -d option"
+	usage
+fi
+
+if [ -z "${ARG_CONFIGURATION}" ]; then
+	echo "Configuration of partitions is not defined. Use -c option."
 	usage
 fi
 
@@ -434,7 +473,7 @@ loop_dev_in=`sudo losetup --find --partscan --show $ARG_DEPLOY_DEV`
 if [ ! -z "${ARG_UNPACK_DOM}" ]; then
 	unpack_domain $ARG_DEPLOY_PATH $loop_dev_in $ARG_UNPACK_DOM
 else
-	make_image $ARG_DEPLOY_PATH $loop_dev_in
+	make_image $ARG_DEPLOY_PATH $loop_dev_in $ARG_CONFIGURATION
 fi
 
 print_step "Syncing"
