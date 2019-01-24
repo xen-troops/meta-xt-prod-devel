@@ -3,7 +3,7 @@
 MOUNT_POINT="/tmp/mntpoint"
 CUR_STEP=1
 DOMA_PART_N=p3
-# see partition_image() for definition of sizes of partitions
+# see define_sizes_of_partitions() for definition of sizes of partitions
 
 usage()
 {
@@ -19,6 +19,40 @@ usage()
 	echo "	-u domain	Optional, unpack the domain specified"
 
 	exit 1
+}
+
+define_sizes_of_partitions()
+{
+	# Define partitions for different products.
+	# All numbers will be used as MiB (1024 KiB).
+	case $1 in
+		ces2019)
+			# prod-ces2019 [1..257][257..4257][4257..8680]
+			DOM0_START=1
+			DOM0_END=$((DOM0_START+256))  # 257
+			DOMD_START=$DOM0_END
+			DOMD_END=$((DOMD_START+4000))  # 4257
+			DOMA_START=$DOMD_END  # 4257
+			DOMA_END=$((DOMA_START+4423))  # 8680
+			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
+			DOMA_PRESENT=1
+		;;
+		devel)
+			# prod-devel [1..257][257..2257][2257..6680]
+			DOM0_START=1
+			DOM0_END=$((DOM0_START+256))  # 257
+			DOMD_START=$DOM0_END
+			DOMD_END=$((DOMD_START+2000))  # 2257
+			DOMA_START=$DOMD_END  # 2257
+			DOMA_END=$((DOMA_START+4423))  # 6680
+			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
+			DOMA_PRESENT=1
+		;;
+		*)
+			echo "Unknown configuration provided for -c."
+			exit 1
+		;;
+	esac
 }
 
 print_step()
@@ -72,37 +106,6 @@ inflate_image()
 partition_image()
 {
 	print_step "Make partitions"
-
-	# Define partitions for different products.
-	# All numbers will be used as MiB (1024 KiB).
-	case $2 in
-		devel)
-			# prod-devel [1..257][257..2257][2257..6680]
-			DOM0_START=1
-			DOM0_END=$((DOM0_START+256))  # 257
-			DOMD_START=$DOM0_END
-			DOMD_END=$((DOMD_START+2000))  # 2257
-			DOMA_START=$DOMD_END  # 2257
-			DOMA_END=$((DOMA_START+4423))  # 6680
-			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
-			doma_present=1
-		;;
-		ces2019)
-			# prod-ces2019 [1..257][257..4257][4257..8680]
-			DOM0_START=1
-			DOM0_END=$((DOM0_START+256))  # 257
-			DOMD_START=$DOM0_END
-			DOMD_END=$((DOMD_START+4000))  # 4257
-			DOMA_START=$DOMD_END  # 4257
-			DOMA_END=$((DOMA_START+4423))  # 8680
-			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
-			doma_present=1
-		;;
-		*)
-			echo "Unknown configuration provided for -c."
-			exit 1
-		;;
-	esac
 
 	# create partitions
 	sudo parted -s $1 mklabel msdos || true
@@ -353,14 +356,13 @@ make_image()
 {
 	local db_base_folder=$1
 	local img_output_file=$2
-	local config_for_partitions=$3
 
 	print_step "Preparing image at ${img_output_file}"
 	ls ${img_output_file}?* | xargs -n1 sudo umount -l -f || true
 
 	sudo umount -f ${img_output_file}* || true
 
-	partition_image $img_output_file $config_for_partitions
+	partition_image $img_output_file
 
 	loop_dev=`sudo losetup --find --partscan --show $img_output_file`
 	mkfs_image $img_output_file $loop_dev
@@ -465,18 +467,22 @@ if [ -z "$doma_name" ]; then
 	exit 2
 fi
 
+define_sizes_of_partitions $ARG_CONFIGURATION
+
 echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
 echo "Using device     : \"$ARG_DEPLOY_DEV\""
 
-image_sg_gb=${ARG_IMG_SIZE_GB:-DEFAULT_IMAGE_SIZE_GIB}
-inflate_image $ARG_DEPLOY_DEV $image_sg_gb
+if [ -z ${ARG_IMG_SIZE_GB} ]; then
+	ARG_IMG_SIZE_GB=${DEFAULT_IMAGE_SIZE_GIB}
+fi
+inflate_image $ARG_DEPLOY_DEV $ARG_IMG_SIZE_GB
 
 loop_dev_in=`sudo losetup --find --partscan --show $ARG_DEPLOY_DEV`
 
 if [ ! -z "${ARG_UNPACK_DOM}" ]; then
 	unpack_domain $ARG_DEPLOY_PATH $loop_dev_in $ARG_UNPACK_DOM
 else
-	make_image $ARG_DEPLOY_PATH $loop_dev_in $ARG_CONFIGURATION
+	make_image $ARG_DEPLOY_PATH $loop_dev_in
 fi
 
 print_step "Syncing"
