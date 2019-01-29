@@ -11,10 +11,10 @@ usage()
 	echo "SD card image builder script v1.1"
 	echo "###############################################################################"
 	echo "Usage:"
-	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c devel|ces2019> [-s image-size] [-u dom0|domd|doma]"
+	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c aos|devel|ces2019> [-s image-size] [-u dom0|domd|doma]"
 	echo "	-p image-folder	Base daily build folder where artifacts live"
 	echo "	-d image-file	Output image file or physical device"
-	echo "	-c config       Configuration of partitions for product: devel or ces2019"
+	echo "	-c config       Configuration of partitions for product: aos, devel or ces2019"
 	echo "	-s image-size	Optional, image size in GiB"
 	echo "	-u domain	Optional, unpack the domain specified"
 
@@ -26,6 +26,17 @@ define_sizes_of_partitions()
 	# Define partitions for different products.
 	# All numbers will be used as MiB (1024 KiB).
 	case $1 in
+		aos)
+			# prod-aos [1..257][257..4257][4257..8257]
+			DOM0_START=1
+			DOM0_END=$((DOM0_START+256))  # 257
+			DOMD_START=$DOM0_END
+			DOMD_END=$((DOMD_START+4000))  # 4257
+			DOMF_START=$DOMD_END  # 4257
+			DOMF_END=$((DOMF_START+4000))  # 8257
+			DEFAULT_IMAGE_SIZE_GIB=$(((DOMF_END/1024)+1))
+			DOMF_PRESENT=1
+		;;
 		ces2019)
 			# prod-ces2019 [1..257][257..4257][4257..8680]
 			DOM0_START=1
@@ -112,24 +123,31 @@ partition_image()
 
 	sudo parted -s $1 mkpart primary ext4 ${DOM0_START}MiB ${DOM0_END}MiB || true
 	sudo parted -s $1 mkpart primary ext4 ${DOMD_START}MiB ${DOMD_END}MiB || true
-	sudo parted -s $1 mkpart primary ${DOMA_START}MiB ${DOMA_END}MiB || true
+	if [ ! -z ${DOMF_PRESENT} ]; then
+		sudo parted -s $1 mkpart primary ext4 ${DOMF_START}MiB ${DOMF_END}MiB || true
+	fi
+	if [ ! -z ${DOMA_PRESENT} ]; then
+		sudo parted -s $1 mkpart primary ${DOMA_START}MiB ${DOMA_END}MiB || true
+	fi
 	sudo parted $1 print
 	sudo partprobe $1
 
-	print_step "Make Android partitions on "$1$DOMA_PART_N
+	if [ ! -z ${DOMA_PRESENT} ]; then
+		print_step "Make Android partitions on "$1$DOMA_PART_N
 
-	local temp_dev=`sudo losetup --find --partscan --show $1$DOMA_PART_N`
+		local temp_dev=`sudo losetup --find --partscan --show $1$DOMA_PART_N`
 
-	# parted gerates error on all operation with "nested" disk, guard it with || true
-	sudo parted $temp_dev -s mklabel gpt || true
-	sudo parted $temp_dev -s mkpart xvda1 ext4 1MB  3148MB || true
-	sudo parted $temp_dev -s mkpart xvda2 ext4 3149MB  3418MB || true
-	sudo parted $temp_dev -s mkpart xvda3 ext4 3419MB  3420MB || true
-	sudo parted $temp_dev -s mkpart xvda4 ext4 3421MB  4421MB || true
-	sudo parted $temp_dev -s print
-	sudo partprobe $temp_dev || true
+		# parted gerates error on all operation with "nested" disk, guard it with || true
+		sudo parted $temp_dev -s mklabel gpt || true
+		sudo parted $temp_dev -s mkpart xvda1 ext4 1MB  3148MB || true
+		sudo parted $temp_dev -s mkpart xvda2 ext4 3149MB  3418MB || true
+		sudo parted $temp_dev -s mkpart xvda3 ext4 3419MB  3420MB || true
+		sudo parted $temp_dev -s mkpart xvda4 ext4 3421MB  4421MB || true
+		sudo parted $temp_dev -s print
+		sudo partprobe $temp_dev || true
 
-	sudo losetup -d $temp_dev
+		sudo losetup -d $temp_dev
+	fi  # [ ! -z ${DOMA_PRESENT} ]
 }
 
 ###############################################################################
@@ -165,6 +183,14 @@ mkfs_domd()
 	mkfs_one $img_output_file $loop_dev 2 domd
 }
 
+mkfs_domf()
+{
+	local img_output_file=$1
+	local loop_dev=$2
+
+	mkfs_one $img_output_file $loop_dev 3 domf
+}
+
 mkfs_doma()
 {
 	local img_output_file=$1
@@ -182,12 +208,17 @@ mkfs_image()
 
 	mkfs_boot $img_output_file $loop_dev
 	mkfs_domd $img_output_file $loop_dev
+	if [ ! -z ${DOMF_PRESENT} ]; then
+		mkfs_domf $img_output_file $loop_dev
+	fi
+	sudo losetup -d $loop_dev
+	if [ ! -z ${DOMA_PRESENT} ]; then
+		local out_adev=$img_output_file$DOMA_PART_N
+		loop_dev=`sudo losetup --find --partscan --show $out_adev`
+		mkfs_doma $img_output_file $loop_dev
+		sudo losetup -d $loop_dev
+	fi
 
-	local out_adev=$img_output_file$DOMA_PART_N
-	sudo losetup -d $loop_dev
-	loop_dev=`sudo losetup --find --partscan --show $out_adev`
-	mkfs_doma $img_output_file $loop_dev
-	sudo losetup -d $loop_dev
 }
 
 ###############################################################################
@@ -293,6 +324,17 @@ unpack_domd()
 	unpack_dom_from_tar $db_base_folder $loop_dev $img_output_file 2 domd
 }
 
+unpack_domf()
+{
+	local db_base_folder=$1
+	local loop_dev=$2
+	local img_output_file=$3
+
+	print_step  "Unpacking DomF"
+
+	unpack_dom_from_tar $db_base_folder $loop_dev $img_output_file 3 domu
+}
+
 unpack_doma()
 {
 	local db_base_folder=$1
@@ -336,16 +378,21 @@ unpack_image()
 
 	unpack_dom0 $db_base_folder $loop_dev $img_output_file
 	unpack_domd $db_base_folder $loop_dev $img_output_file
+	if [ ! -z ${DOMF_PRESENT} ]; then
+		unpack_domf $db_base_folder $loop_dev $img_output_file
+	fi
+	sudo losetup -d $loop_dev
 
-	local out_adev=$img_output_file$DOMA_PART_N
-	sudo umount $out_adev || true
-	sudo losetup -d $loop_dev
-	while [[ ! (-b $out_adev) ]]; do
-		: # wait for $out_adev to appear
-	done
-	loop_dev=`sudo losetup --find --partscan --show $out_adev`
-	unpack_doma $db_base_folder $loop_dev $img_output_file
-	sudo losetup -d $loop_dev
+	if [ ! -z ${DOMA_PRESENT} ]; then
+		local out_adev=$img_output_file$DOMA_PART_N
+		sudo umount $out_adev || true
+		while [[ ! (-b $out_adev) ]]; do
+			: # wait for $out_adev to appear
+		done
+		loop_dev=`sudo losetup --find --partscan --show $out_adev`
+		unpack_doma $db_base_folder $loop_dev $img_output_file
+		sudo losetup -d $loop_dev
+	fi
 }
 
 ###############################################################################
@@ -393,6 +440,11 @@ unpack_domain()
 			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
 			mkfs_domd $img_output_file $loop_dev
 			unpack_domd $db_base_folder $loop_dev $img_output_file
+		;;
+		domf)
+			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
+			mkfs_domf $img_output_file $loop_dev
+			unpack_domf $db_base_folder $loop_dev $img_output_file
 		;;
 		doma)
 			img_output_file=$img_output_file$DOMA_PART_N
@@ -450,24 +502,33 @@ if [ -z "${ARG_CONFIGURATION}" ]; then
 	usage
 fi
 
+define_sizes_of_partitions $ARG_CONFIGURATION
+
 # Check that deploy path contains dom0, domd and doma
 dom0_name=`ls ${ARG_DEPLOY_PATH} | grep dom0-image-thin` || true
-domd_name=`ls ${ARG_DEPLOY_PATH} | grep domd` || true
-doma_name=`ls ${ARG_DEPLOY_PATH} | grep android` || true
 if [ -z "$dom0_name" ]; then
 	echo "Error: deploy path has no dom0."
 	exit 2
 fi
+domd_name=`ls ${ARG_DEPLOY_PATH} | grep domd` || true
 if [ -z "$domd_name" ]; then
 	echo "Error: deploy path has no domd."
 	exit 2
 fi
-if [ -z "$doma_name" ]; then
-	echo "Error: deploy path has no doma."
-	exit 2
+if [ ! -z ${DOMF_PRESENT} ]; then
+	domf_name=`ls ${ARG_DEPLOY_PATH} | grep domu-image-fusion` || true
+	if [ -z "$domf_name" ]; then
+		echo "Error: deploy path has no domf."
+		exit 2
+	fi
 fi
-
-define_sizes_of_partitions $ARG_CONFIGURATION
+if [ ! -z ${DOMA_PRESENT} ]; then
+	doma_name=`ls ${ARG_DEPLOY_PATH} | grep android` || true
+	if [ -z "$doma_name" ]; then
+		echo "Error: deploy path has no doma."
+		exit 2
+	fi
+fi
 
 echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
 echo "Using device     : \"$ARG_DEPLOY_DEV\""
