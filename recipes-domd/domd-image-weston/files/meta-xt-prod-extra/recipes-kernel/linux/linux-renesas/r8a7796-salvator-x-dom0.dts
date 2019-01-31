@@ -9,28 +9,11 @@
  */
 
 #include "r8a7796-salvator-x.dts"
+#include "xen-chosen.dtsi"
 
 / {
 	model = "Renesas Salvator-X board based on r8a7796";
 	compatible = "renesas,salvator-x", "renesas,r8a7796";
-
-	chosen {
-		bootargs = "dom0_mem=256M console=dtuart dtuart=serial0 dom0_max_vcpus=4 bootscrub=0 flask_enforcing=1 loglvl=all cpufreq=none sched=credit2 sched_ratelimit_us=100";
-		xen,dom0-bootargs = "console=hvc0 ignore_loglevel";
-		/delete-property/stdout-path;
-		modules {
-			#address-cells = <2>;
-			#size-cells = <2>;
-			module@1 {
-				compatible = "xen,linux-zimage", "xen,multiboot-module";
-				reg = <0x0 0x7a000000 0x0 0x02000000>;
-			};
-			module@2 {
-				compatible = "xen,xsm-policy", "xen,multiboot-module";
-				reg = <0x0 0x7c000000 0x0 0x10000>;
-			};
-		};
-	};
 
 	memory@48000000 {
 		device_type = "memory";

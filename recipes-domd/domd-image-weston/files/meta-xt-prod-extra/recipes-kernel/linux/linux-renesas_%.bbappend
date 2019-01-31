@@ -19,6 +19,7 @@ SRC_URI_append_rcar = " \
     file://0003-Revert-clk-renesas-r8a7795-Remove-clock-that-supplie.patch \
     file://0004-Revert-clk-renesas-r8a7796-Remove-clock-that-supplie.patch \
     file://salvator-generic-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://xen-chosen.dtsi;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_append_rcar = " \
