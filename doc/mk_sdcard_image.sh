@@ -8,7 +8,7 @@ DOMA_PART_N=p3
 usage()
 {
 	echo "###############################################################################"
-	echo "SD card image builder script v1.1"
+	echo "SD card image builder script v1.2"
 	echo "###############################################################################"
 	echo "Usage:"
 	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c aos|ces2019|devel> [-s image-size] [-u dom0|domd|doma]"
