@@ -11,12 +11,12 @@ usage()
 	echo "SD card image builder script v1.1"
 	echo "###############################################################################"
 	echo "Usage:"
-	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c aos|devel|ces2019> [-s image-size] [-u dom0|domd|doma]"
-	echo "	-p image-folder	Base daily build folder where artifacts live"
-	echo "	-d image-file	Output image file or physical device"
-	echo "	-c config       Configuration of partitions for product: aos, devel or ces2019"
-	echo "	-s image-size	Optional, image size in GiB"
-	echo "	-u domain	Optional, unpack the domain specified"
+	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c aos|ces2019|devel> [-s image-size] [-u dom0|domd|doma]"
+	echo "  -p image-folder Base daily build folder where artifacts live"
+	echo "  -d image-file   Output image file or physical device"
+	echo "  -c config       Configuration of partitions for product: aos, ces2019 or devel"
+	echo "  -s image-size   Optional, image size in GiB"
+	echo "  -u domain       Optional, unpack the domain specified"
 
 	exit 1
 }
@@ -133,11 +133,14 @@ partition_image()
 	sudo partprobe $1
 
 	if [ ! -z ${DOMA_PRESENT} ]; then
+		# We have special handling for Android, because it has it's own partitions.
+		# So, Android has dedicated partition number DOMA_PARTITION. And this partition
+		# contains few 'internal' (Android's native) partitions.
 		print_step "Make Android partitions on "$1$DOMA_PART_N
 
 		local temp_dev=`sudo losetup --find --partscan --show $1$DOMA_PART_N`
 
-		# parted gerates error on all operation with "nested" disk, guard it with || true
+		# parted generates error on all operation with "nested" disk, guard it with || true
 		sudo parted $temp_dev -s mklabel gpt || true
 		sudo parted $temp_dev -s mkpart xvda1 ext4 1MB  3148MB || true
 		sudo parted $temp_dev -s mkpart xvda2 ext4 3149MB  3418MB || true
