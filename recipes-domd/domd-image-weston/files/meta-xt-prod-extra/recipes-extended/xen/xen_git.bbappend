@@ -23,7 +23,7 @@ SRC_URI_append_r8a7796 = " \
 # Generic
 ################################################################################
 
-FLASK_POLICY_FILE = "xenpolicy-${XEN_REL}.0"
+FLASK_POLICY_FILE = "xenpolicy-${XEN_REL}.0-rc"
 FILES_${PN}-flask = " \
     /boot/${FLASK_POLICY_FILE} \
 "

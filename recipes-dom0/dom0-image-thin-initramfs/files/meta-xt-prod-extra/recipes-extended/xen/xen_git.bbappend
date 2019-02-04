@@ -20,7 +20,7 @@ PACKAGECONFIG[xsm] = ""
 do_install_append() {
     # FIXME: we do not want XSM, but Xen still installs it making
     # package QA Issue to raise for files installed
-    rm ${D}/boot/xenpolicy-${XEN_REL}.0 || true
+    rm ${D}/boot/xenpolicy-${XEN_REL}* || true
 
     # FIXME: this is to fix run-time issues
     # "libxl__lock_domain_userdata: Domain 0:cannot open lockfile /var/lib/xen/"
