@@ -1,6 +1,6 @@
-From 7e43cfc9b76cef7205831c108739f4c1aa8db69b Mon Sep 17 00:00:00 2001
+From 11126b1e1d46ea629283eb55e077e94bf6ef6215 Mon Sep 17 00:00:00 2001
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Date: Thu, 5 Oct 2017 14:51:07 +0300
+Date: Wed, 4 Apr 2018 20:22:27 +0300
 Subject: [PATCH 2/2] libxl: Add DTB passthrough nodes list
 
 Some platforms need more nodes from partial device tree in
@@ -20,10 +20,10 @@ Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
  3 files changed, 24 insertions(+), 4 deletions(-)
 
 diff --git a/tools/libxl/libxl_arm.c b/tools/libxl/libxl_arm.c
-index d0a2ebe..db83eb7 100644
+index a56b062..a38b081 100644
 --- a/tools/libxl/libxl_arm.c
 +++ b/tools/libxl/libxl_arm.c
-@@ -833,9 +833,10 @@ static int copy_node_by_path(libxl__gc *gc, const char *path,
+@@ -804,9 +804,10 @@ static int copy_node_by_path(libxl__gc *gc, const char *path,
   *  - /passthrough node
   *  - /aliases node
   */
@@ -36,7 +36,7 @@ index d0a2ebe..db83eb7 100644
  
      r = copy_node_by_path(gc, "/passthrough", fdt, pfdt);
      if (r < 0) {
-@@ -849,6 +850,16 @@ static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt)
+@@ -820,6 +821,16 @@ static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt)
          return r;
      }
  
@@ -53,7 +53,7 @@ index d0a2ebe..db83eb7 100644
      return 0;
  }
  
-@@ -861,7 +872,8 @@ static int check_partial_fdt(libxl__gc *gc, void *fdt, size_t size)
+@@ -832,7 +843,8 @@ static int check_partial_fdt(libxl__gc *gc, void *fdt, size_t size)
      return ERROR_FAIL;
  }
  
@@ -63,7 +63,7 @@ index d0a2ebe..db83eb7 100644
  {
      /*
       * We should never be here when the partial device tree is not
-@@ -986,7 +998,7 @@ next_resize:
+@@ -955,7 +967,7 @@ next_resize:
              FDT( make_vpl011_uart_node(gc, fdt, ainfo, dom) );
  
          if (pfdt)
@@ -73,10 +73,10 @@ index d0a2ebe..db83eb7 100644
          FDT( fdt_end_node(fdt) );
  
 diff --git a/tools/libxl/libxl_types.idl b/tools/libxl/libxl_types.idl
-index 368dcff..ec4217a 100644
+index c50fe61..843ff6c 100644
 --- a/tools/libxl/libxl_types.idl
 +++ b/tools/libxl/libxl_types.idl
-@@ -522,6 +522,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
+@@ -528,6 +528,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
      # 65000 which is reserved by the toolstack.
      ("device_tree",      string),
      ("dt_compatible",    libxl_string_list),
@@ -85,10 +85,10 @@ index 368dcff..ec4217a 100644
      ("bootloader",       string),
      ("bootloader_args",  libxl_string_list),
 diff --git a/tools/xl/xl_parse.c b/tools/xl/xl_parse.c
-index 357b2f5..abfc094 100644
+index 6110d2e..56020bd 100644
 --- a/tools/xl/xl_parse.c
 +++ b/tools/xl/xl_parse.c
-@@ -2338,6 +2338,13 @@ skip_vfb:
+@@ -2392,6 +2392,13 @@ skip_vfb:
              exit(-ERROR_FAIL);
      }
  
