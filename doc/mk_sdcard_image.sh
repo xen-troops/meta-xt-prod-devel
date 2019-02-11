@@ -11,12 +11,12 @@ usage()
 	echo "SD card image builder script v1.1"
 	echo "###############################################################################"
 	echo "Usage:"
-	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c aos|ces2019|devel> [-s image-size] [-u dom0|domd|doma]"
+	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c config> [-s image-size] [-u domain]"
 	echo "  -p image-folder Base daily build folder where artifacts live"
 	echo "  -d image-file   Output image file or physical device"
-	echo "  -c config       Configuration of partitions for product: aos, ces2019 or devel"
+	echo "  -c config       Configuration of partitions for product: aos, ces2019, devel or gen3"
 	echo "  -s image-size   Optional, image size in GiB"
-	echo "  -u domain       Optional, unpack the domain specified"
+	echo "  -u domain       Optional, unpack only specified domain: dom0, domd, domf, doma, domu"
 
 	exit 1
 }
@@ -25,6 +25,7 @@ define_sizes_of_partitions()
 {
 	# Define partitions for different products.
 	# All numbers will be used as MiB (1024 KiB).
+	# Products are listed in alphabetical order.
 	case $1 in
 		aos)
 			# prod-aos [1..257][257..4257][4257..8257]
@@ -58,6 +59,17 @@ define_sizes_of_partitions()
 			DOMA_END=$((DOMA_START+4423))  # 6680
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
 			DOMA_PRESENT=1
+		;;
+		gen3)
+			# prod-gen3-test [1..257][257..2257][2257..4257]
+			DOM0_START=1
+			DOM0_END=$((DOM0_START+256))  # 257
+			DOMD_START=$DOM0_END
+			DOMD_END=$((DOMD_START+2000))  # 2257
+			DOMU_START=$DOMD_END
+			DOMU_END=$((DOMU_START+2000))  # 4257
+			DEFAULT_IMAGE_SIZE_GIB=$(((DOMU_END/1024)+1))
+			DOMU_PRESENT=1
 		;;
 		*)
 			echo "Unknown configuration provided for -c."
@@ -125,6 +137,9 @@ partition_image()
 	sudo parted -s $1 mkpart primary ext4 ${DOMD_START}MiB ${DOMD_END}MiB || true
 	if [ ! -z ${DOMF_PRESENT} ]; then
 		sudo parted -s $1 mkpart primary ext4 ${DOMF_START}MiB ${DOMF_END}MiB || true
+	fi
+	if [ ! -z ${DOMU_PRESENT} ]; then
+		sudo parted -s $1 mkpart primary ext4 ${DOMU_START}MiB ${DOMU_END}MiB || true
 	fi
 	if [ ! -z ${DOMA_PRESENT} ]; then
 		sudo parted -s $1 mkpart primary ${DOMA_START}MiB ${DOMA_END}MiB || true
@@ -204,6 +219,14 @@ mkfs_doma()
 	mkfs_one $img_output_file $loop_dev 4 doma_user
 }
 
+mkfs_domu()
+{
+	local img_output_file=$1
+	local loop_dev=$2
+
+	mkfs_one $img_output_file $loop_dev 3 domu
+}
+
 mkfs_image()
 {
 	local img_output_file=$1
@@ -213,6 +236,9 @@ mkfs_image()
 	mkfs_domd $img_output_file $loop_dev
 	if [ ! -z ${DOMF_PRESENT} ]; then
 		mkfs_domf $img_output_file $loop_dev
+	fi
+	if [ ! -z ${DOMU_PRESENT} ]; then
+		mkfs_domu $img_output_file $loop_dev
 	fi
 	sudo losetup -d $loop_dev
 	if [ ! -z ${DOMA_PRESENT} ]; then
@@ -338,6 +364,17 @@ unpack_domf()
 	unpack_dom_from_tar $db_base_folder $loop_dev $img_output_file 3 domu
 }
 
+unpack_domu()
+{
+	local db_base_folder=$1
+	local loop_dev=$2
+	local img_output_file=$3
+
+	print_step  "Unpacking DomU"
+
+	unpack_dom_from_tar $db_base_folder $loop_dev $img_output_file 3 domu
+}
+
 unpack_doma()
 {
 	local db_base_folder=$1
@@ -383,6 +420,9 @@ unpack_image()
 	unpack_domd $db_base_folder $loop_dev $img_output_file
 	if [ ! -z ${DOMF_PRESENT} ]; then
 		unpack_domf $db_base_folder $loop_dev $img_output_file
+	fi
+	if [ ! -z ${DOMU_PRESENT} ]; then
+		unpack_domu $db_base_folder $loop_dev $img_output_file
 	fi
 	sudo losetup -d $loop_dev
 
@@ -448,6 +488,11 @@ unpack_domain()
 			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
 			mkfs_domf $img_output_file $loop_dev
 			unpack_domf $db_base_folder $loop_dev $img_output_file
+		;;
+		domu)
+			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
+			mkfs_domu $img_output_file $loop_dev
+			unpack_domu $db_base_folder $loop_dev $img_output_file
 		;;
 		doma)
 			img_output_file=$img_output_file$DOMA_PART_N
