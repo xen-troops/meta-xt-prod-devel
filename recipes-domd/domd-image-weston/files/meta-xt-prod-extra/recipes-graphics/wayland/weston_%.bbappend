@@ -14,6 +14,7 @@ python __anonymous () {
 
 SRC_URI_append = "file://weston-seats.rules \
                   file://add_screen_remove_layer_API.patch \
+                  file://0001-v4l2-renderer-Release-dma-buf-when-attaching-null-bu.patch \
 "
 
 FILES_${PN} += " \
