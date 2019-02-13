@@ -3,6 +3,7 @@
 MOUNT_POINT="/tmp/mntpoint"
 CUR_STEP=1
 DOMA_PART_N=p3
+FORCE_INFLATION=0
 # see define_sizes_of_partitions() for definition of sizes of partitions
 
 usage()
@@ -17,6 +18,7 @@ usage()
 	echo "  -c config       Configuration of partitions for product: aos, ces2019, devel or gen3"
 	echo "  -s image-size   Optional, image size in GiB"
 	echo "  -u domain       Optional, unpack only specified domain: dom0, domd, domf, doma, domu"
+	echo "  -f              Optional, force rewrite of image file (useful for batch usage)"
 
 	exit 1
 }
@@ -105,7 +107,9 @@ inflate_image()
 	echo "Inflating image file at $dev of size ${size_gb}GiB"
 
 	local inflate=1
-	if [ -e $1 ] ; then
+	if [ -e $1 ] && [ $FORCE_INFLATION -ne 1 ] ; then
+		# if file exists and inflation is not forced then
+		# ask user about rewriting of file
 		echo ""
 		read -r -p "File $dev exists, remove it? [y/N]:" yesno
 		case "$yesno" in
@@ -517,7 +521,7 @@ fi
 
 print_step "Parsing input parameters"
 
-while getopts ":p:d:c:s:u:" opt; do
+while getopts ":p:d:c:s:u:f" opt; do
 	case $opt in
 		p) ARG_DEPLOY_PATH="$OPTARG"
 		;;
@@ -528,6 +532,8 @@ while getopts ":p:d:c:s:u:" opt; do
 		s) ARG_IMG_SIZE_GB="$OPTARG"
 		;;
 		u) ARG_UNPACK_DOM="$OPTARG"
+		;;
+		f) FORCE_INFLATION=1
 		;;
 		\?) echo "Invalid option -$OPTARG" >&2
 		exit 1
