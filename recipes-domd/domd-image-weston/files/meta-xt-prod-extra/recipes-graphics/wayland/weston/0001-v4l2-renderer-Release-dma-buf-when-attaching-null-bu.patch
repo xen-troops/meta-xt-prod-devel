@@ -1,0 +1,37 @@
+From ac9a7d2c3ad5d6ab0de8197fa9dc047548a0fca6 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Tue, 12 Feb 2019 14:47:28 +0200
+Subject: [PATCH] v4l2-renderer: Release dma-buf when attaching null buffer
+
+When renderer is requested to attach a null buffer, e.g. via
+wl_surface_attach with wl_buffer pointer set to null, it is
+expected that the current buffer is released, effectively
+dropping our reference on the attached dma buffer. Otherwise,
+the reference is kept until the renderer is destroyed preventing
+the dma buffer from being released earlier.
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ libweston/v4l2-renderer.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/libweston/v4l2-renderer.c b/libweston/v4l2-renderer.c
+index 9711f89ba068..10e4976289b6 100644
+--- a/libweston/v4l2-renderer.c
++++ b/libweston/v4l2-renderer.c
+@@ -1671,6 +1671,12 @@ v4l2_renderer_attach(struct weston_surface *es, struct weston_buffer *buffer)
+ 			weston_buffer_reference(&vs->buffer_ref, NULL);
+ 			return;
+ 		}
++	} else {
++		// null buffer is a special case: current buffer needs to be
++		// released, so reference counter of the attached
++		// dma buffer is dropped from us now
++		v4l2_release_dmabuf(vs);
++		v4l2_release_kms_bo(vs);
+ 	}
+ 
+ #ifdef V4L2_GL_FALLBACK_ENABLED
+-- 
+2.20.1
+
