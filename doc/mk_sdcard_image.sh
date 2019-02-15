@@ -35,10 +35,9 @@ define_sizes_of_partitions()
 			DOM0_END=$((DOM0_START+256))  # 257
 			DOMD_START=$DOM0_END
 			DOMD_END=$((DOMD_START+4000))  # 4257
-			DOMF_START=$DOMD_END  # 4257
+			DOMF_START=$DOMD_END  # Also is used as flag that DomF is defined
 			DOMF_END=$((DOMF_START+4000))  # 8257
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMF_END/1024)+1))
-			DOMF_PRESENT=1
 		;;
 		ces2019)
 			# prod-ces2019 [1..257][257..4257][4257..8680]
@@ -46,10 +45,9 @@ define_sizes_of_partitions()
 			DOM0_END=$((DOM0_START+256))  # 257
 			DOMD_START=$DOM0_END
 			DOMD_END=$((DOMD_START+4000))  # 4257
-			DOMA_START=$DOMD_END  # 4257
+			DOMA_START=$DOMD_END  # Also is used as flag that DomA is defined
 			DOMA_END=$((DOMA_START+4423))  # 8680
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
-			DOMA_PRESENT=1
 		;;
 		devel)
 			# prod-devel [1..257][257..2257][2257..6680]
@@ -57,10 +55,9 @@ define_sizes_of_partitions()
 			DOM0_END=$((DOM0_START+256))  # 257
 			DOMD_START=$DOM0_END
 			DOMD_END=$((DOMD_START+2000))  # 2257
-			DOMA_START=$DOMD_END  # 2257
+			DOMA_START=$DOMD_END  # Also is used as flag that DomA is defined
 			DOMA_END=$((DOMA_START+4423))  # 6680
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
-			DOMA_PRESENT=1
 		;;
 		gen3)
 			# prod-gen3-test [1..257][257..2257][2257..4257]
@@ -68,10 +65,9 @@ define_sizes_of_partitions()
 			DOM0_END=$((DOM0_START+256))  # 257
 			DOMD_START=$DOM0_END
 			DOMD_END=$((DOMD_START+2000))  # 2257
-			DOMU_START=$DOMD_END
+			DOMU_START=$DOMD_END  # Also is used as flag that DomU is defined
 			DOMU_END=$((DOMU_START+2000))  # 4257
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMU_END/1024)+1))
-			DOMU_PRESENT=1
 		;;
 		*)
 			echo "Unknown configuration provided for -c."
@@ -139,37 +135,37 @@ partition_image()
 
 	sudo parted -s $1 mkpart primary ext4 ${DOM0_START}MiB ${DOM0_END}MiB || true
 	sudo parted -s $1 mkpart primary ext4 ${DOMD_START}MiB ${DOMD_END}MiB || true
-	if [ ! -z ${DOMF_PRESENT} ]; then
+	if [ ! -z ${DOMF_START} ]; then
 		sudo parted -s $1 mkpart primary ext4 ${DOMF_START}MiB ${DOMF_END}MiB || true
 	fi
-	if [ ! -z ${DOMU_PRESENT} ]; then
+	if [ ! -z ${DOMU_START} ]; then
 		sudo parted -s $1 mkpart primary ext4 ${DOMU_START}MiB ${DOMU_END}MiB || true
 	fi
-	if [ ! -z ${DOMA_PRESENT} ]; then
+	if [ ! -z ${DOMA_START} ]; then
 		sudo parted -s $1 mkpart primary ${DOMA_START}MiB ${DOMA_END}MiB || true
 	fi
 	sudo parted $1 print
 	sudo partprobe $1
 
-	if [ ! -z ${DOMA_PRESENT} ]; then
+	if [ ! -z ${DOMA_START} ]; then
 		# We have special handling for Android, because it has it's own partitions.
 		# So, Android has dedicated partition number DOMA_PARTITION. And this partition
 		# contains few 'internal' (Android's native) partitions.
 		print_step "Make Android partitions on "$1$DOMA_PART_N
 
-		local temp_dev=`sudo losetup --find --partscan --show $1$DOMA_PART_N`
+		local loop_dev_a=`sudo losetup --find --partscan --show $1$DOMA_PART_N`
 
 		# parted generates error on all operation with "nested" disk, guard it with || true
-		sudo parted $temp_dev -s mklabel gpt || true
-		sudo parted $temp_dev -s mkpart xvda1 ext4 1MB  3148MB || true
-		sudo parted $temp_dev -s mkpart xvda2 ext4 3149MB  3418MB || true
-		sudo parted $temp_dev -s mkpart xvda3 ext4 3419MB  3420MB || true
-		sudo parted $temp_dev -s mkpart xvda4 ext4 3421MB  4421MB || true
-		sudo parted $temp_dev -s print
-		sudo partprobe $temp_dev || true
+		sudo parted $loop_dev_a -s mklabel gpt || true
+		sudo parted $loop_dev_a -s mkpart xvda1 ext4 1MB  3148MB || true
+		sudo parted $loop_dev_a -s mkpart xvda2 ext4 3149MB  3418MB || true
+		sudo parted $loop_dev_a -s mkpart xvda3 ext4 3419MB  3420MB || true
+		sudo parted $loop_dev_a -s mkpart xvda4 ext4 3421MB  4421MB || true
+		sudo parted $loop_dev_a -s print
+		sudo partprobe $loop_dev_a || true
 
-		sudo losetup -d $temp_dev
-	fi  # [ ! -z ${DOMA_PRESENT} ]
+		sudo losetup -d $loop_dev_a
+	fi  # [ ! -z ${DOMA_START} ]
 }
 
 ###############################################################################
@@ -178,78 +174,58 @@ partition_image()
 
 mkfs_one()
 {
-	local img_output_file=$1
-	local loop_base=$2
-	local part=$3
-	local label=$4
-	local loop_dev="${loop_base}p${part}"
+	local loop_base=$1
+	local part=$2
+	local label=$3
 
 	print_step "Making ext4 filesystem for $label"
 
-	sudo mkfs.ext4 -O ^64bit -F $loop_dev -L $label
+	sudo mkfs.ext4 -O ^64bit -F ${loop_base}p${part} -L $label
 }
 
 mkfs_boot()
 {
-	local img_output_file=$1
-	local loop_dev=$2
-
-	mkfs_one $img_output_file $loop_dev 1 boot
+	mkfs_one $1 1 boot
 }
 
 mkfs_domd()
 {
-	local img_output_file=$1
-	local loop_dev=$2
-
-	mkfs_one $img_output_file $loop_dev 2 domd
+	mkfs_one $1 2 domd
 }
 
 mkfs_domf()
 {
-	local img_output_file=$1
-	local loop_dev=$2
-
-	mkfs_one $img_output_file $loop_dev 3 domf
+	mkfs_one $1 3 domf
 }
 
 mkfs_doma()
 {
-	local img_output_file=$1
-	local loop_dev=$2
-
 	# Below we use 4 as number of partition inside android's partition.
 	# So it's partition 4 inside partition $DOMA_PART_N.
-	mkfs_one $img_output_file $loop_dev 4 doma_user
+	mkfs_one $1 4 doma_user
 }
 
 mkfs_domu()
 {
-	local img_output_file=$1
-	local loop_dev=$2
-
-	mkfs_one $img_output_file $loop_dev 3 domu
+	mkfs_one $1 3 domu
 }
 
 mkfs_image()
 {
 	local img_output_file=$1
-	local loop_dev=$2
 
-	mkfs_boot $img_output_file $loop_dev
-	mkfs_domd $img_output_file $loop_dev
-	if [ ! -z ${DOMF_PRESENT} ]; then
-		mkfs_domf $img_output_file $loop_dev
+	mkfs_boot $img_output_file
+	mkfs_domd $img_output_file
+	if [ ! -z ${DOMF_START} ]; then
+		mkfs_domf $img_output_file
 	fi
-	if [ ! -z ${DOMU_PRESENT} ]; then
-		mkfs_domu $img_output_file $loop_dev
+	if [ ! -z ${DOMU_START} ]; then
+		mkfs_domu $img_output_file
 	fi
-	sudo losetup -d $loop_dev
-	if [ ! -z ${DOMA_PRESENT} ]; then
-		local out_adev=$img_output_file$DOMA_PART_N
-		loop_dev=`sudo losetup --find --partscan --show $out_adev`
-		mkfs_doma $img_output_file $loop_dev
-		sudo losetup -d $loop_dev
+	if [ ! -z ${DOMA_START} ]; then
+		local loop_dev_a=`sudo losetup --find --partscan --show $img_output_file$DOMA_PART_N`
+		mkfs_doma $loop_dev_a
+		sudo losetup -d $loop_dev_a
 	fi
 
 }
@@ -261,22 +237,19 @@ mkfs_image()
 mount_part()
 {
 	local loop_base=$1
-	local img_output_file=$2
-	local part=$3
-	local mntpoint=$4
-	local loop_dev=${loop_base}p${part}
+	local part=$2
+	local mntpoint=$3
 
 	mkdir -p "${mntpoint}" || true
-	sudo mount $loop_dev "${mntpoint}"
+	sudo mount ${loop_base}p${part} "${mntpoint}"
 }
 
 umount_part()
 {
 	local loop_base=$1
 	local part=$2
-	local loop_dev=${loop_base}p${part}
 
-	sudo umount $loop_dev
+	sudo umount ${loop_base}p${part}
 }
 
 ###############################################################################
@@ -287,10 +260,8 @@ unpack_dom_from_tar()
 {
 	local db_base_folder=$1
 	local loop_base=$2
-	local img_output_file=$3
-	local part=$4
-	local domain=$5
-	local loop_dev=${loop_base}p${part}
+	local part=$3
+	local domain=$4
 
 	local dom_name=`ls $db_base_folder | grep $domain`
 	local dom_root=$db_base_folder/$dom_name
@@ -299,7 +270,7 @@ unpack_dom_from_tar()
 
 	echo "Root filesystem is at $rootfs"
 
-	mount_part $loop_base $img_output_file $part $MOUNT_POINT
+	mount_part $loop_base $part $MOUNT_POINT
 
 	sudo tar --extract --bzip2 --numeric-owner --preserve-permissions --preserve-order --totals \
 		--xattrs-include='*' --directory="${MOUNT_POINT}" --file=$rootfs
@@ -311,7 +282,6 @@ unpack_dom0()
 {
 	local db_base_folder=$1
 	local loop_base=$2
-	local img_output_file=$3
 
 	local part=1
 
@@ -335,7 +305,7 @@ unpack_dom0()
 	echo "Xen policy is at $xenpolicy"
 	echo "Xen image is at $xenuImage"
 
-	mount_part $loop_base $img_output_file $part $MOUNT_POINT
+	mount_part $loop_base $part $MOUNT_POINT
 
 	sudo mkdir "${MOUNT_POINT}/boot" || true
 
@@ -350,40 +320,36 @@ unpack_domd()
 {
 	local db_base_folder=$1
 	local loop_dev=$2
-	local img_output_file=$3
 
 	print_step  "Unpacking DomD"
 
-	unpack_dom_from_tar $db_base_folder $loop_dev $img_output_file 2 domd
+	unpack_dom_from_tar $db_base_folder $loop_dev 2 domd
 }
 
 unpack_domf()
 {
 	local db_base_folder=$1
 	local loop_dev=$2
-	local img_output_file=$3
 
 	print_step  "Unpacking DomF"
 
-	unpack_dom_from_tar $db_base_folder $loop_dev $img_output_file 3 domu
+	unpack_dom_from_tar $db_base_folder $loop_dev 3 domu
 }
 
 unpack_domu()
 {
 	local db_base_folder=$1
 	local loop_dev=$2
-	local img_output_file=$3
 
 	print_step  "Unpacking DomU"
 
-	unpack_dom_from_tar $db_base_folder $loop_dev $img_output_file 3 domu
+	unpack_dom_from_tar $db_base_folder $loop_dev 3 domu
 }
 
 unpack_doma()
 {
 	local db_base_folder=$1
 	local loop_base=$2
-	local img_output_file=$3
 
 	local part_system=1
 	local part_vendor=2
@@ -417,28 +383,26 @@ unpack_doma()
 unpack_image()
 {
 	local db_base_folder=$1
-	local loop_dev=$2
-	local img_output_file=$3
+	local img_output_file=$2
 
-	unpack_dom0 $db_base_folder $loop_dev $img_output_file
-	unpack_domd $db_base_folder $loop_dev $img_output_file
-	if [ ! -z ${DOMF_PRESENT} ]; then
-		unpack_domf $db_base_folder $loop_dev $img_output_file
+	unpack_dom0 $db_base_folder $img_output_file
+	unpack_domd $db_base_folder $img_output_file
+	if [ ! -z ${DOMF_START} ]; then
+		unpack_domf $db_base_folder $img_output_file
 	fi
-	if [ ! -z ${DOMU_PRESENT} ]; then
-		unpack_domu $db_base_folder $loop_dev $img_output_file
+	if [ ! -z ${DOMU_START} ]; then
+		unpack_domu $db_base_folder $img_output_file
 	fi
-	sudo losetup -d $loop_dev
 
-	if [ ! -z ${DOMA_PRESENT} ]; then
+	if [ ! -z ${DOMA_START} ]; then
 		local out_adev=$img_output_file$DOMA_PART_N
 		sudo umount $out_adev || true
 		while [[ ! (-b $out_adev) ]]; do
 			: # wait for $out_adev to appear
 		done
-		loop_dev=`sudo losetup --find --partscan --show $out_adev`
-		unpack_doma $db_base_folder $loop_dev $img_output_file
-		sudo losetup -d $loop_dev
+		local loop_dev_a=`sudo losetup --find --partscan --show $out_adev`
+		unpack_doma $db_base_folder $loop_dev_a
+		sudo losetup -d $loop_dev_a
 	fi
 }
 
@@ -458,13 +422,9 @@ make_image()
 
 	partition_image $img_output_file
 
-	loop_dev=`sudo losetup --find --partscan --show $img_output_file`
-	mkfs_image $img_output_file $loop_dev
-	# $loop_dev closed by mkfs_image
+	mkfs_image $img_output_file
 
-	loop_dev=`sudo losetup --find --partscan --show $img_output_file`
-	unpack_image $db_base_folder $loop_dev $img_output_file
-	# $loop_dev closed by unpack_image
+	unpack_image $db_base_folder $img_output_file
 }
 
 unpack_domain()
@@ -479,36 +439,31 @@ unpack_domain()
 	sudo umount -f ${img_output_file}* || true
 	case $domain in
 		dom0)
-			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
-			mkfs_boot $img_output_file $loop_dev
-			unpack_dom0 $db_base_folder $loop_dev $img_output_file
+			mkfs_boot $img_output_file
+			unpack_dom0 $db_base_folder $img_output_file
 		;;
 		domd)
-			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
-			mkfs_domd $img_output_file $loop_dev
-			unpack_domd $db_base_folder $loop_dev $img_output_file
+			mkfs_domd $img_output_file
+			unpack_domd $db_base_folder $img_output_file
 		;;
 		domf)
-			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
-			mkfs_domf $img_output_file $loop_dev
-			unpack_domf $db_base_folder $loop_dev $img_output_file
+			mkfs_domf $img_output_file
+			unpack_domf $db_base_folder $img_output_file
 		;;
 		domu)
-			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
-			mkfs_domu $img_output_file $loop_dev
-			unpack_domu $db_base_folder $loop_dev $img_output_file
+			mkfs_domu $img_output_file
+			unpack_domu $db_base_folder $img_output_file
 		;;
 		doma)
-			img_output_file=$img_output_file$DOMA_PART_N
-			loop_dev=`sudo losetup --find --partscan --show $img_output_file`
-			mkfs_doma $img_output_file $loop_dev
-			unpack_doma $db_base_folder $loop_dev $img_output_file
+			local loop_dev_a=`sudo losetup --find --partscan --show $img_output_file$DOMA_PART_N`
+			mkfs_doma $loop_dev_a
+			unpack_doma $db_base_folder $loop_dev_a
+			sudo losetup -d $loop_dev_a
 		;;
 		*) echo "Invalid domain $domain" >&2
 		exit 1
 		;;
 	esac
-	sudo losetup -d $loop_dev
 }
 
 print_step "Checking for simg2img"
@@ -569,14 +524,14 @@ if [ -z "$domd_name" ]; then
 	echo "Error: deploy path has no domd."
 	exit 2
 fi
-if [ ! -z ${DOMF_PRESENT} ]; then
+if [ ! -z ${DOMF_START} ]; then
 	domf_name=`ls ${ARG_DEPLOY_PATH} | grep domu-image-fusion` || true
 	if [ -z "$domf_name" ]; then
 		echo "Error: deploy path has no domf."
 		exit 2
 	fi
 fi
-if [ ! -z ${DOMA_PRESENT} ]; then
+if [ ! -z ${DOMA_START} ]; then
 	doma_name=`ls ${ARG_DEPLOY_PATH} | grep android` || true
 	if [ -z "$doma_name" ]; then
 		echo "Error: deploy path has no doma."
