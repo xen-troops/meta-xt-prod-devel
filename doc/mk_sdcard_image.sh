@@ -2,9 +2,8 @@
 
 MOUNT_POINT="/tmp/mntpoint"
 CUR_STEP=1
-DOMA_PART_N=p3
 FORCE_INFLATION=0
-# see define_sizes_of_partitions() for definition of sizes of partitions
+# see define_partitions() for definition of partitions (sizes, number and label)
 
 usage()
 {
@@ -23,7 +22,7 @@ usage()
 	exit 1
 }
 
-define_sizes_of_partitions()
+define_partitions()
 {
 	# Define partitions for different products.
 	# All numbers will be used as MiB (1024 KiB).
@@ -33,40 +32,64 @@ define_sizes_of_partitions()
 			# prod-aos [1..257][257..4257][4257..8257]
 			DOM0_START=1
 			DOM0_END=$((DOM0_START+256))  # 257
+			DOM0_PARTITION=1
+			DOM0_LABEL=boot
 			DOMD_START=$DOM0_END
 			DOMD_END=$((DOMD_START+4000))  # 4257
+			DOMD_PARTITION=2
+			DOMD_LABEL=domd
 			DOMF_START=$DOMD_END  # Also is used as flag that DomF is defined
 			DOMF_END=$((DOMF_START+4000))  # 8257
+			DOMF_PARTITION=3
+			DOMF_LABEL=domf
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMF_END/1024)+1))
 		;;
 		ces2019)
 			# prod-ces2019 [1..257][257..4257][4257..8680]
 			DOM0_START=1
 			DOM0_END=$((DOM0_START+256))  # 257
+			DOM0_PARTITION=1
+			DOM0_LABEL=boot
 			DOMD_START=$DOM0_END
 			DOMD_END=$((DOMD_START+4000))  # 4257
+			DOMD_PARTITION=2
+			DOMD_LABEL=domd
 			DOMA_START=$DOMD_END  # Also is used as flag that DomA is defined
 			DOMA_END=$((DOMA_START+4423))  # 8680
+			DOMA_PARTITION=3
+			DOMA_LABEL=doma
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
 		;;
 		devel)
 			# prod-devel [1..257][257..2257][2257..6680]
 			DOM0_START=1
 			DOM0_END=$((DOM0_START+256))  # 257
+			DOM0_PARTITION=1
+			DOM0_LABEL=boot
 			DOMD_START=$DOM0_END
 			DOMD_END=$((DOMD_START+2000))  # 2257
+			DOMD_PARTITION=2
+			DOMD_LABEL=domd
 			DOMA_START=$DOMD_END  # Also is used as flag that DomA is defined
 			DOMA_END=$((DOMA_START+4423))  # 6680
+			DOMA_PARTITION=3
+			DOMA_LABEL=doma
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
 		;;
 		gen3)
 			# prod-gen3-test [1..257][257..2257][2257..4257]
 			DOM0_START=1
 			DOM0_END=$((DOM0_START+256))  # 257
+			DOM0_PARTITION=1
+			DOM0_LABEL=boot
 			DOMD_START=$DOM0_END
 			DOMD_END=$((DOMD_START+2000))  # 2257
+			DOMD_PARTITION=2
+			DOMD_LABEL=domd
 			DOMU_START=$DOMD_END  # Also is used as flag that DomU is defined
 			DOMU_END=$((DOMU_START+2000))  # 4257
+			DOMU_PARTITION=3
+			DOMU_LABEL=domu
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMU_END/1024)+1))
 		;;
 		*)
@@ -151,9 +174,9 @@ partition_image()
 		# We have special handling for Android, because it has it's own partitions.
 		# So, Android has dedicated partition number DOMA_PARTITION. And this partition
 		# contains few 'internal' (Android's native) partitions.
-		print_step "Make Android partitions on "$1$DOMA_PART_N
+		print_step "Make Android partitions on "${1}p$DOMA_PARTITION
 
-		local loop_dev_a=`sudo losetup --find --partscan --show $1$DOMA_PART_N`
+		local loop_dev_a=`sudo losetup --find --partscan --show ${1}p$DOMA_PARTITION`
 
 		# parted generates error on all operation with "nested" disk, guard it with || true
 		sudo parted $loop_dev_a -s mklabel gpt || true
@@ -185,29 +208,29 @@ mkfs_one()
 
 mkfs_boot()
 {
-	mkfs_one $1 1 boot
+	mkfs_one $1 $DOM0_PARTITION $DOM0_LABEL
 }
 
 mkfs_domd()
 {
-	mkfs_one $1 2 domd
+	mkfs_one $1 $DOMD_PARTITION $DOMD_LABEL
 }
 
 mkfs_domf()
 {
-	mkfs_one $1 3 domf
+	mkfs_one $1 $DOMF_PARTITION $DOMF_LABEL
 }
 
 mkfs_doma()
 {
 	# Below we use 4 as number of partition inside android's partition.
-	# So it's partition 4 inside partition $DOMA_PART_N.
+	# So it's partition 4 inside partition $DOMA_PARTITION.
 	mkfs_one $1 4 doma_user
 }
 
 mkfs_domu()
 {
-	mkfs_one $1 3 domu
+	mkfs_one $1 $DOMU_PARTITION $DOMU_LABEL
 }
 
 mkfs_image()
@@ -223,7 +246,7 @@ mkfs_image()
 		mkfs_domu $img_output_file
 	fi
 	if [ ! -z ${DOMA_START} ]; then
-		local loop_dev_a=`sudo losetup --find --partscan --show $img_output_file$DOMA_PART_N`
+		local loop_dev_a=`sudo losetup --find --partscan --show ${img_output_file}p$DOMA_PARTITION`
 		mkfs_doma $loop_dev_a
 		sudo losetup -d $loop_dev_a
 	fi
@@ -323,7 +346,7 @@ unpack_domd()
 
 	print_step  "Unpacking DomD"
 
-	unpack_dom_from_tar $db_base_folder $loop_dev 2 domd
+	unpack_dom_from_tar $db_base_folder $loop_dev $DOMD_PARTITION domd
 }
 
 unpack_domf()
@@ -333,7 +356,7 @@ unpack_domf()
 
 	print_step  "Unpacking DomF"
 
-	unpack_dom_from_tar $db_base_folder $loop_dev 3 domu
+	unpack_dom_from_tar $db_base_folder $loop_dev $DOMF_PARTITION domu
 }
 
 unpack_domu()
@@ -343,7 +366,7 @@ unpack_domu()
 
 	print_step  "Unpacking DomU"
 
-	unpack_dom_from_tar $db_base_folder $loop_dev 3 domu
+	unpack_dom_from_tar $db_base_folder $loop_dev $DOMU_PARTITION domu
 }
 
 unpack_doma()
@@ -395,7 +418,7 @@ unpack_image()
 	fi
 
 	if [ ! -z ${DOMA_START} ]; then
-		local out_adev=$img_output_file$DOMA_PART_N
+		local out_adev=${img_output_file}p$DOMA_PARTITION
 		sudo umount $out_adev || true
 		while [[ ! (-b $out_adev) ]]; do
 			: # wait for $out_adev to appear
@@ -455,7 +478,7 @@ unpack_domain()
 			unpack_domu $db_base_folder $img_output_file
 		;;
 		doma)
-			local loop_dev_a=`sudo losetup --find --partscan --show $img_output_file$DOMA_PART_N`
+			local loop_dev_a=`sudo losetup --find --partscan --show ${img_output_file}p$DOMA_PARTITION`
 			mkfs_doma $loop_dev_a
 			unpack_doma $db_base_folder $loop_dev_a
 			sudo losetup -d $loop_dev_a
@@ -511,7 +534,7 @@ if [ -z "${ARG_CONFIGURATION}" ]; then
 	usage
 fi
 
-define_sizes_of_partitions $ARG_CONFIGURATION
+define_partitions $ARG_CONFIGURATION
 
 # Check that deploy path contains dom0, domd and doma
 dom0_name=`ls ${ARG_DEPLOY_PATH} | grep dom0-image-thin` || true
