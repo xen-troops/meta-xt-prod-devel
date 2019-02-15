@@ -8,7 +8,7 @@ FORCE_INFLATION=0
 usage()
 {
 	echo "###############################################################################"
-	echo "SD card image builder script v1.1"
+	echo "SD card image builder script v1.2"
 	echo "###############################################################################"
 	echo "Usage:"
 	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c config> [-s image-size] [-u domain]"
