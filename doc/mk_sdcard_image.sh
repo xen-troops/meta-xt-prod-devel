@@ -421,7 +421,8 @@ unpack_image()
 		local out_adev=${img_output_file}p$DOMA_PARTITION
 		sudo umount $out_adev || true
 		while [[ ! (-b $out_adev) ]]; do
-			: # wait for $out_adev to appear
+			# wait for $out_adev to appear
+			sleep 1
 		done
 		local loop_dev_a=`sudo losetup --find --partscan --show $out_adev`
 		unpack_doma $db_base_folder $loop_dev_a
