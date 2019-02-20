@@ -379,5 +379,7 @@ LICENSE_FLAGS_WHITELIST = "commercial"
 #DISTRO_FEATURES_append = " ivi-shell"
 
 DISTRO_FEATURES_remove = " x11 gtk gobject-introspection-data wifi nfc bluetooth irda zeroconf 3g"
+ASSUME_PROVIDED += "sync-native"
+HOSTTOOLS += "sync"
 
 include ${@d.getVar('XT_SHARED_ROOTFS_DIR', True) or ''}/local.conf.domd_machine.inc
