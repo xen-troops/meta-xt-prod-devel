@@ -389,3 +389,5 @@ DISTRO_FEATURES_append = " virtualization"
 MACHINEOVERRIDES .= ":rcar"
 
 DISTRO_FEATURES_remove = " x11 gtk gobject-introspection-data wifi nfc bluetooth irda zeroconf 3g"
+ASSUME_PROVIDED += "sync-native"
+HOSTTOOLS += "sync"
