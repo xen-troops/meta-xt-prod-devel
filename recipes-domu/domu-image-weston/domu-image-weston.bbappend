@@ -42,7 +42,7 @@ XT_BB_LAYERS_FILE_rcar = "meta-xt-prod-extra/doc/bblayers.conf.rcar-domu-image-w
 # Uncomment line below and set proper path.
 #XT_RCAR_EVAPROPRIETARY_DIR = ""
 
-GLES_VERSION_rcar = "1.9"
+GLES_VERSION_rcar = "1.10"
 
 configure_versions_rcar() {
     local local_conf="${S}/build/conf/local.conf"
