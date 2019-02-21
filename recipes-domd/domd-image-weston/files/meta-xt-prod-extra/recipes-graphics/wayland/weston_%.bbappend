@@ -17,6 +17,8 @@ SRC_URI_append = "file://weston-seats.rules \
                   file://0001-v4l2-renderer-Release-dma-buf-when-attaching-null-bu.patch \
 "
 
+SRCREV = "84709ddcbf1e94edae96038f530e9ddd855f707f"
+
 FILES_${PN} += " \
     ${sysconfdir}/udev/rules.d/weston-seats.rules \
 "
