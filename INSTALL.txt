@@ -245,13 +245,14 @@ Let's consider available boot options in details.
 
 1. Using a storage device.
 In order to boot system using a storage device, required storage device should be prepared
-and flashed beforehand. The mk_sdcard_image_domu.sh script is intended to help with that:
+and flashed beforehand. The mk_sdcard_image.sh script is intended to help with that:
 
-sudo ./mk_sdcard_image.sh -p /IMAGE_FOLDER -d /IMAGE_FILE
+sudo ./mk_sdcard_image.sh -p /IMAGE_FOLDER -d /IMAGE_FILE -c devel
 
 Where, IMAGE_FOLDER is a path to a folder where artifacts live (in the context of this document
 it is a "deploy" directory) and IMAGE_FILE is an output image file or physical device how
-it is appears in the filesystem (/dev/sdx).
+it is appears in the filesystem (/dev/sdx). As far as script intended to support different products,
+we need to specify '-c devel' for this product.
 
 1.1 In case of SDx card booting we just have to insert SD card to a Host machine and run a script,
 the latter will do all required actions automatically. All what we need to care about is to write
@@ -267,7 +268,7 @@ and using "dd" command just copy blob to eMMC.
 For example,
 
 prepare an image blob:
-sudo ./mk_sdcard_image.sh -p /IMAGE_FOLDER -d /home/emmc.img
+sudo ./mk_sdcard_image.sh -p /IMAGE_FOLDER -d /home/emmc.img -c devel
 
 and then run on target:
 dd if=/home/emmc.img of=/dev/mmcblk0
