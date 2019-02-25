@@ -145,11 +145,6 @@ python do_configure_append_rcar() {
 do_install_append () {
     local LAYERDIR=${TOPDIR}/../meta-xt-prod-devel
     find ${LAYERDIR}/doc -iname "u-boot-env*" -exec cp -f {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt \; || true
-    if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
-        find ${LAYERDIR}/doc -iname "mk_sdcard_image_domu.sh" -exec cp -f {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt/mk_sdcard_image.sh \; \
-        -exec cp -f {} ${DEPLOY_DIR}/mk_sdcard_image.sh \; || true
-    else
-        find ${LAYERDIR}/doc -iname "mk_sdcard_image.sh" -exec cp -f {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt \; \
-        -exec cp -f {} ${DEPLOY_DIR} \; || true
-    fi
+    find ${LAYERDIR}/doc -iname "mk_sdcard_image.sh" -exec cp -f {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt \; \
+    -exec cp -f {} ${DEPLOY_DIR} \; || true
 }
