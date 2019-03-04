@@ -1,4 +1,4 @@
-From 563b5e6f64a61ebe79a2d4bcf2a35fb6cf5cbc49 Mon Sep 17 00:00:00 2001
+From f258795c2927247972e9a8036c9b699ad1ddb4be Mon Sep 17 00:00:00 2001
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 Date: Fri, 15 Jun 2018 18:11:07 +0300
 Subject: [PATCH] ipmmu-vmsa: Disable CONFIG_RCAR_IPMMU_PGT_IS_SHARED
@@ -11,18 +11,18 @@ Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/xen/drivers/passthrough/Kconfig b/xen/drivers/passthrough/Kconfig
-index 62f48eac0e1d..cd60f9cf365c 100644
+index f900dae..7136dfa 100644
 --- a/xen/drivers/passthrough/Kconfig
 +++ b/xen/drivers/passthrough/Kconfig
-@@ -5,7 +5,7 @@ config HAS_PASSTHROUGH
+@@ -24,7 +24,7 @@ config RCAR_IPMMU
  config RCAR_IPMMU_PGT_IS_SHARED
  	bool "Renesas R-Car's IPMMU shared page tables support"
- 	depends on HAS_PASSTHROUGH && ARM_64
+ 	depends on HAS_PASSTHROUGH && ARM_64 && RCAR_IPMMU
 -	default y
 +	default n
  	help
  	  Enable this for Renesas R-Car's H3 v3.0 and M3N boards
  	  which have the IPMMU that does handle stage 2 translation
 -- 
-2.17.1
+2.7.4
 
