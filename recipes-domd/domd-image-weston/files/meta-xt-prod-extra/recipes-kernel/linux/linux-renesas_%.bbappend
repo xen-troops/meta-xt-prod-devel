@@ -12,13 +12,6 @@ SRC_URI_append = " \
 "
 
 SRC_URI_append_rcar = " \
-    file://0008-soc-Extend-always-on-logic-to-H3-ES3.0.patch \
-    file://0001-firmware-Add-xHCI-Host-Controller-firmware.patch \
-    file://0001-Revert-clk-renesas-r8a7795-Remove-clock-that-supplie.patch \
-    file://0002-Revert-clk-renesas-r8a7796-Remove-clock-that-supplie.patch \
-    file://0003-Revert-clk-renesas-r8a7795-Remove-clock-that-supplie.patch \
-    file://0004-Revert-clk-renesas-r8a7796-Remove-clock-that-supplie.patch \
-    file://salvator-generic-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://xen-chosen.dtsi;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
