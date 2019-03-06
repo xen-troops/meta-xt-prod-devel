@@ -53,11 +53,9 @@
 	 * CPU nodes to be present get broken. This is why we have to explicitly
 	 * remove the following.
 	 */
-	soc {
-		/delete-node/thermal-zones;
-		/delete-node/pmu_a57;
-		/delete-node/pmu_a53;
-	};
+	/delete-node/thermal-zones;
+	/delete-node/pmu_a57;
+	/delete-node/pmu_a53;
 };
 
 /delete-node/&adsp;
@@ -424,4 +422,5 @@
 &fcpcs			{ xen,passthrough; };
 &tsc			{ xen,passthrough; };
 &i2c_dvfs		{ xen,passthrough; };
+&pmic			{ xen,passthrough; };
 

@@ -21,33 +21,33 @@
 	soc {
 		//this must point to Xen interrupt-parent
 		interrupt-parent = <PHANDLE_GIC>;
-
-		/*
-		 * When creating DT for the guest domain Xen inserts only dummy CPU nodes.
-		 * And the number of these inserted CPU nodes is equal to the number of
-		 * vCPUs assigned to this domain. All CPU properties which original DT has,
-		 * such as OPP, clock, regulator, etc are not passed to the guest’s DT.
-		 *
-		 * Example of guest vCPU node:
-		 *
-		 * cpu@0 {
-		 *     device_type = "cpu";
-		 *     compatible = "arm,armv8";
-		 *     enable-method = "psci";
-		 *     reg = <0x0>;
-		 * };
-		 *
-		 * This results in the fact that all features expecting a57_x or a53_x
-		 * CPU nodes to be present get broken. This is why we have to explicitly
-		 * remove the following.
-		 */
-		/delete-node/thermal-zones;
-		/delete-node/pmu_a57;
-		/delete-node/pmu_a53;
 	};
 
 	passthrough {
 	};
+
+	/*
+	 * When creating DT for the guest domain Xen inserts only dummy CPU nodes.
+	 * And the number of these inserted CPU nodes is equal to the number of
+	 * vCPUs assigned to this domain. All CPU properties which original DT has,
+	 * such as OPP, clock, regulator, etc are not passed to the guest’s DT.
+	 *
+	 * Example of guest vCPU node:
+	 *
+	 * cpu@0 {
+	 *     device_type = "cpu";
+	 *     compatible = "arm,armv8";
+	 *     enable-method = "psci";
+	 *     reg = <0x0>;
+	 * };
+	 *
+	 * This results in the fact that all features expecting a57_x or a53_x
+	 * CPU nodes to be present get broken. This is why we have to explicitly
+	 * remove the following.
+	 */
+	/delete-node/thermal-zones;
+	/delete-node/pmu_a57;
+	/delete-node/pmu_a53;
 
 	/delete-node/reserved-memory;
 
