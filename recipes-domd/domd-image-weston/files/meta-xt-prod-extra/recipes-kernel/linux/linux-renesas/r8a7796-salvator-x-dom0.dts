@@ -47,11 +47,9 @@
 	 * CPU nodes to be present get broken. This is why we have to explicitly
 	 * remove the following.
 	 */
-	soc {
-		/delete-node/thermal-zones;
-		/delete-node/pmu_a57;
-		/delete-node/pmu_a53;
-	};
+	/delete-node/thermal-zones;
+	/delete-node/pmu_a57;
+	/delete-node/pmu_a53;
 };
 
 /delete-node/&adsp;
@@ -67,7 +65,7 @@
 };
 
 &ipmmu_vc0 {
-	compatible = "renesas,ipmmu-r8a7795";
+	compatible = "renesas,ipmmu-r8a7796";
 	status = "okay";
 };
 
@@ -119,6 +117,10 @@
 	iommus = <&ipmmu_vi0 12>;
 };
 
+&fcpcs {
+	iommus = <&ipmmu_vc0 8>;
+};
+
 &fdp0 {
 	iommus = <&ipmmu_vc0 16>;
 };
@@ -129,6 +131,20 @@
 
 &vspi0 {
 	iommus = <&ipmmu_vc0 19>;
+};
+
+/ {
+	soc {
+		imr-lx4@fe860000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 0>;
+		};
+
+		imr-lx4@fe870000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 0>;
+		};
+	};
 };
 
 &ehci0 {
@@ -260,4 +276,5 @@
 &fcpcs			{ xen,passthrough; };
 &tsc			{ xen,passthrough; };
 &i2c_dvfs		{ xen,passthrough; };
+&pmic			{ xen,passthrough; };
 

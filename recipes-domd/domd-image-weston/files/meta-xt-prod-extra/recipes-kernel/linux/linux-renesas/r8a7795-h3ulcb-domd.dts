@@ -1,15 +1,16 @@
 /*
- * Device Tree Source for the Salvator-X 2nd version board with R-Car H3 ES2.0
+ * Device Tree Source for the H3ULCB (R-Car Starter Kit Premier) board
  * running XEN hypervisor
  *
- * Copyright (C) 2018 Renesas Electronics Corp.
+ * Copyright (C) 2016-2018 Renesas Electronics Corp.
+ * Copyright (C) 2016 Cogent Embedded, Inc.
  *
  * This file is licensed under the terms of the GNU General Public License
  * version 2.  This program is licensed "as is" without any warranty of any
  * kind, whether express or implied.
  */
 
-#include "r8a7796-salvator-x.dts"
+#include "r8a7795-h3ulcb.dts"
 
 /*
  * The device tree compiler (DTC) is allocating the phandle from 1 to
@@ -19,7 +20,7 @@
 
 / {
 	soc {
-		//this must point to Xen interrupt-parent
+		/* This must point to Xen interrupt-parent */
 		interrupt-parent = <PHANDLE_GIC>;
 	};
 
@@ -50,7 +51,6 @@
 	/delete-node/pmu_a53;
 
 	/delete-node/reserved-memory;
-
 	/delete-node/mmngr;
 	/delete-node/mmngrbuf;
 };
@@ -68,6 +68,7 @@
 &dmac2 {
 	/delete-property/iommus;
 };
+
 &audma0 {
 	/delete-property/iommus;
 };
@@ -82,5 +83,9 @@
 };
 
 &scif2 {
+	status = "disabled";
+};
+
+&sata {
 	status = "disabled";
 };
