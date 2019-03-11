@@ -18,7 +18,7 @@
 
 	chosen {
 		/* Override bootargs since default "dom0_max_vcpus=4" is not appropriate for r8a77965 SoC */
-		bootargs = "dom0_mem=256M console=dtuart dtuart=serial0 dom0_max_vcpus=2 bootscrub=0 flask_enforcing=1 loglvl=all cpufreq=none sched=credit2 sched_ratelimit_us=100";
+		bootargs = "dom0_mem=256M console=dtuart dtuart=serial0 dom0_max_vcpus=2 bootscrub=0 loglvl=all sched_ratelimit_us=100";
 	};
 
 	/delete-node/reserved-memory;
