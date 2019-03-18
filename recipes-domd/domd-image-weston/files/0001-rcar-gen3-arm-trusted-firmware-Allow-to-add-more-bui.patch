@@ -1,0 +1,56 @@
+From 3bd60794690cc086f9228aa441a53ac1036816e1 Mon Sep 17 00:00:00 2001
+From: Duy Dang <duy.dang.yw@rvc.renesas.com>
+Date: Wed, 12 Dec 2018 15:01:46 +0700
+Subject: [PATCH] rcar-gen3: arm-trusted-firmware: Allow to add more build
+ option
+
+This commit allows users to add more compile option.
+Put the option to arm-trusted-firmware_git.bbappend file like below:
+
+ADDITIONAL_ATFW_OPT = "<build_option>"
+
+Signed-off-by: Duy Dang <duy.dang.yw@rvc.renesas.com>
+Signed-off-by: Khang Nguyen <khang.nguyen.xv@renesas.com>
+Signed-off-by: Takamitsu Honda <takamitsu.honda.pv@renesas.com>
+---
+ meta-rcar-gen3/include/arm-trusted-firmware-control.inc                | 2 +-
+ .../recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb       | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/meta-rcar-gen3/include/arm-trusted-firmware-control.inc b/meta-rcar-gen3/include/arm-trusted-firmware-control.inc
+index 013598d..d305427 100644
+--- a/meta-rcar-gen3/include/arm-trusted-firmware-control.inc
++++ b/meta-rcar-gen3/include/arm-trusted-firmware-control.inc
+@@ -6,7 +6,7 @@ EXTRA_ATFW_CONF ?= ""
+ 
+ do_ipl_opt_compile () {
+     oe_runmake distclean
+-    oe_runmake bl2 bl31 dummytool PLAT=${PLATFORM} ${EXTRA_ATFW_OPT} ${ATFW_OPT_LOSSY}
++    oe_runmake bl2 bl31 dummytool PLAT=${PLATFORM} ${EXTRA_ATFW_OPT} ${ATFW_OPT_LOSSY} ${ADDITIONAL_ATFW_OPT}
+ }
+ 
+ do_ipl_opt_deploy () {
+diff --git a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb
+index 1eb6b75..9763839 100644
+--- a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb
++++ b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb
+@@ -25,6 +25,7 @@ ATFW_OPT_r8a7796 = "LSI=M3 RCAR_DRAM_SPLIT=2 ${ATFW_OPT_LOSSY}"
+ ATFW_OPT_r8a77965 = "LSI=M3N ${ATFW_OPT_LOSSY}"
+ ATFW_OPT_r8a77990 = "LSI=E3 RCAR_SA0_SIZE=0 RCAR_AVS_SETTING_ENABLE=0 RCAR_DRAM_DDR3L_MEMCONF=0 RCAR_DRAM_DDR3L_MEMDUAL=0"
+ ATFW_OPT_append_ulcb = " RCAR_GEN3_ULCB=1 PMIC_LEVEL_MODE=0"
++ADDITIONAL_ATFW_OPT ??= ""
+ 
+ # requires CROSS_COMPILE set by hand as there is no configure script
+ export CROSS_COMPILE="${TARGET_PREFIX}"
+@@ -37,7 +38,7 @@ LD[unexport] = "1"
+ 
+ do_compile() {
+     oe_runmake distclean
+-    oe_runmake bl2 bl31 dummytool PLAT=${PLATFORM} ${ATFW_OPT}
++    oe_runmake bl2 bl31 dummytool PLAT=${PLATFORM} ${ATFW_OPT} ${ADDITIONAL_ATFW_OPT}
+ }
+ 
+ # do_install() nothing
+-- 
+2.7.4
+
