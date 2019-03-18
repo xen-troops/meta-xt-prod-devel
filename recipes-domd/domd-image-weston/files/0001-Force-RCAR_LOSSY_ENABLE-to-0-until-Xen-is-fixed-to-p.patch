@@ -1,0 +1,27 @@
+From 85ad52c5862e86c678a423f6acc66ea593405f5f Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Mon, 18 Mar 2019 14:56:36 +0200
+Subject: [PATCH] Force RCAR_LOSSY_ENABLE to 0 until Xen is fixed to properly
+ deal with CMA
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ .../recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb        | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb
+index 1eb6b75..2114476 100644
+--- a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb
++++ b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb
+@@ -19,7 +19,7 @@ PV = "v1.5+renesas+git${SRCPV}"
+ 
+ COMPATIBLE_MACHINE = "(salvator-x|ulcb|ebisu)"
+ PLATFORM = "rcar"
+-ATFW_OPT_LOSSY = "${@base_conditional("USE_MULTIMEDIA", "1", "RCAR_LOSSY_ENABLE=1", "", d)}"
++ATFW_OPT_LOSSY = "RCAR_LOSSY_ENABLE=0"
+ ATFW_OPT_r8a7795 = "LSI=H3 RCAR_DRAM_SPLIT=1 RCAR_DRAM_LPDDR4_MEMCONF=0 ${ATFW_OPT_LOSSY}"
+ ATFW_OPT_r8a7796 = "LSI=M3 RCAR_DRAM_SPLIT=2 ${ATFW_OPT_LOSSY}"
+ ATFW_OPT_r8a77965 = "LSI=M3N ${ATFW_OPT_LOSSY}"
+-- 
+2.7.4
+

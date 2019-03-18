@@ -51,6 +51,7 @@ XT_QUIRK_PATCH_SRC_URI_rcar = "\
     file://${S}/meta-renesas/meta-rcar-gen3/docs/sample/patch/patch-for-linaro-gcc/0001-rcar-gen3-add-readme-for-building-with-Linaro-Gcc.patch;patchdir=meta-renesas \
     file://0001-hack-Remove-dependency-to-multi-user.target-from-wes.patch;patchdir=meta-renesas \
     file://0001-rcar-gen3-arm-trusted-firmware-Allow-to-add-more-bui.patch;patchdir=meta-renesas \
+    file://0001-Force-RCAR_LOSSY_ENABLE-to-0-until-Xen-is-fixed-to-p.patch;patchdir=meta-renesas \
 "
 
 XT_BB_LOCAL_CONF_FILE_rcar = "meta-xt-prod-extra/doc/local.conf.rcar-domd-image-weston"
