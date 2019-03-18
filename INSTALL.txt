@@ -1,5 +1,6 @@
 Prerequisites:
 ==============
+0. Ubuntu 16.04 should be used as host OS for build.
 1. Install tools : apt-get install gawk wget diffstat texinfo chrpath socat libsdl1.2-dev \
                     python-crypto repo checkpolicy python-git \
                     python-ctypeslib bzr pigz m4 lftp openjdk-8-jdk git-core \
@@ -7,7 +8,7 @@ Prerequisites:
                     gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev \
                     x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev \
                     libxml2-utils xsltproc unzip -y
-2. Google repo: https://source.android.com/source/downloading
+2. Download and install Google repo: https://source.android.com/setup/build/downloading#installing-repo
 3. Checked with Python v 2.7.12, but other should also work
 
 About:
@@ -39,36 +40,35 @@ git clone https://github.com/xen-troops/build-scripts.git
 cd build-scripts
 
 2. In the build-scripts directory you will find a sample configuration
-file xt-build-server.cfg:
+file gcp-build-server-devel.cfg:
 
-cp xt-build-server.cfg xt-prod-devel.cfg
+cp gcp-build-server-devel.cfg xt-prod-devel.cfg
 
-3. Edit it to fit your environment: the variables we need to change
-are under [path] section. Please set:
+3. Edit it to fit your environment.
+
+Please, change the variable under [git] section:
+
+xt_manifest_uri = https://github.com/xen-troops/meta-xt-products.git
+
+Please, change the variables under [path] section:
  - workspace_base_dir: change it to point to the place where the build will happen
  - workspace_storage_base_dir: change it to where downloads and other files will be put
+ - workspace_cache_base_dir: it points to state cache
 
 For example,
 
 workspace_base_dir = /home/workspace_base
 workspace_storage_base_dir = /home/workspace_storage_base
+workspace_cache_base_dir = /home/workspace_cache
 
-4. Run the build script for current stable release:
+The XT_RCAR_EVAPROPRIETARY_DIR, XT_ANDROID_PREBUILDS_DIR variables under [local_conf] section depends
+on whether prebuilt EVA proprietary packages are going to be used.
+If you are going to use prebuilt EVA proprietary packages, please change XT_RCAR_EVAPROPRIETARY_DIR, XT_ANDROID_PREBUILDS_DIR
+variables to point to the place where EVA proprietary packages will be copied in step #4.
+If you are going to build Graphics DDK from sources (without prebuilt EVA proprietary packages), please remove that variables.
+In that case step #4 can be omitted.
 
-python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product devel --with-local-conf --config xt-prod-devel.cfg
-
-Hereafter the supported MACHINE_NAMEs are:
-- salvator-x-h3  (Salvator-X board with H3 ES2.0 SoC installed)
-- salvator-x-h3-4x2g (Salvator-X board with H3 ES3.0 SoC installed)
-- salvator-xs-h3  (Salvator-XS board with H3 ES2.0 SoC installed)
-- salvator-xs-h3-2x2g (Salvator-XS board with H3 ES3.0 SoC installed)
-- salvator-xs-h3-4x2g (Salvator-XS board with H3 ES3.0 SoC installed)
-
-
-5. After that you will have all the build environment setup at workspace_base_dir
-directory.
-
-6. Download and copy EVA proprietary packages to your local filesystem at some directory:
+4. Download and copy EVA proprietary packages to your local filesystem at some directory:
 
 DomA prebuilts:
 
@@ -76,7 +76,7 @@ DomA prebuilts:
 
 Unpack it to some "..PREBUILTS_FOLDER_PATH.."
 I.e. you should have such directories structure:
-"..PREBUILTS_FOLDER_PATH.."
+"..ANDROID_PREBUILTS_FOLDER_PATH.."
 ├── kernel
 │   ├── Image
 │   └── vmlinux
@@ -124,11 +124,16 @@ I.e. you should have such directories structure:
             ├── libsrv_um.so
             └── libusc.so
 
+
+XT_ANDROID_PREBUILDS_DIR should points to "..ANDROID_PREBUILTS_FOLDER_PATH.." folder.
+
 DomD prebuilts:
 
 - rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz
 
 Copy it to "..PROPRIETARY_FOLDER_PATH.." folder.
+
+XT_RCAR_EVAPROPRIETARY_DIR should points to "..PROPRIETARY_FOLDER_PATH.." folder.
 
 Due to the fact that the SoC is not actually changed for Salvator-XS board,
 you could reuse already provided binaries by making symlinks to corresponding archives.
@@ -138,25 +143,23 @@ For example (Salvator-XS case),
 ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domd.tar.gz
 
 
-7. Edit local.conf:
+5. Run the build script for current stable release:
 
-workspace_base/build/conf/local.conf
+python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product PRODUCT_NAME --with-local-conf --config xt-prod-devel.cfg --with-do-build
 
-and append the following:
+Where the PRODUCT_NAME depends on whether prebuilt EVA proprietary packages are used or not:
+- devel (to use prebuilt EVA proprietary packages)
+- devel-src (to build Graphics DDK from sources)
 
-XT_GUESTS_INSTALL = "doma"
-XT_GUESTS_BUILD = "doma"
-XT_ANDROID_PREBUILDS_DIR = "..PROPRIETARY_FOLDER_PATH.."
-XT_RCAR_EVAPROPRIETARY_DIR = "..PROPRIETARY_FOLDER_PATH.."
+Hereafter the supported MACHINE_NAMEs are:
+- salvator-x-h3  (Salvator-X board with H3 ES2.0 SoC installed)
+- salvator-x-h3-4x2g (Salvator-X board with H3 ES3.0 SoC installed)
+- salvator-xs-h3  (Salvator-XS board with H3 ES2.0 SoC installed)
+- salvator-xs-h3-2x2g (Salvator-XS board with H3 ES3.0 SoC installed)
+- salvator-xs-h3-4x2g (Salvator-XS board with H3 ES3.0 SoC installed)
 
-with the correct path to the archives set.
 
-8. Now, to build the images you can run the same command as in 4) but with
-additional argument --continue-build:
-
-python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product devel --with-local-conf --config xt-prod-devel.cfg --continue-build
-
-9. You are done. The artifacts of the build are located at workspace_base directory:
+6. You are done. The artifacts of the build are located at workspace_base directory:
 
 workspace_base/build/build/deploy/
 ├── dom0-image-thin-initramfs
@@ -212,7 +215,7 @@ workspace_base/build/tmp/log/domd-image-weston/cooker/MACHINE-NAME-xt
 - DomA:
 workspace_base/build/build/log/domu-image-android/cooker/qemux86-64
 
-10. If one wants to build any domain's images by hand, at the time of development
+7. If one wants to build any domain's images by hand, at the time of development
 for instance, it is possible by going into desired directory and using poky to build:
 
 - For building Domain-0:
