@@ -122,23 +122,6 @@ configure_versions_rcar() {
     if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
         base_set_conf_value ${local_conf} DISTRO_FEATURES_remove "ivi-shell"
     fi
-
-    # U-boot/IPL option for H3 (SoC: r8a7795)
-    # For H3 SiP DDR 4GiB (1GiB x 4ch)
-    #H3_OPTION = "0"
-    # For H3 SiP DDR 8GiB (2GiB x 4ch)
-    #H3_OPTION = "1"
-    # For H3 SiP DDR 4GiB (2GiB x 2ch)
-    #H3_OPTION = "2"
-    if [ "${MACHINE}" == "salvator-xs-h3" ] || [ "${MACHINE}" == "salvator-x-h3" ];then
-        base_set_conf_value ${local_conf} H3_OPTION "0"
-    fi
-    if [ "${MACHINE}" == "salvator-xs-h3-4x2g" ] || [ "${MACHINE}" == "salvator-x-h3-4x2g" ];then
-        base_set_conf_value ${local_conf} H3_OPTION "1"
-    fi
-    if [ "${MACHINE}" == "salvator-xs-h3-2x2g" ] || [ "${MACHINE}" == "salvator-x-h3-2x2g" ];then
-        base_set_conf_value ${local_conf} H3_OPTION "2"
-    fi
 }
 
 python do_configure_append_rcar() {
