@@ -15,9 +15,7 @@ SRC_URI = "\
 
 S = "${WORKDIR}"
 
-DOMA_CONFIG_salvator-x-m3-xt = "doma-salvator-generic.cfg"
-DOMA_CONFIG_salvator-x-h3-xt = "doma-salvator-generic.cfg"
-DOMA_CONFIG_salvator-xs-h3-xt = "doma-salvator-generic.cfg"
+DOMA_CONFIG = "doma-salvator-generic.cfg"
 DOMA_CONFIG_salvator-x-h3-4x2g-xt = "doma-salvator-x-h3-4x2g.cfg"
 DOMA_CONFIG_salvator-xs-h3-4x2g-xt = "doma-salvator-x-h3-4x2g.cfg"
 
