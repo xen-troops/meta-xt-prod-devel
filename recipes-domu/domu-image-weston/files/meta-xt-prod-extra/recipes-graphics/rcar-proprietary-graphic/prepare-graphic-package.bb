@@ -10,6 +10,7 @@ do_install () {
     if [ -d ${DEPLOY_DIR_IMAGE}/xt-rcar ]; then
         cd ${DEPLOY_DIR_IMAGE}
         date --rfc-3339=seconds > version.txt
+        sed -i 's/soc/passthrough/g' ${DEPLOY_DIR_IMAGE}/xt-rcar/etc/udev/rules.d/72-pvr-seat.rules
         tar -czf rcar-proprietary-graphic-${MACHINE}-domu.tar.gz xt-rcar version.txt
         rm version.txt
         rm -rf xt-rcar
