@@ -3,7 +3,7 @@ SRCREV = "${AUTOREV}"
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI_append = " \
-    repo://github.com/xen-troops/android_manifest;protocol=https;branch=android-9.0.0_r3-xt0.2;manifest=doma.xml;scmdata=keep \
+    repo://github.com/xen-troops/android_manifest;protocol=https;branch=android-9.0.0_r3-xt1.0;manifest=doma.xml;scmdata=keep \
     file://0001-Work-around-b-70221552.patch;patchdir=frameworks/base \
     file://0001-HACK-Prevent-crash-in-NetworkPolicyManagerService.patch;patchdir=frameworks/base \
     file://0001-WA-Assing-display-id-for-primary-and-external-touch-.patch;patchdir=frameworks/native \
