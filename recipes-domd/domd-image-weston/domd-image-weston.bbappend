@@ -122,6 +122,13 @@ configure_versions_rcar() {
     if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
         base_set_conf_value ${local_conf} DISTRO_FEATURES_remove "ivi-shell"
     fi
+
+    if [ ! -z "${AOS_VIS_PLUGINS}" ];then
+        base_update_conf_value ${local_conf} AOS_VIS_PLUGINS "${AOS_VIS_PLUGINS}"
+    fi
+
+    # Disable shared link for GO packages
+    base_set_conf_value ${local_conf} GO_LINKSHARED ""
 }
 
 python do_configure_append_rcar() {

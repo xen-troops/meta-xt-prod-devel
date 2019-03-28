@@ -9,8 +9,10 @@ IMAGE_INSTALL_append = " \
     kernel-modules \
     kmscube \
     optee-os \
-    sensors-emulator \
     displaymanager \
+    telemetry-emulator \
+    aos-vis \
+    ${@bb.utils.contains('AOS_VIS_PLUGINS', 'telemetryemulatoradapter', 'telemetry-emulator', '', d)} \
 "
 
 # Configuration for ARM Trusted Firmware
