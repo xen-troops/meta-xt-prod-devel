@@ -88,3 +88,7 @@
 &sata {
 	status = "disabled";
 };
+
+&sound_card {
+	dais = <&rsnd_port0>; /* ak4613 */
+};
