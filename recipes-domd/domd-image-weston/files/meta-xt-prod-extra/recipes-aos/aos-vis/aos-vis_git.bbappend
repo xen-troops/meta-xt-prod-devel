@@ -1,5 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
+SRCREV = "78f43faf47dad2b2defdd6f7491005edf2262321"
+
 SRC_URI_append = "\
     file://aos-vis_telemetryemulator.service \
     file://aos-vis_renesassimulator.service \
