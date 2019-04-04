@@ -28,6 +28,22 @@ FILES_${PN}-flask = " \
     /boot/${FLASK_POLICY_FILE} \
 "
 
+do_configure_append() {
+    export XEN_CONFIG_EXPERT=y
+
+    # Force Xen to create .config
+    make -C ${S}/xen/ defconfig
+    make -C ${S}/xen/ silentoldconfig
+
+    # Enable TEE
+    echo "CONFIG_TEE=y" >> ${S}/xen/.config
+    echo "CONFIG_OPTEE=y" >>  ${S}/xen/.config
+}
+
+do_compile_prepend () {
+    export XEN_CONFIG_EXPERT=y
+}
+
 do_deploy_append_rcar () {
     if [ -f ${D}/boot/xen ]; then
         uboot-mkimage -A arm64 -C none -T kernel -a 0x78080000 -e 0x78080000 -n "XEN" -d ${D}/boot/xen ${DEPLOYDIR}/xen-${MACHINE}.uImage
