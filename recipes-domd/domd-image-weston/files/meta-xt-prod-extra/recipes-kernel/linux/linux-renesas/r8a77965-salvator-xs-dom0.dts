@@ -307,6 +307,10 @@
 			xen,passthrough;
 			iommus = <&ipmmu_pv0 1>;
 		};
+
+		lossy_shmem {
+			reg = <0 0x47fd7000 0 0x1000>;
+		};
 	};
 };
 
