@@ -239,6 +239,10 @@
 			iommus = <&ipmmu_vc1 8>,
 					 <&ipmmu_vc1 12>;
 		};
+
+		lossy_shmem {
+			reg = <0 0x47fd7000 0 0x1000>;
+		};
 	};
 };
 
