@@ -48,11 +48,6 @@
 	/delete-node/thermal-zones;
 	/delete-node/pmu_a57;
 	/delete-node/pmu_a53;
-
-	/delete-node/reserved-memory;
-
-	/delete-node/mmngr;
-	/delete-node/mmngrbuf;
 };
 
 /delete-node/&adsp;
