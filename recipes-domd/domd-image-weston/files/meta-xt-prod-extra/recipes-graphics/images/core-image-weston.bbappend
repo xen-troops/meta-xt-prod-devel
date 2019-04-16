@@ -10,7 +10,6 @@ IMAGE_INSTALL_append = " \
     kmscube \
     optee-os \
     displaymanager \
-    telemetry-emulator \
     aos-vis \
     ${@bb.utils.contains('AOS_VIS_PLUGINS', 'telemetryemulatoradapter', 'telemetry-emulator', '', d)} \
 "
