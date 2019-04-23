@@ -11,7 +11,6 @@ IMAGE_INSTALL_append = " \
     optee-os \
     displaymanager \
     aos-vis \
-    ${@bb.utils.contains('AOS_VIS_PLUGINS', 'telemetryemulatoradapter', 'telemetry-emulator', '', d)} \
 "
 
 # Configuration for ARM Trusted Firmware
