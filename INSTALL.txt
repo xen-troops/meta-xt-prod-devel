@@ -106,6 +106,7 @@ I.e. you should have such directories structure:
         │   ├── libIMGegl.so
         │   ├── libPVRScopeServices.so
         │   ├── libsrv_um.so
+        │   ├── libtqvalidate.so
         │   └── libusc.so
         └── lib64
             ├── egl
@@ -119,6 +120,7 @@ I.e. you should have such directories structure:
             ├── libIMGegl.so
             ├── libPVRScopeServices.so
             ├── libsrv_um.so
+            ├── libtqvalidate.so
             └── libusc.so
 
 
