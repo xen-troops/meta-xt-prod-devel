@@ -28,6 +28,10 @@ FILES_${PN} += " \
     /var/aos/vis/visconfig.json \
 "
 
+RDEPENDS_${PN} += "\
+    ${@bb.utils.contains('AOS_VIS_PLUGINS', 'telemetryemulatoradapter', 'telemetry-emulator', '', d)} \
+"
+
 do_install_append() {
     install -d ${D}/var/aos/vis
     install -d ${D}${systemd_system_unitdir}
