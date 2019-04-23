@@ -77,9 +77,6 @@ DomA prebuilts:
 Unpack it to some "..PREBUILTS_FOLDER_PATH.."
 I.e. you should have such directories structure:
 "..ANDROID_PREBUILTS_FOLDER_PATH.."
-├── kernel
-│   ├── Image
-│   └── vmlinux
 ├── pvr-km
 │   └── pvrsrvkm.ko
 └── pvr-um
