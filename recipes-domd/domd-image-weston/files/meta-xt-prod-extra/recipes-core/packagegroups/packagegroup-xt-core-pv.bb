@@ -8,4 +8,5 @@ RDEPENDS_packagegroup-xt-core-pv = "\
     libxenbe \
     displbe \
     sndbe \
+    camerabe \
 "
