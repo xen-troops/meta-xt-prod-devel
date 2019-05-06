@@ -9,4 +9,6 @@ RDEPENDS_packagegroup-xt-core-pv = "\
     libxenbe \
     displbe \
     sndbe \
+    camerabe \
+    guest-addons-camerabe-service \
 "
