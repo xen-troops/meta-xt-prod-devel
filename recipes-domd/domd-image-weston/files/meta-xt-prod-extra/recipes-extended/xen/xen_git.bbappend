@@ -31,13 +31,7 @@ FILES_${PN}-flask = " \
 do_configure_append() {
     export XEN_CONFIG_EXPERT=y
 
-    # Force Xen to create .config
-    make -C ${S}/xen/ defconfig
-    make -C ${S}/xen/ silentoldconfig
-
-    # Enable TEE
-    echo "CONFIG_TEE=y" >> ${S}/xen/.config
-    echo "CONFIG_OPTEE=y" >>  ${S}/xen/.config
+    oe_runmake xt_defconfig
 }
 
 do_compile_prepend () {
