@@ -5,7 +5,7 @@ require inc/xt_shared_env.inc
 RENESAS_BSP_URL = "git://github.com/xen-troops/linux.git"
 
 BRANCH = "master"
-SRCREV = "${AUTOREV}"
+SRCREV = "c25044845f2c3678f5df789881e7a125556af6fc"
 LINUX_VERSION = "4.14.75"
 SRC_URI_append = " \
     file://defconfig \

@@ -1,7 +1,7 @@
 ################################################################################
 # Renesas R-Car
 ################################################################################
-SRCREV_rcar = "${AUTOREV}"
+SRCREV_rcar = "d05a59ee3f6caedea32c912f79c7a24c5a53f749"
 
 SRC_URI_append_rcar = " git://github.com/xen-troops/displ_be.git;protocol=https;branch=master"
 
