@@ -10,8 +10,12 @@ IMAGE_INSTALL_append = " \
     kmscube \
     optee-os \
     displaymanager \
-    aos-vis \
 "
+
+python __anonymous () {
+    if (d.getVar("AOS_VIS_PACKAGE_DIR", True) or "") == "":
+        d.appendVar("IMAGE_INSTALL", "aos-vis")
+}
 
 # Configuration for ARM Trusted Firmware
 EXTRA_IMAGEDEPENDS += " arm-trusted-firmware"
@@ -40,3 +44,12 @@ populate_vmlinux () {
 }
 
 IMAGE_POSTPROCESS_COMMAND += "populate_vmlinux; "
+
+install_aos () {
+    if [ ! -z "${AOS_VIS_PACKAGE_DIR}" ];then
+        opkg install ${AOS_VIS_PACKAGE_DIR}/ca-certificates_20170717-r0_all.ipk \
+                     ${AOS_VIS_PACKAGE_DIR}/aos-vis_git-r0_aarch64.ipk
+    fi
+}
+
+ROOTFS_POSTPROCESS_COMMAND += "install_aos; "
