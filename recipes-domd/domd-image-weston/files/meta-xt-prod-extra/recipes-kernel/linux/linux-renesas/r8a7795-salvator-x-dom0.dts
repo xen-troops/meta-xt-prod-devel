@@ -26,8 +26,14 @@
 
 / {
 	soc {
-		/delete-node/gsx_domd;
-		/delete-node/gsx_domu;
+		/delete-node/gsx_pv0_domd;
+		/delete-node/gsx_pv1_domd;
+		/delete-node/gsx_pv2_domd;
+		/delete-node/gsx_pv3_domd;
+		/delete-node/gsx_pv0_domu;
+		/delete-node/gsx_pv1_domu;
+		/delete-node/gsx_pv2_domu;
+		/delete-node/gsx_pv3_domu;
 	};
 
 };

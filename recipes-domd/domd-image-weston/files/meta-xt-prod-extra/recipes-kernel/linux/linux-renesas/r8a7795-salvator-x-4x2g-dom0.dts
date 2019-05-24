@@ -210,13 +210,6 @@
 	iommus = <&ipmmu_vp1 9>;
 };
 
-&fcpcs {
-	iommus = <&ipmmu_vc0 8>,
-		 <&ipmmu_vc1 8>,
-		 <&ipmmu_vc0 12>,
-		 <&ipmmu_vc1 12>;
-};
-
 &ehci0 {
 	iommus = <&ipmmu_hc 4>;
 };
@@ -333,20 +326,56 @@
 			iommus = <&ipmmu_vc0 1>;
 		};
 
-		gsx_domd {
+		gsx_pv0_domd {
 			xen,passthrough;
-			iommus = <&ipmmu_pv0 0>,
-				 <&ipmmu_pv1 0>,
-				 <&ipmmu_pv2 0>,
-				 <&ipmmu_pv3 0>;
+			iommus = <&ipmmu_pv0 0>;
 		};
 
-		gsx_domu {
+		gsx_pv1_domd {
 			xen,passthrough;
-			iommus = <&ipmmu_pv0 1>,
-				 <&ipmmu_pv1 1>,
-				 <&ipmmu_pv2 1>,
-				 <&ipmmu_pv3 1>;
+			iommus = <&ipmmu_pv1 0>;
+		};
+
+		gsx_pv2_domd {
+			xen,passthrough;
+			iommus = <&ipmmu_pv2 0>;
+		};
+
+		gsx_pv3_domd {
+			xen,passthrough;
+			iommus = <&ipmmu_pv3 0>;
+		};
+
+		gsx_pv0_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv0 1>;
+		};
+
+		gsx_pv1_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv1 1>;
+		};
+
+		gsx_pv2_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv2 1>;
+		};
+
+		gsx_pv3_domu {
+			xen,passthrough;
+			iommus = <&ipmmu_pv3 1>;
+		};
+
+		fcpcs_vc0 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 8>,
+					 <&ipmmu_vc0 12>;
+		};
+
+		fcpcs_vc1 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc1 8>,
+					 <&ipmmu_vc1 12>;
 		};
 	};
 };
@@ -411,7 +440,6 @@
 &fcpvd0			{ xen,passthrough; };
 &fcpvd1			{ xen,passthrough; };
 &fcpvd2			{ xen,passthrough; };
-&fcpcs			{ xen,passthrough; };
 &tsc			{ xen,passthrough; };
 &i2c_dvfs		{ xen,passthrough; };
 &pmic			{ xen,passthrough; };
