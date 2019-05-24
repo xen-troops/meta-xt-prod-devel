@@ -151,13 +151,6 @@
 	iommus = <&ipmmu_vp1 9>;
 };
 
-&fcpcs {
-	iommus = <&ipmmu_vc0 8>,
-			 <&ipmmu_vc1 8>,
-			 <&ipmmu_vc0 12>,
-			 <&ipmmu_vc1 12>;
-};
-
 / {
 	soc {
 		imr-lx4@fe860000 {
@@ -178,6 +171,18 @@
 		imr-lx4@fe890000 {
 			xen,passthrough;
 			iommus = <&ipmmu_vc0 1>;
+		};
+
+		fcpcs_vc0 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 8>,
+					 <&ipmmu_vc0 12>;
+		};
+
+		fcpcs_vc1 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc1 8>,
+					 <&ipmmu_vc1 12>;
 		};
 	};
 };
@@ -287,4 +292,3 @@
 &fcpvd0			{ xen,passthrough; };
 &fcpvd1			{ xen,passthrough; };
 &fcpvd2			{ xen,passthrough; };
-&fcpcs			{ xen,passthrough; };
