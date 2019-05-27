@@ -18,6 +18,7 @@ S = "${WORKDIR}"
 DOMA_CONFIG = "doma-salvator-generic.cfg"
 DOMA_CONFIG_salvator-x-h3-4x2g-xt = "doma-salvator-x-h3-4x2g.cfg"
 DOMA_CONFIG_salvator-xs-h3-4x2g-xt = "doma-salvator-x-h3-4x2g.cfg"
+DOMA_CONFIG_h3ulcb-4x2g-xt = "doma-salvator-x-h3-4x2g.cfg"
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg \
