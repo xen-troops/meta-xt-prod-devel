@@ -131,6 +131,23 @@ KERNEL_DEVICETREE_salvator-x-m3-xt = " \
     renesas/r8a7796-salvator-x-domu.dtb \
 "
 
+##############################################################################
+# H3ULCB ES3.0 4x2G
+###############################################################################
+# N.B. DomU device tree is reused from Salvator-X H3 ES3.0 4x2G
+###############################################################################
+SRC_URI_append_h3ulcb-4x2g-xt = " \
+    file://r8a7795-h3ulcb-4x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-h3ulcb-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+"
+
+KERNEL_DEVICETREE_h3ulcb-4x2g-xt = " \
+    renesas/r8a7795-h3ulcb-4x2g-dom0.dtb \
+    renesas/r8a7795-h3ulcb-4x2g-domd.dtb \
+    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
+"
+
 do_deploy_append() {
     for DTB in ${KERNEL_DEVICETREE}
         do
