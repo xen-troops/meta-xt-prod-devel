@@ -41,6 +41,11 @@ do_install_append_r8a7795() {
 }
 
 do_install_append_r8a7795() {
+    # H3ULCB has neither HDMI-A-2 nor VGA-1
+    if echo "${MACHINEOVERRIDES}" | grep -qi "h3ulcb"; then
+        return
+    fi
+
     sed -e '$a\\' \
         -e '$a\[output]' \
         -e '$a\name=HDMI-A-2' \
