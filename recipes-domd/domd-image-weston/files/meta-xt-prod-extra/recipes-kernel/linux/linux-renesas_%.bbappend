@@ -148,6 +148,29 @@ KERNEL_DEVICETREE_h3ulcb-4x2g-xt = " \
     renesas/r8a7795-salvator-x-4x2g-domu.dtb \
 "
 
+##############################################################################
+# H3ULCB ES3.0 4x2G KF
+###############################################################################
+# N.B. DomU device tree is reused from Salvator-X H3 ES3.0 4x2G
+# FIXME: ulcb.cfg comes from CogentEmbedded's meta-rcar layer, but is only used
+# for {h|m}3ulcb machines while we are building for XT machine
+# (h3ulcb-4x2g-kf-xt)
+###############################################################################
+SRC_URI_append_h3ulcb-4x2g-kf-xt = " \
+    file://r8a7795-h3ulcb-4x2g-kf-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-h3ulcb-4x2g-kf-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://0001-r8a7795-6-65-.dtsi-Add-multichannel-audio-ranges-tha.patch \
+    file://ulcb.cfg \
+"
+
+KERNEL_DEVICETREE_h3ulcb-4x2g-kf-xt = " \
+    renesas/r8a7795-h3ulcb-4x2g-kf-dom0.dtb \
+    renesas/r8a7795-h3ulcb-4x2g-kf-domd.dtb \
+    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
+"
+
+
 do_deploy_append() {
     for DTB in ${KERNEL_DEVICETREE}
         do
