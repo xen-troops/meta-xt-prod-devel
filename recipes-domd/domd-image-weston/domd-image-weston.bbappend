@@ -26,6 +26,13 @@ XT_QUIRK_BB_ADD_LAYER += " \
     meta-xt-prod-extra \
 "
 
+################################################################################
+# Renesas R-Car H3ULCB ES3.0 8GB Kingfisher
+################################################################################
+XT_QUIRK_BB_ADD_LAYER_append_h3ulcb-4x2g-kf = " \
+    meta-rcar/meta-rcar-gen3-adas \
+"
+
 XT_BB_IMAGE_TARGET = "core-image-weston"
 
 # Path to proprietary graphic modules pre built binaries.
