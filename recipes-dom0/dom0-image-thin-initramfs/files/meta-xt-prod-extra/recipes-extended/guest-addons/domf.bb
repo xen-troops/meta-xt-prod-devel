@@ -19,6 +19,7 @@ DOMF_ALLOWED_PCPUS_salvator-x-h3-xt = "4-7"
 DOMF_ALLOWED_PCPUS_salvator-xs-h3-xt = "4-7"
 DOMF_ALLOWED_PCPUS_salvator-x-h3-4x2g-xt = "4-7"
 DOMF_ALLOWED_PCPUS_h3ulcb-4x2g-xt = "4-7"
+DOMF_ALLOWED_PCPUS_h3ulcb-4x2g-kf-xt = "4-7"
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domf.cfg \
