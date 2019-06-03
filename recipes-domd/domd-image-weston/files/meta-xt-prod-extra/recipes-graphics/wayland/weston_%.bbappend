@@ -13,8 +13,6 @@ python __anonymous () {
 }
 
 SRC_URI_append = "file://weston-seats.rules \
-                  file://add_screen_remove_layer_API.patch \
-                  file://0001-v4l2-renderer-Release-dma-buf-when-attaching-null-bu.patch \
 "
 
 FILES_${PN} += " \
@@ -24,66 +22,4 @@ FILES_${PN} += " \
 do_install_append() {
     install -d ${D}${sysconfdir}/udev/rules.d
     install -m 0644 ${WORKDIR}/weston-seats.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
-}
-
-do_install_append_r8a7795() {
-    # DomU based product doesn't need transform
-    if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
-        sed -e '$a\\' \
-            -e '$a\[output]' \
-            -e '$a\name=HDMI-A-1' \
-            -i ${D}/${sysconfdir}/xdg/weston/weston.ini
-    else
-        sed -e '$a\\' \
-            -e '$a\[output]' \
-            -e '$a\name=HDMI-A-1' \
-            -e '$a\transform=0' \
-            -i ${D}/${sysconfdir}/xdg/weston/weston.ini
-    fi
-
-    # H3ULCB has neither HDMI-A-2 nor VGA-1
-    if echo "${MACHINEOVERRIDES}" | grep -qi "h3ulcb"; then
-        return
-    fi
-
-    sed -e '$a\\' \
-        -e '$a\[output]' \
-        -e '$a\name=HDMI-A-2' \
-        -e '$a\transform=0' \
-        -i ${D}/${sysconfdir}/xdg/weston/weston.ini
-
-    # DomU based product does need VGA-1 enabled
-    if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
-        sed -e '$a\\' \
-            -e '$a\[output]' \
-            -e '$a\name=VGA-1' \
-            -i ${D}/${sysconfdir}/xdg/weston/weston.ini
-    else
-        sed -e '$a\\' \
-            -e '$a\[output]' \
-            -e '$a\name=VGA-1' \
-            -e '$a\mode=off' \
-            -i ${D}/${sysconfdir}/xdg/weston/weston.ini
-    fi
-}
-
-do_install_append_r8a7796() {
-    sed -e '$a\\' \
-        -e '$a\[output]' \
-        -e '$a\name=HDMI-A-1' \
-        -i ${D}/${sysconfdir}/xdg/weston/weston.ini
-
-    # DomU based product doesn't need transform
-    if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
-        sed -e '$a\\' \
-            -e '$a\[output]' \
-            -e '$a\name=VGA-1' \
-            -i ${D}/${sysconfdir}/xdg/weston/weston.ini
-    else
-        sed -e '$a\\' \
-            -e '$a\[output]' \
-            -e '$a\name=VGA-1' \
-            -e '$a\transform=0' \
-            -i ${D}/${sysconfdir}/xdg/weston/weston.ini
-    fi
 }
