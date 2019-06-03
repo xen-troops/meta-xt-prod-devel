@@ -6,3 +6,4 @@
 do_install_append () {
     install -Dm 644 ${S}/include/EGL/eglmesaext.h ${D}/${includedir}/EGL/eglmesaext.h
 }
+FILES_${PN} += " ${includedir}/EGL/eglmesaext.h"
