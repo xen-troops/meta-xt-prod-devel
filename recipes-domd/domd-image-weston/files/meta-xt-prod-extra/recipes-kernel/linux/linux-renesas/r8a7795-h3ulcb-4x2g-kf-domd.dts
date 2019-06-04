@@ -89,3 +89,13 @@
 &sata {
 	status = "disabled";
 };
+
+/ {
+	impdes0		{
+		interrupt-parent = <PHANDLE_GIC>;
+	};
+	imprtt		{
+		interrupt-parent = <PHANDLE_GIC>;
+	};
+};
+

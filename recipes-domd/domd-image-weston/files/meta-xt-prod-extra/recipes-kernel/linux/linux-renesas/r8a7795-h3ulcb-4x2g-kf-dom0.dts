@@ -351,8 +351,14 @@
 &i2c_dvfs		{ xen,passthrough; };
 
 / {
-	impdes0		{ xen,passthrough; };
-	imprtt		{ xen,passthrough; };
+	impdes0		{
+		interrupt-parent = <&gic>;
+		xen,passthrough;
+	};
+	imprtt		{
+		interrupt-parent = <&gic>;
+		xen,passthrough;
+	};
 };
 
 &intc_ex		{ xen,passthrough; };
