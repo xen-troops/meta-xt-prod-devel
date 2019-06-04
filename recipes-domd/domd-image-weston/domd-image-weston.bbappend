@@ -33,6 +33,18 @@ XT_QUIRK_BB_ADD_LAYER_append_h3ulcb-4x2g-kf = " \
     meta-rcar/meta-rcar-gen3-adas \
 "
 
+configure_versions_kingfisher() {
+    local local_conf="${S}/build/conf/local.conf"
+
+    cd ${S}
+    #FIXME: patch ADAS: do not use network setup as we provide our own
+    base_add_conf_value ${local_conf} BBMASK "meta-rcar-gen3-adas/recipes-core/systemd"
+}
+
+python do_configure_append_h3ulcb-4x2g-kf() {
+    bb.build.exec_func("configure_versions_kingfisher", d)
+}
+
 XT_BB_IMAGE_TARGET = "core-image-weston"
 
 # Path to proprietary graphic modules pre built binaries.
