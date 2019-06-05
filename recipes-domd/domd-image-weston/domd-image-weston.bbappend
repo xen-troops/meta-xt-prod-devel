@@ -154,6 +154,11 @@ configure_versions_rcar() {
     if [ ! -z "${AOS_VIS_PACKAGE_DIR}" ];then
         base_update_conf_value ${local_conf} AOS_VIS_PACKAGE_DIR "${AOS_VIS_PACKAGE_DIR}"
     fi
+
+    # Only Kingfisher variants have WiFi and bluetooth
+    if echo "${MACHINEOVERRIDES}" | grep -qiv "kingfisher"; then
+        base_add_conf_value ${local_conf} DISTRO_FEATURES_remove "wifi bluetooth"
+    fi
 }
 
 python do_configure_append_rcar() {
