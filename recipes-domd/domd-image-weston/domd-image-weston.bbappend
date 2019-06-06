@@ -39,6 +39,9 @@ configure_versions_kingfisher() {
     cd ${S}
     #FIXME: patch ADAS: do not use network setup as we provide our own
     base_add_conf_value ${local_conf} BBMASK "meta-rcar-gen3-adas/recipes-core/systemd"
+    # Remove development tools from the image
+    base_add_conf_value ${local_conf} IMAGE_INSTALL_remove " strace eglibc-utils ldd rsync gdbserver dropbear opkg git subversion nano cmake vim"
+    base_add_conf_value ${local_conf} DISTRO_FEATURES_remove " opencv-sdk"
 }
 
 python do_configure_append_h3ulcb-4x2g-kf() {
