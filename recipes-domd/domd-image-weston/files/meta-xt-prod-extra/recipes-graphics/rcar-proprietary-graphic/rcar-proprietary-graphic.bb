@@ -18,7 +18,7 @@ inherit update-rc.d systemd
 INITSCRIPT_NAME = "pvrinit"
 INITSCRIPT_PARAMS = "start 7 5 2 . stop 62 0 1 6 ."
 SYSTEMD_SERVICE_${PN} = "rc.pvr.service"
-KERNEL_VERSION = "${@base_read_file('${STAGING_KERNEL_BUILDDIR}/kernel-abiversion')}"
+KERNEL_VERSION = "${@oe.utils.read_file('${STAGING_KERNEL_BUILDDIR}/kernel-abiversion')}"
 
 do_populate_lic[noexec] = "1"
 do_compile[noexec] = "1"
