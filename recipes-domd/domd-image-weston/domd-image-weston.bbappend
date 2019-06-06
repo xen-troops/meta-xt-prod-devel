@@ -42,6 +42,8 @@ configure_versions_kingfisher() {
     # Remove development tools from the image
     base_add_conf_value ${local_conf} IMAGE_INSTALL_remove " strace eglibc-utils ldd rsync gdbserver dropbear opkg git subversion nano cmake vim"
     base_add_conf_value ${local_conf} DISTRO_FEATURES_remove " opencv-sdk"
+    # Do not enable surroundview which cannot be used
+    base_add_conf_value ${local_conf} DISTRO_FEATURES_remove " surroundview"
 }
 
 python do_configure_append_h3ulcb-4x2g-kf() {
