@@ -175,17 +175,9 @@ do_deploy_append() {
     for DTB in ${KERNEL_DEVICETREE}
         do
               DTB_BASE_NAME=`basename ${DTB} | awk -F "." '{print $1}'`
-              DTB_NAME=`echo ${KERNEL_IMAGE_SYMLINK_NAME} | sed "s/${MACHINE}/${DTB_BASE_NAME}/g"`
+              DTB_NAME=`echo ${KERNEL_IMAGE_LINK_NAME} | sed "s/${MACHINE}/${DTB_BASE_NAME}/g"`
               DTB_SYMLINK_NAME=`echo ${DTB_NAME##*-}`
-              if [ -z "${KERNEL_IMAGETYPES}" ] ; then
-                  ln -sfr ${DEPLOYDIR}/${DTB_NAME}.dtb ${DEPLOYDIR}/${DTB_SYMLINK_NAME}.dtb
-              else
-                  for type in ${KERNEL_IMAGETYPES} ; do
-                      ln -sfr ${DEPLOYDIR}/${type}-${DTB_NAME}.dtb ${DEPLOYDIR}/${DTB_SYMLINK_NAME}.dtb
-                      # FIXME: we can take any image type to create this symlink, so take the first one
-                      break
-                  done
-              fi
+              ln -sfr ${DEPLOYDIR}/${DTB_NAME}.dtb ${DEPLOYDIR}/${DTB_SYMLINK_NAME}.dtb
         done
 
     find ${D}/boot -iname "vmlinux*" -exec tar -cJvf ${STAGING_KERNEL_BUILDDIR}/vmlinux.tar.xz {} \;
