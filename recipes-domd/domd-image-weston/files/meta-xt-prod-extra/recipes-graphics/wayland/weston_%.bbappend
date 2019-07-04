@@ -21,6 +21,11 @@ FILES_${PN} += " \
     ${sysconfdir}/udev/rules.d/weston-seats.rules \
 "
 
+do_install_append() {
+    install -d ${D}${sysconfdir}/udev/rules.d
+    install -m 0644 ${WORKDIR}/weston-seats.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
+}
+
 do_install_append_r8a7795() {
     # DomU based product doesn't need transform
     if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
@@ -35,9 +40,6 @@ do_install_append_r8a7795() {
             -e '$a\transform=0' \
             -i ${D}/${sysconfdir}/xdg/weston/weston.ini
     fi
-
-    install -d ${D}${sysconfdir}/udev/rules.d
-    install -m 0644 ${WORKDIR}/weston-seats.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
 
     # H3ULCB has neither HDMI-A-2 nor VGA-1
     if echo "${MACHINEOVERRIDES}" | grep -qi "h3ulcb"; then
@@ -70,9 +72,6 @@ do_install_append_r8a7796() {
         -e '$a\[output]' \
         -e '$a\name=HDMI-A-1' \
         -i ${D}/${sysconfdir}/xdg/weston/weston.ini
-
-    install -d ${D}${sysconfdir}/udev/rules.d
-    install -m 0644 ${WORKDIR}/weston-seats.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
 
     # DomU based product doesn't need transform
     if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
