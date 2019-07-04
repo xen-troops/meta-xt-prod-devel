@@ -14,6 +14,7 @@ python __anonymous () {
 
 SRC_URI_append = "file://weston-seats.rules \
                   file://camera_front.rules \
+                  file://vsp2.rules \
                   file://add_screen_remove_layer_API.patch \
                   file://0001-v4l2-renderer-Release-dma-buf-when-attaching-null-bu.patch \
 "
@@ -21,12 +22,17 @@ SRC_URI_append = "file://weston-seats.rules \
 FILES_${PN} += " \
     ${sysconfdir}/udev/rules.d/weston-seats.rules \
     ${sysconfdir}/udev/rules.d/camera_front.rules \
+    ${sysconfdir}/udev/rules.d/vsp2.rules \
 "
 
 do_install_append() {
     install -d ${D}${sysconfdir}/udev/rules.d
     install -m 0644 ${WORKDIR}/weston-seats.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
     install -m 0644 ${WORKDIR}/camera_front.rules ${D}${sysconfdir}/udev/rules.d/camera_front.rules
+    install -m 0644 ${WORKDIR}/vsp2.rules ${D}${sysconfdir}/udev/rules.d/vsp2.rules
+
+    sed -e 's\/dev/media[01]\/dev/vsp2-renderer\' \
+        -i ${D}/${sysconfdir}/xdg/weston/weston.ini
 }
 
 do_install_append_r8a7795() {
