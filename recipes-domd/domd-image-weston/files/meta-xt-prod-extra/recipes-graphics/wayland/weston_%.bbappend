@@ -38,9 +38,7 @@ do_install_append_r8a7795() {
 
     install -d ${D}${sysconfdir}/udev/rules.d
     install -m 0644 ${WORKDIR}/weston-seats.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
-}
 
-do_install_append_r8a7795() {
     # H3ULCB has neither HDMI-A-2 nor VGA-1
     if echo "${MACHINEOVERRIDES}" | grep -qi "h3ulcb"; then
         return
@@ -75,9 +73,7 @@ do_install_append_r8a7796() {
 
     install -d ${D}${sysconfdir}/udev/rules.d
     install -m 0644 ${WORKDIR}/weston-seats.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
-}
 
-do_install_append_r8a7796() {
     # DomU based product doesn't need transform
     if echo "${XT_GUESTS_INSTALL}" | grep -qi "domu";then
         sed -e '$a\\' \
