@@ -5,4 +5,4 @@
 ################################################################################
 require ../meta-xt-images-domx/recipes-extended/xen/xen-4.12-rocko.inc
 
-SRC_URI = "git://github.com/xen-troops/xen.git;protocol=https;branch=master"
+SRC_URI = "git://github.com/xen-troops/xen.git;protocol=https;branch=pv_camera"
