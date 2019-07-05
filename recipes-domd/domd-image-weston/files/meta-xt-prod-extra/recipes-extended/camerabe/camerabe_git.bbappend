@@ -1,7 +1,7 @@
 ################################################################################
 # Renesas R-Car
 ################################################################################
-SRCREV_rcar = "${AUTOREV}"
+SRCREV_rcar = ""
 
 SRC_URI_append_rcar = " git://github.com/xen-troops/camera_be.git;protocol=https;branch=master"
 
