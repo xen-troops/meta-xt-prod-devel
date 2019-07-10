@@ -7,4 +7,4 @@ SRC_URI_append_rcar = " git://github.com/xen-troops/camera_be.git;protocol=https
 
 EXTRA_OECMAKE_append_rcar = " -DWITH_DOC=OFF"
 
-RDEPENDS_${PN} = "libxenbe libconfig libv4l2"
+RDEPENDS_${PN} = "libxenbe libconfig libv4l"
