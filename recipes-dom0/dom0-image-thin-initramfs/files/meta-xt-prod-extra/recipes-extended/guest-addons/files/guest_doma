@@ -22,7 +22,7 @@ DOMAIN_NAME="DomA"
 SCRIPT_NAME="start_guest.sh"
 SCRIPT_PATH="/xt/scripts"
 GUEST="doma"
-GUEST_DEPENDENCIES="displbe bridge disks sndbe camerabe"
+GUEST_DEPENDENCIES="displbe bridge disks sndbe"
 
 # not running in Xen dom0 or domU
 if ! test -d /proc/xen ; then
