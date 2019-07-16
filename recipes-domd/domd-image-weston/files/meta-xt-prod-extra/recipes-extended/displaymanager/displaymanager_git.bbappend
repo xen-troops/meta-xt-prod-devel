@@ -7,7 +7,7 @@ SRC_URI_append = " \
     file://display_manager.conf \
 "
 
-RDEPENDS_${PN} += " dbus-cpp"
+RDEPENDS_${PN} += " dbus-cxx"
 
 EXTRA_OECMAKE_append = " -DWITH_DOC=OFF -DCMAKE_BUILD_TYPE=Release"
 
