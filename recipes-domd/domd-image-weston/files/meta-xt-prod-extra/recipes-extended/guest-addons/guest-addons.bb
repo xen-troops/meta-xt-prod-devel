@@ -29,7 +29,6 @@ SRC_URI = " \
     file://sndbe.service \
     file://sata_en.sh \
     file://systemd-networkd-wait-online.conf \
-    file://camerabe.service \
 "
 
 S = "${WORKDIR}"
@@ -39,7 +38,6 @@ inherit systemd
 PACKAGES += " \
     ${PN}-bridge-config \
     ${PN}-displbe-service \
-    ${PN}-camerabe-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
@@ -55,14 +53,11 @@ FILES_${PN}-bridge-config = " \
 
 SYSTEMD_PACKAGES = " \
     ${PN}-displbe-service \
-    ${PN}-camerabe-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
 
 SYSTEMD_SERVICE_${PN}-displbe-service = " displbe.service"
-
-SYSTEMD_SERVICE_${PN}-camerabe-service = " camerabe.service"
 
 SYSTEMD_SERVICE_${PN}-android-disks-service = " android-disks.service"
 
@@ -77,11 +72,6 @@ FILES_${PN}-android-disks-service = " \
 FILES_${PN}-displbe-service = " \
     ${systemd_system_unitdir}/displbe.service \
     ${base_prefix}${sysconfdir}/systemd/system/displbe \
-"
-
-FILES_${PN}-camerabe-service = " \
-    ${systemd_system_unitdir}/camerabe.service \
-    ${base_prefix}${sysconfdir}/systemd/system/camerabe \
 "
 
 FILES_${PN}-bridge-up-notification-service = " \
@@ -141,7 +131,6 @@ do_install() {
     ln -sf ${systemd_user_unitdir}/sndbe.service ${D}${sysconfdir}/systemd/user/default.target.wants
 
     ln -sf ${systemd_system_unitdir}/displbe.service ${D}${sysconfdir}/systemd/system/displbe
-    ln -sf ${systemd_system_unitdir}/camerabe.service ${D}${sysconfdir}/systemd/system/camerabe
 }
 
 FILES_${PN} = " \
