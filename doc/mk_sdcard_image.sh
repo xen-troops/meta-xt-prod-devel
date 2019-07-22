@@ -1,9 +1,14 @@
 #!/bin/bash -e
 
 MOUNT_POINT="/tmp/mntpoint"
+INITRAMFS_TMP="/tmp/ifs"
 CUR_STEP=1
+
 FORCE_INFLATION=0
 # see define_partitions() for definition of partitions (sizes, number and label)
+
+FORCE_DOMA_IMAGE_UPDATE=0
+# If 1, it will repack initramfs and add DomA Image(from DomA dir) to it
 
 ###############################################################################
 # DomA configuration
@@ -26,6 +31,7 @@ usage()
 	echo "  -s image-size   Optional, image size in GiB"
 	echo "  -u domain       Optional, unpack only specified domain: dom0, domd, domf, doma, domu"
 	echo "  -f              Optional, force rewrite of image file (useful for batch usage)"
+	echo "  -r              Optional, force repack of initiramfs and add DomA Image(from DomA dir) to it"
 
 	exit 1
 }
@@ -324,6 +330,10 @@ unpack_dom0()
 	local domd_name=`ls $db_base_folder | grep domd`
 	local domd_root=$db_base_folder/$domd_name
 
+	local doma_name=`ls $db_base_folder | grep android`
+	local doma_root=$db_base_folder/$doma_name
+	local doma_image=`find $doma_root -name Image`
+
 	local Image=`find $dom0_root -name Image`
 	local uInitramfs=`find $dom0_root -name uInitramfs`
 	local dom0dtb=`find $domd_root -name dom0.dtb`
@@ -339,6 +349,23 @@ unpack_dom0()
 	mount_part $loop_base $part $MOUNT_POINT
 
 	sudo mkdir "${MOUNT_POINT}/boot" || true
+
+	if [ ${FORCE_DOMA_IMAGE_UPDATE} -eq 1 ]; then
+		echo "Will start process of repacking Initramfs with updated DomA Image..."
+		local urifs_present=`which uirfs.sh 2>&1>/dev/null ; echo $?`
+
+		if [ ${urifs_present} -ne 0 ]; then
+			echo "unable to find uirfs.sh, please add it to PATH...."
+			exit 1
+		fi
+		if [ -d ${INITRAMFS_TMP} ]; then
+			rm -rf ${INITRAMFS_TMP}
+		fi
+		mkdir ${INITRAMFS_TMP}
+		uirfs.sh unpack ${uInitramfs} ${INITRAMFS_TMP}
+		cp ${doma_image} ${INITRAMFS_TMP}/xt/doma/Image
+		uirfs.sh pack ${uInitramfs} ${INITRAMFS_TMP}
+	fi
 
 	for f in $Image $uInitramfs $dom0dtb $xenpolicy $xenuImage ; do
 		sudo cp -L $f "${MOUNT_POINT}/boot/"
@@ -504,7 +531,7 @@ fi
 
 print_step "Parsing input parameters"
 
-while getopts ":p:d:c:s:u:f" opt; do
+while getopts ":p:d:c:s:u:fr" opt; do
 	case $opt in
 		p) ARG_DEPLOY_PATH="$OPTARG"
 		;;
@@ -517,6 +544,8 @@ while getopts ":p:d:c:s:u:f" opt; do
 		u) ARG_UNPACK_DOM="$OPTARG"
 		;;
 		f) FORCE_INFLATION=1
+		;;
+		r) FORCE_DOMA_IMAGE_UPDATE=1
 		;;
 		\?) echo "Invalid option -$OPTARG" >&2
 		exit 1
