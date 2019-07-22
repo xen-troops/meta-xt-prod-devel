@@ -5,6 +5,14 @@ CUR_STEP=1
 FORCE_INFLATION=0
 # see define_partitions() for definition of partitions (sizes, number and label)
 
+###############################################################################
+# DomA configuration
+###############################################################################
+DOMA_SYSTEM_PARTITION_ID=1
+DOMA_VENDOR_PARTITION_ID=2
+DOMA_MISC_PARTITION_ID=3
+DOMA_USERDATA_PARTITION_ID=4
+
 usage()
 {
 	echo "###############################################################################"
@@ -180,10 +188,10 @@ partition_image()
 
 		# parted generates error on all operation with "nested" disk, guard it with || true
 		sudo parted $loop_dev_a -s mklabel gpt || true
-		sudo parted $loop_dev_a -s mkpart xvda1 ext4 1MB  3148MB || true
-		sudo parted $loop_dev_a -s mkpart xvda2 ext4 3149MB  3418MB || true
-		sudo parted $loop_dev_a -s mkpart xvda3 ext4 3419MB  3420MB || true
-		sudo parted $loop_dev_a -s mkpart xvda4 ext4 3421MB  4421MB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_SYSTEM_PARTITION_ID}    ext4 1MB  3148MB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_VENDOR_PARTITION_ID}    ext4 3149MB  3418MB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_MISC_PARTITION_ID}      ext4 3419MB  3420MB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_USERDATA_PARTITION_ID}  ext4 3421MB  4421MB || true
 		sudo parted $loop_dev_a -s print
 		sudo partprobe $loop_dev_a || true
 
@@ -223,9 +231,9 @@ mkfs_domf()
 
 mkfs_doma()
 {
-	# Below we use 4 as number of partition inside android's partition.
-	# So it's partition 4 inside partition $DOMA_PARTITION.
-	mkfs_one $1 4 doma_user
+	# Below we use DOMA_USERDATA_PARTITION_ID as number of partition inside android's partition.
+	# So it's partition DOMA_USERDATA_PARTITION_ID inside partition $DOMA_PARTITION.
+	mkfs_one $1 ${DOMA_USERDATA_PARTITION_ID} doma_user
 }
 
 mkfs_domu()
@@ -374,10 +382,6 @@ unpack_doma()
 	local db_base_folder=$1
 	local loop_base=$2
 
-	local part_system=1
-	local part_vendor=2
-	local part_misc=3
-
 	local raw_system="/tmp/system.raw"
 	local raw_vendor="/tmp/vendor.raw"
 
@@ -394,11 +398,11 @@ unpack_doma()
 	simg2img $system $raw_system
 	simg2img $vendor $raw_vendor
 
-	sudo dd if=$raw_system of=${loop_base}p${part_system} bs=1M status=progress
-	sudo dd if=$raw_vendor of=${loop_base}p${part_vendor} bs=1M status=progress
+	sudo dd if=$raw_system of=${loop_base}p${DOMA_SYSTEM_PARTITION_ID} bs=1M status=progress
+	sudo dd if=$raw_vendor of=${loop_base}p${DOMA_VENDOR_PARTITION_ID} bs=1M status=progress
 
 	echo "Wipe out DomA/misc"
-	sudo dd if=/dev/zero of=${loop_base}p${part_misc} bs=1M count=1 || true
+	sudo dd if=/dev/zero of=${loop_base}p${DOMA_MISC_PARTITION_ID} bs=1M count=1 || true
 
 	rm -f $raw_system $raw_vendor
 }
