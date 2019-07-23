@@ -28,7 +28,7 @@ usage()
 	echo "  -p image-folder Base daily build folder where artifacts live"
 	echo "  -d image-file   Output image file or physical device"
 	echo "  -c config       Configuration of partitions for product: aos, ces2019, devel or gen3"
-	echo "  -s image-size   Optional, image size in GiB"
+	echo "  -s image-size   Optional, image size in GB"
 	echo "  -u domain       Optional, unpack only specified domain: dom0, domd, domf, doma, domu"
 	echo "  -f              Optional, force rewrite of image file (useful for batch usage)"
 	echo "  -r              Optional, force repack of initiramfs and add DomA Image(from DomA dir) to it"
@@ -39,7 +39,7 @@ usage()
 define_partitions()
 {
 	# Define partitions for different products.
-	# All numbers will be used as MiB (1024 KiB).
+	# All numbers will be used as MB.
 	# Products are listed in alphabetical order.
 	case $1 in
 		aos)
@@ -56,7 +56,7 @@ define_partitions()
 			DOMF_END=$((DOMF_START+4000))  # 8257
 			DOMF_PARTITION=3
 			DOMF_LABEL=domf
-			DEFAULT_IMAGE_SIZE_GIB=$(((DOMF_END/1024)+1))
+			DEFAULT_IMAGE_SIZE_GB=$(((DOMF_END/1024)+1))
 		;;
 		ces2019)
 			# prod-ces2019 [1..257][257..4257][4257..8680]
@@ -72,7 +72,7 @@ define_partitions()
 			DOMA_END=$((DOMA_START+4423))  # 8680
 			DOMA_PARTITION=3
 			DOMA_LABEL=doma
-			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
+			DEFAULT_IMAGE_SIZE_GB=$(((DOMA_END/1024)+1))
 		;;
 		devel)
 			# prod-devel [1..257][257..2257][2257..6680]
@@ -88,7 +88,7 @@ define_partitions()
 			DOMA_END=$((DOMA_START+4423))  # 6680
 			DOMA_PARTITION=3
 			DOMA_LABEL=doma
-			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
+			DEFAULT_IMAGE_SIZE_GB=$(((DOMA_END/1024)+1))
 		;;
 		gen3)
 			# prod-gen3-test [1..257][257..2257][2257..4257]
@@ -104,7 +104,7 @@ define_partitions()
 			DOMU_END=$((DOMU_START+2000))  # 4257
 			DOMU_PARTITION=3
 			DOMU_LABEL=domu
-			DEFAULT_IMAGE_SIZE_GIB=$(((DOMU_END/1024)+1))
+			DEFAULT_IMAGE_SIZE_GB=$(((DOMU_END/1024)+1))
 		;;
 		*)
 			echo "Unknown configuration provided for -c."
@@ -137,7 +137,7 @@ inflate_image()
 		return 0
 	fi
 
-	echo "Inflating image file at $dev of size ${size_gb}GiB"
+	echo "Inflating image file at $dev of size ${size_gb}GB"
 
 	local inflate=1
 	if [ -e $1 ] && [ $FORCE_INFLATION -ne 1 ] ; then
@@ -170,16 +170,16 @@ partition_image()
 	# create partitions
 	sudo parted -s $1 mklabel msdos || true
 
-	sudo parted -s $1 mkpart primary ext4 ${DOM0_START}MiB ${DOM0_END}MiB || true
-	sudo parted -s $1 mkpart primary ext4 ${DOMD_START}MiB ${DOMD_END}MiB || true
+	sudo parted -s $1 mkpart primary ext4 ${DOM0_START}MB ${DOM0_END}MB || true
+	sudo parted -s $1 mkpart primary ext4 ${DOMD_START}MB ${DOMD_END}MB || true
 	if [ ! -z ${DOMF_START} ]; then
-		sudo parted -s $1 mkpart primary ext4 ${DOMF_START}MiB ${DOMF_END}MiB || true
+		sudo parted -s $1 mkpart primary ext4 ${DOMF_START}MB ${DOMF_END}MB || true
 	fi
 	if [ ! -z ${DOMU_START} ]; then
-		sudo parted -s $1 mkpart primary ext4 ${DOMU_START}MiB ${DOMU_END}MiB || true
+		sudo parted -s $1 mkpart primary ext4 ${DOMU_START}MB ${DOMU_END}MB || true
 	fi
 	if [ ! -z ${DOMA_START} ]; then
-		sudo parted -s $1 mkpart primary ${DOMA_START}MiB ${DOMA_END}MiB || true
+		sudo parted -s $1 mkpart primary ${DOMA_START}MB ${DOMA_END}MB || true
 	fi
 	sudo parted $1 print
 	sudo partprobe $1
@@ -600,7 +600,7 @@ echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
 echo "Using device     : \"$ARG_DEPLOY_DEV\""
 
 if [ -z ${ARG_IMG_SIZE_GB} ]; then
-	ARG_IMG_SIZE_GB=${DEFAULT_IMAGE_SIZE_GIB}
+	ARG_IMG_SIZE_GB=${DEFAULT_IMAGE_SIZE_GB}
 fi
 inflate_image $ARG_DEPLOY_DEV $ARG_IMG_SIZE_GB
 
