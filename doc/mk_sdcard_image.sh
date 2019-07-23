@@ -188,10 +188,10 @@ partition_image()
 
 		# parted generates error on all operation with "nested" disk, guard it with || true
 		sudo parted $loop_dev_a -s mklabel gpt || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_SYSTEM_PARTITION_ID}    ext4 1MB  3148MB || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_VENDOR_PARTITION_ID}    ext4 3149MB  3418MB || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_MISC_PARTITION_ID}      ext4 3419MB  3420MB || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_USERDATA_PARTITION_ID}  ext4 3421MB  4421MB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_SYSTEM_PARTITION_ID}    ext4 1MiB  3148MiB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_VENDOR_PARTITION_ID}    ext4 3149MiB  3418MiB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_MISC_PARTITION_ID}      ext4 3419MiB  3420MiB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_USERDATA_PARTITION_ID}  ext4 3421MiB  4421MiB || true
 		sudo parted $loop_dev_a -s print
 		sudo partprobe $loop_dev_a || true
 
@@ -512,7 +512,7 @@ while getopts ":p:d:c:s:u:f" opt; do
 		;;
 		c) ARG_CONFIGURATION="$OPTARG"
 		;;
-		s) ARG_IMG_SIZE_GB="$OPTARG"
+		s) ARG_IMG_SIZE_GIB="$OPTARG"
 		;;
 		u) ARG_UNPACK_DOM="$OPTARG"
 		;;
@@ -570,10 +570,10 @@ fi
 echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
 echo "Using device     : \"$ARG_DEPLOY_DEV\""
 
-if [ -z ${ARG_IMG_SIZE_GB} ]; then
-	ARG_IMG_SIZE_GB=${DEFAULT_IMAGE_SIZE_GIB}
+if [ -z ${ARG_IMG_SIZE_GIB} ]; then
+	ARG_IMG_SIZE_GIB=${DEFAULT_IMAGE_SIZE_GIB}
 fi
-inflate_image $ARG_DEPLOY_DEV $ARG_IMG_SIZE_GB
+inflate_image $ARG_DEPLOY_DEV $ARG_IMG_SIZE_GIB
 
 loop_dev_in=`sudo losetup --find --partscan --show $ARG_DEPLOY_DEV`
 
