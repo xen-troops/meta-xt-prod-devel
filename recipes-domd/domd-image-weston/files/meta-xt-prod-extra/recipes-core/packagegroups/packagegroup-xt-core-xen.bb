@@ -8,4 +8,5 @@ RDEPENDS_packagegroup-xt-core-xen = "\
     xen-base \
     xen-flask \
     xen-xenstat \
+    xen-devd \
 "
