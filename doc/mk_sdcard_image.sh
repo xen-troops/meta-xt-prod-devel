@@ -11,7 +11,9 @@ FORCE_INFLATION=0
 DOMA_SYSTEM_PARTITION_ID=1
 DOMA_VENDOR_PARTITION_ID=2
 DOMA_MISC_PARTITION_ID=3
-DOMA_USERDATA_PARTITION_ID=4
+DOMA_VBMETA_PARTITION_ID=4
+DOMA_METADATA_PARTITION_ID=5
+DOMA_USERDATA_PARTITION_ID=6
 
 usage()
 {
@@ -63,7 +65,7 @@ define_partitions()
 			DOMD_PARTITION=2
 			DOMD_LABEL=domd
 			DOMA_START=$DOMD_END  # Also is used as flag that DomA is defined
-			DOMA_END=$((DOMA_START+4423))  # 8680
+			DOMA_END=$((DOMA_START+4440))  # 8697
 			DOMA_PARTITION=3
 			DOMA_LABEL=doma
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
@@ -79,7 +81,7 @@ define_partitions()
 			DOMD_PARTITION=2
 			DOMD_LABEL=domd
 			DOMA_START=$DOMD_END  # Also is used as flag that DomA is defined
-			DOMA_END=$((DOMA_START+4423))  # 6680
+			DOMA_END=$((DOMA_START+4440))  # 6697
 			DOMA_PARTITION=3
 			DOMA_LABEL=doma
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
@@ -191,7 +193,9 @@ partition_image()
 		sudo parted $loop_dev_a -s mkpart xvda${DOMA_SYSTEM_PARTITION_ID}    ext4 1MiB  3148MiB || true
 		sudo parted $loop_dev_a -s mkpart xvda${DOMA_VENDOR_PARTITION_ID}    ext4 3149MiB  3418MiB || true
 		sudo parted $loop_dev_a -s mkpart xvda${DOMA_MISC_PARTITION_ID}      ext4 3419MiB  3420MiB || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_USERDATA_PARTITION_ID}  ext4 3421MiB  4421MiB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_VBMETA_PARTITION_ID}    ext4 3421MiB  3422MiB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_METADATA_PARTITION_ID}  ext4 3423MiB  3434MiB || true
+		sudo parted $loop_dev_a -s mkpart xvda${DOMA_USERDATA_PARTITION_ID}  ext4 3435MiB  4435MiB || true
 		sudo parted $loop_dev_a -s print
 		sudo partprobe $loop_dev_a || true
 
@@ -231,9 +235,11 @@ mkfs_domf()
 
 mkfs_doma()
 {
-	# Below we use DOMA_USERDATA_PARTITION_ID as number of partition inside android's partition.
-	# So it's partition DOMA_USERDATA_PARTITION_ID inside partition $DOMA_PARTITION.
-	mkfs_one $1 ${DOMA_USERDATA_PARTITION_ID} doma_user
+	# Below we use DOMA_METADATA_PARTITION_ID, DOMA_USERDATA_PARTITION_ID as number
+	# of partition inside android's partition.So it's partitions
+	# DOMA_METADATA_PARTITION_ID,DOMA_USERDATA_PARTITION_ID inside partition $DOMA_PARTITION.
+	mkfs_one $1 ${DOMA_METADATA_PARTITION_ID} metadata
+	mkfs_one $1 ${DOMA_USERDATA_PARTITION_ID} userdata
 }
 
 mkfs_domu()
@@ -391,6 +397,7 @@ unpack_doma()
 	local doma_root=$db_base_folder/$doma_name
 	local system=`find $doma_root -name "system.img"`
 	local vendor=`find $doma_root -name "vendor.img"`
+	local vbmeta=`find $doma_root -name "vbmeta.img"`
 
 	echo "DomA system image is at $system"
 	echo "DomA vendor image is at $vendor"
@@ -400,6 +407,10 @@ unpack_doma()
 
 	sudo dd if=$raw_system of=${loop_base}p${DOMA_SYSTEM_PARTITION_ID} bs=1M status=progress
 	sudo dd if=$raw_vendor of=${loop_base}p${DOMA_VENDOR_PARTITION_ID} bs=1M status=progress
+
+	if [ ! -z ${vbmeta} ]; then
+		sudo dd if=$vbmeta of=${loop_base}p${DOMA_VBMETA_PARTITION_ID} bs=1M status=progress
+	fi
 
 	echo "Wipe out DomA/misc"
 	sudo dd if=/dev/zero of=${loop_base}p${DOMA_MISC_PARTITION_ID} bs=1M count=1 || true
