@@ -10,6 +10,9 @@ FORCE_INFLATION=0
 FORCE_DOMA_IMAGE_UPDATE=0
 # If 1, it will repack initramfs and add DomA Image(from DomA dir) to it
 
+FORCE_AVB=0
+# Create specific android config with Android verified boot cmdline
+
 ###############################################################################
 # DomA configuration
 ###############################################################################
@@ -34,6 +37,7 @@ usage()
 	echo "  -u domain       Optional, unpack only specified domain: dom0, domd, domf, doma, domu"
 	echo "  -f              Optional, force rewrite of image file (useful for batch usage)"
 	echo "  -r              Optional, force repack of initiramfs and add DomA Image(from DomA dir) to it"
+	echo "  -v              Optional, create specific android config with Android verified boot cmdline"
 
 	exit 1
 }
@@ -370,6 +374,11 @@ unpack_dom0()
 		mkdir ${INITRAMFS_TMP}
 		uirfs.sh unpack ${uInitramfs} ${INITRAMFS_TMP}
 		cp ${doma_image} ${INITRAMFS_TMP}/xt/doma/Image
+
+		if [ ${FORCE_AVB} -eq 1 ]; then
+			sed  -e 's:root\=\/dev\/xvda1:'"$DM_CMD"':g' ${INITRAMFS_TMP}/xt/dom.cfg/doma.cfg > ${INITRAMFS_TMP}/xt/dom.cfg/doma-avb.cfg;
+		fi
+
 		uirfs.sh pack ${uInitramfs} ${INITRAMFS_TMP}
 	fi
 
@@ -425,6 +434,9 @@ unpack_doma()
 	local system=`find $doma_root -name "system.img"`
 	local vendor=`find $doma_root -name "vendor.img"`
 	local vbmeta=`find $doma_root -name "vbmeta.img"`
+	local system_dev=${loop_base}p${DOMA_SYSTEM_PARTITION_ID}
+	local vendor_dev=${loop_base}p${DOMA_VENDOR_PARTITION_ID}
+	local vbmeta_dev=${loop_base}p${DOMA_VBMETA_PARTITION_ID}
 
 	echo "DomA system image is at $system"
 	echo "DomA vendor image is at $vendor"
@@ -432,17 +444,29 @@ unpack_doma()
 	simg2img $system $raw_system
 	simg2img $vendor $raw_vendor
 
-	sudo dd if=$raw_system of=${loop_base}p${DOMA_SYSTEM_PARTITION_ID} bs=1M status=progress
-	sudo dd if=$raw_vendor of=${loop_base}p${DOMA_VENDOR_PARTITION_ID} bs=1M status=progress
+	sudo dd if=$raw_system of=${system_dev} bs=1M status=progress
+	sudo dd if=$raw_vendor of=${vendor_dev} bs=1M status=progress
 
 	if [ ! -z ${vbmeta} ]; then
-		sudo dd if=$vbmeta of=${loop_base}p${DOMA_VBMETA_PARTITION_ID} bs=1M status=progress
+		sudo dd if=$vbmeta of=${vbmeta_dev} bs=1M status=progress
 	fi
 
 	echo "Wipe out DomA/misc"
 	sudo dd if=/dev/zero of=${loop_base}p${DOMA_MISC_PARTITION_ID} bs=1M count=1 || true
 
 	rm -f $raw_system $raw_vendor
+
+	if [ ${FORCE_AVB} -eq 1 ]; then
+		echo "AVB option present, will generate DM cmd ..."
+		local system_partuuid=`ls -l /dev/disk/by-partuuid/  | grep ${system_dev:5} | awk '{print $9}'`
+		local vbmeta_partuuid=`ls -l /dev/disk/by-partuuid/  | grep ${vbmeta_dev:5} | awk '{print $9}'`
+		local vbmeta_sha256=`sha256sum ${vbmeta} | awk '{print $1}'`
+		echo "system partuuid = "${system_partuuid}
+		echo "vbmeta partuuid = "${vbmeta_partuuid}
+		echo "vbmeta sha256 = "${vbmeta_sha256}
+		local dm_cmd="dm=\\\\\""`dd if=${vbmeta} bs=1 skip=1292 count=219`" 2 ignore_corruption ignore_zero_blocks\\\\\" root=/dev/dm-0 androidboot.vbmeta.device=PARTUUID=${vbmeta_partuuid} androidboot.veritymode=ignore_corruption androidboot.vbmeta.hash_alg=sha256 androidboot.vbmeta.size=4096 androidboot.vbmeta.avb_version=1.1 androidboot.vbmeta.device_state=unlocked androidboot.vbmeta.digest=${vbmeta_sha256}"
+		export DM_CMD=`echo ${dm_cmd} | sed  -e 's/$(ANDROID_SYSTEM_PARTUUID)/'"$system_partuuid"'/g'`
+	fi
 }
 
 unpack_image()
@@ -450,7 +474,6 @@ unpack_image()
 	local db_base_folder=$1
 	local img_output_file=$2
 
-	unpack_dom0 $db_base_folder $img_output_file
 	unpack_domd $db_base_folder $img_output_file
 	if [ ! -z ${DOMF_START} ]; then
 		unpack_domf $db_base_folder $img_output_file
@@ -470,6 +493,9 @@ unpack_image()
 		unpack_doma $db_base_folder $loop_dev_a
 		sudo losetup -d $loop_dev_a
 	fi
+	# We need to process dom0 after DomA, because on unpack_doma will generate
+	# cmdline for AVB
+	unpack_dom0 $db_base_folder $img_output_file
 }
 
 ###############################################################################
@@ -542,7 +568,7 @@ fi
 
 print_step "Parsing input parameters"
 
-while getopts ":p:d:c:s:u:fr" opt; do
+while getopts ":p:d:c:s:u:frv" opt; do
 	case $opt in
 		p) ARG_DEPLOY_PATH="$OPTARG"
 		;;
@@ -557,6 +583,8 @@ while getopts ":p:d:c:s:u:fr" opt; do
 		f) FORCE_INFLATION=1
 		;;
 		r) FORCE_DOMA_IMAGE_UPDATE=1
+		;;
+		v) FORCE_AVB=1
 		;;
 		\?) echo "Invalid option -$OPTARG" >&2
 		exit 1
