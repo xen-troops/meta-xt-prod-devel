@@ -33,6 +33,11 @@ do_install_append_r8a7795() {
             -i ${D}/${sysconfdir}/xdg/weston/weston.ini
     fi
 
+    if echo "${MACHINEOVERRIDES}" | grep -qi "kingfisher"; then
+        sed -i '/name=HDMI\-A\-1/a mode=1920x1080@60.0' \
+        ${D}/${sysconfdir}/xdg/weston/weston.ini
+    fi
+
     # H3ULCB has neither HDMI-A-2 nor VGA-1
     if echo "${MACHINEOVERRIDES}" | grep -qi "h3ulcb"; then
         return
