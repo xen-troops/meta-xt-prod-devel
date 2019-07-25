@@ -13,6 +13,7 @@ python __anonymous () {
 }
 
 SRC_URI_append = "file://weston-seats.rules \
+                  file://weston-seats-kf.rules \
 "
 
 FILES_${PN} += " \
@@ -22,4 +23,9 @@ FILES_${PN} += " \
 do_install_append() {
     install -d ${D}${sysconfdir}/udev/rules.d
     install -m 0644 ${WORKDIR}/weston-seats.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
+}
+
+do_install_append_kingfisher() {
+    install -d ${D}${sysconfdir}/udev/rules.d
+    install -m 0644 ${WORKDIR}/weston-seats-kf.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
 }
