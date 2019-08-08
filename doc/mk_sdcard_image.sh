@@ -342,6 +342,11 @@ unpack_dom0()
 	echo "Xen policy is at $xenpolicy"
 	echo "Xen image is at $xenuImage"
 
+	if [ $(echo "$Image" | wc -w) -gt 1 ]; then
+		echo "Error: Too many kernel images were found."
+		exit 1
+	fi
+
 	mount_part $loop_base $part $MOUNT_POINT
 
 	sudo mkdir "${MOUNT_POINT}/boot" || true
