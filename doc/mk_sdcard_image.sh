@@ -133,6 +133,15 @@ inflate_image()
 		return 0
 	fi
 
+	# If SD card is specified as target, but not plugged into PC,
+	# we will have incorrect situation: file will be created inside /dev folder
+	# with name like /dev/sdc. This error sometimes is hard to clarify.
+	# In order to avoid such confusion we will not create files inside /dev.
+	if [[ "$dev" == /dev/* ]]; then
+		echo "Error: device is not connected."
+		exit 1
+	fi
+
 	echo "Inflating image file at $dev of size ${size_gb}GiB"
 
 	local inflate=1
