@@ -1,23 +1,7 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-
 ################################################################################
 # Following inc file defines XEN version for the product and its SRC_URI
 ################################################################################
 require xen-version.inc
-
-################################################################################
-# Renesas R-Car
-################################################################################
-# N.B. as Xen doesn't support partial .cfg as kernel does
-# we need to patch it to select disable IPMMU PGT sharing for
-# H3 v2.0 and M3 machines
-SRC_URI_append_r8a7795-es2 = " \
-    file://0001-ipmmu-vmsa-Disable-CONFIG_RCAR_IPMMU_PGT_IS_SHARED.patch \
-"
-
-SRC_URI_append_r8a7796 = " \
-    file://0001-ipmmu-vmsa-Disable-CONFIG_RCAR_IPMMU_PGT_IS_SHARED.patch \
-"
 
 ################################################################################
 # Generic
