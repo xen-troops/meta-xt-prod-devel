@@ -139,23 +139,27 @@ you could reuse already provided binaries by making symlinks to corresponding ar
 
 For example (Salvator-XS case),
 
-ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domd.tar.gz
+ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz \
+rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domd.tar.gz
 
 AOS VIS prebuilts:
 
-AOS_VIS_PACKAGE_DIR should points to the directory with: aos-vis_git-r0_aarch64.ipk, ca-certificates_20170717-r0_all.ipk
+AOS_VIS_PACKAGE_DIR should points to the directory with:
+aos-vis_git-r0_aarch64.ipk, ca-certificates_20170717-r0_all.ipk
 
 
 5. Run the build script for current stable release:
 
-python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product PRODUCT_NAME --branch RELEASE_NAME --with-local-conf --config xt-prod-devel.cfg --with-do-build
+python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product PRODUCT_NAME \
+--branch RELEASE_NAME --with-local-conf --config xt-prod-devel.cfg --with-do-build
 
 Where the PRODUCT_NAME depends on whether prebuilt EVA proprietary packages are used or not:
 - devel (to use prebuilt EVA proprietary packages)
 - devel-src (to build Graphics DDK from sources)
 
 Where the RELEASE_NAME name is the name of the release to be built.
-This is done in order to track product releases easily and have a possibility to build any release just by pointing a proper release name.
+This is done in order to track product releases easily and have a possibility to build any release
+just by pointing a proper release name.
 Please note, if "branch" parameter is not set then the current product's snapshot will be built.
 
 Hereafter the supported MACHINE_NAMEs are:
