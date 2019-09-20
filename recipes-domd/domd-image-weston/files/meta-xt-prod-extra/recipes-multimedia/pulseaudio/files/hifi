@@ -1,0 +1,50 @@
+# Use case Configuration for Renesas H3 board
+
+SectionVerb {
+        EnableSequence [
+                exec "echo Setting defaults for ak4613"
+                cdev "hw:ak4613"
+                cset "name='DVC Out Playback Volume' 30%"
+                cset "name='DVC In Capture Volume' 10%"
+        ]
+        DisableSequence [
+        ]
+}
+
+
+SectionDevice."Headphone".0 {
+        Value {
+                JackName "Headphone Jack"
+                PlaybackChannels 2
+		PlaybackPCM "hw:0"
+        }
+
+        EnableSequence [
+                cdev "hw:ak4613"
+                cset "name='DVC Out Playback Volume' 30%"
+        ]
+        DisableSequence [
+                cdev "hw:ak4613"
+                cset "name='DVC Out Playback Volume' 0%"
+        ]
+}
+
+SectionDevice."Mic".0 {
+        Value {
+                JackName "Mic Jack"
+		CaptureChannels 2
+		CapturePCM "hw:0"
+        }
+
+        EnableSequence [
+                cdev "hw:ak4613"
+                cset "name='DVC In Capture Volume' 10%"
+        ]
+
+        DisableSequence [
+                cdev "hw:ak4613"
+                cset "name='DVC In Capture Volume' 0%"
+        ]
+}
+
+
