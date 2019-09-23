@@ -39,6 +39,7 @@ PACKAGES += " \
     ${PN}-bridge-config \
     ${PN}-displbe-service \
     ${PN}-sndbe-service \
+    ${PN}-display-manager-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
@@ -55,6 +56,7 @@ FILES_${PN}-bridge-config = " \
 SYSTEMD_PACKAGES = " \
     ${PN}-displbe-service \
     ${PN}-sndbe-service \
+    ${PN}-display-manager-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
@@ -62,6 +64,8 @@ SYSTEMD_PACKAGES = " \
 SYSTEMD_SERVICE_${PN}-displbe-service = " displbe.service"
 
 SYSTEMD_SERVICE_${PN}-sndbe-service = " sndbe.service"
+
+SYSTEMD_SERVICE_${PN}-display-manager-service = " display-manager.service"
 
 SYSTEMD_SERVICE_${PN}-android-disks-service = " android-disks.service"
 
@@ -79,6 +83,10 @@ FILES_${PN}-displbe-service = " \
 
 FILES_${PN}-sndlbe-service = " \
     ${systemd_system_unitdir}/sndbe.service \
+"
+
+FILES_${PN}-display-manager-service = " \
+    ${systemd_system_unitdir}/display-manager.service \
 "
 
 FILES_${PN}-bridge-up-notification-service = " \
@@ -104,15 +112,6 @@ do_install() {
     install -d ${D}${systemd_system_unitdir}
     install -m 0644 ${WORKDIR}/*.service ${D}${systemd_system_unitdir}
 
-    # N.B. display-manager must be installed as a user service which
-    # is not supported by systemd.bbclass at the moment, so
-    # do all dirty work by hands
-    rm ${D}${systemd_system_unitdir}/display-manager.service
-    install -d ${D}${systemd_user_unitdir}
-    install -m 0644 ${WORKDIR}/display-manager.service ${D}${systemd_user_unitdir}
-    install -d ${D}${sysconfdir}/systemd/user/default.target.wants
-    ln -sf ${systemd_user_unitdir}/display-manager.service ${D}${sysconfdir}/systemd/user/default.target.wants
-
     install -d ${D}${sysconfdir}/tmpfiles.d
     install -m 0644 ${WORKDIR}/android-disks.conf ${D}${sysconfdir}/tmpfiles.d/android-disks.conf
 
@@ -134,7 +133,5 @@ do_install() {
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/*.sh \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_CFG}/*.cfg \
-    ${systemd_user_unitdir}/display-manager.service \
-    ${base_prefix}${sysconfdir}/systemd/user/default.target.wants \
 "
 

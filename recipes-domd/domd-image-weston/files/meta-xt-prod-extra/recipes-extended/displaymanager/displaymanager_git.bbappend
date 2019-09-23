@@ -12,8 +12,8 @@ RDEPENDS_${PN} += " dbus-cxx"
 EXTRA_OECMAKE_append = " -DWITH_DOC=OFF -DCMAKE_BUILD_TYPE=Release"
 
 do_install_append() {
-    install -d ${D}${sysconfdir}/dbus-1/session.d
-    install -m 0755 ${WORKDIR}/display_manager.conf ${D}${sysconfdir}/dbus-1/session.d/
+    install -d ${D}${sysconfdir}/dbus-1/system.d
+    install -m 0755 ${WORKDIR}/display_manager.conf ${D}${sysconfdir}/dbus-1/system.d/
 }
 
 FILES_${PN} += " \
