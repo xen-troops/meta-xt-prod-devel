@@ -129,8 +129,6 @@ do_install() {
 
     install -d ${D}${sysconfdir}/systemd/user/default.target.wants
     ln -sf ${systemd_user_unitdir}/sndbe.service ${D}${sysconfdir}/systemd/user/default.target.wants
-
-    ln -sf ${systemd_system_unitdir}/displbe.service ${D}${sysconfdir}/systemd/system/displbe
 }
 
 FILES_${PN} = " \
