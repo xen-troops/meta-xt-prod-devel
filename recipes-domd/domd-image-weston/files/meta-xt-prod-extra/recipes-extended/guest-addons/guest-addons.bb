@@ -38,6 +38,7 @@ inherit systemd
 PACKAGES += " \
     ${PN}-bridge-config \
     ${PN}-displbe-service \
+    ${PN}-sndbe-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
@@ -53,11 +54,14 @@ FILES_${PN}-bridge-config = " \
 
 SYSTEMD_PACKAGES = " \
     ${PN}-displbe-service \
+    ${PN}-sndbe-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
 
 SYSTEMD_SERVICE_${PN}-displbe-service = " displbe.service"
+
+SYSTEMD_SERVICE_${PN}-sndbe-service = " sndbe.service"
 
 SYSTEMD_SERVICE_${PN}-android-disks-service = " android-disks.service"
 
@@ -71,7 +75,10 @@ FILES_${PN}-android-disks-service = " \
 
 FILES_${PN}-displbe-service = " \
     ${systemd_system_unitdir}/displbe.service \
-    ${base_prefix}${sysconfdir}/systemd/system/displbe \
+"
+
+FILES_${PN}-sndlbe-service = " \
+    ${systemd_system_unitdir}/sndbe.service \
 "
 
 FILES_${PN}-bridge-up-notification-service = " \
@@ -122,20 +129,12 @@ do_install() {
 
     install -d ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_CFG}
     install -m 0744 ${WORKDIR}/${DM_CONFIG} ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_CFG}/dm.cfg
-
-    install -d ${D}${systemd_user_unitdir}
-    install -m 0644 ${WORKDIR}/sndbe.service ${D}${systemd_user_unitdir}
-    rm -f ${D}${systemd_system_unitdir}/sndbe.service
-
-    install -d ${D}${sysconfdir}/systemd/user/default.target.wants
-    ln -sf ${systemd_user_unitdir}/sndbe.service ${D}${sysconfdir}/systemd/user/default.target.wants
 }
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/*.sh \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_CFG}/*.cfg \
     ${systemd_user_unitdir}/display-manager.service \
-    ${systemd_user_unitdir}/sndbe.service \
     ${base_prefix}${sysconfdir}/systemd/user/default.target.wants \
 "
 
