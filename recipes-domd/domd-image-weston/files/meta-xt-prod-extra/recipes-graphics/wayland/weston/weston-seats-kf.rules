@@ -1,2 +1,2 @@
-DEVPATH=="/devices/platform/soc/ee00*.usb/usb*/*/*1/*", ENV{WL_OUTPUT}="HDMI-A-1"
-DEVPATH=="/devices/platform/soc/ee00*.usb/usb*/*/*2/*", ENV{WL_OUTPUT}="HDMI-A-2"
+DEVPATH=="/devices/platform/soc/ee00*.usb/usb*/*/*.1/*", ENV{WL_OUTPUT}="HDMI-A-1"
+DEVPATH=="/devices/platform/soc/ee00*.usb/usb*/*/*.2/*", ENV{WL_OUTPUT}="HDMI-A-2"
