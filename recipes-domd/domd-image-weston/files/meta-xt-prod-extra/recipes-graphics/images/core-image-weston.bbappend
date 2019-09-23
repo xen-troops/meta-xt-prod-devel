@@ -10,6 +10,7 @@ IMAGE_INSTALL_append = " \
     kmscube \
     optee-os \
     displaymanager \
+    guest-addons-display-manager-service \
 "
 
 python __anonymous () {
