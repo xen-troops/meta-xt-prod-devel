@@ -1,7 +1,22 @@
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+
 ################################################################################
 # Following inc file defines XEN version for the product and its SRC_URI
 ################################################################################
 require xen-version.inc
+
+################################################################################
+# Renesas R-Car
+################################################################################
+# Use Legacy IPMMU-VMSA driver for H3 ES2.0 and M3 based machines
+# (for H3 ES3.0 and M3N based machines new IPMMU-VMSA driver is used).
+SRC_URI_append_r8a7795-es2 = " \
+    file://0001-xt_defconfig-Enable-legacy-IPMMU-VMSA-support.patch \
+"
+
+SRC_URI_append_r8a7796 = " \
+    file://0001-xt_defconfig-Enable-legacy-IPMMU-VMSA-support.patch \
+"
 
 ################################################################################
 # Generic
