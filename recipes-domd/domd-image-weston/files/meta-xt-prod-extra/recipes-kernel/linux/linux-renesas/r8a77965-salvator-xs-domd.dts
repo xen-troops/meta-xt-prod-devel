@@ -56,6 +56,10 @@
 
 /delete-node/&adsp;
 
+&sdhi2 {
+	/delete-property/iommus;
+};
+
 &pciec1 {
 	/* Please use exclusively to sata node */
 	status = "disabled";
@@ -64,26 +68,6 @@
 &sata {
 	/* Please use exclusively to pciec1 node */
 	status = "okay";
-};
-
-&dmac0 {
-	/delete-property/iommus;
-};
-
-&dmac1 {
-	/delete-property/iommus;
-};
-
-&dmac2 {
-	/delete-property/iommus;
-};
-
-&audma0 {
-	/delete-property/iommus;
-};
-
-&audma1 {
-	/delete-property/iommus;
 };
 
 /* Xen will provide its own GIC, mask ours */
