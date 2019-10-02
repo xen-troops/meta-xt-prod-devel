@@ -57,22 +57,7 @@
 
 /delete-node/&adsp;
 
-&dmac0 {
-	/delete-property/iommus;
-};
-
-&dmac1 {
-	/delete-property/iommus;
-};
-
-&dmac2 {
-	/delete-property/iommus;
-};
-&audma0 {
-	/delete-property/iommus;
-};
-
-&audma1 {
+&sdhi2 {
 	/delete-property/iommus;
 };
 
