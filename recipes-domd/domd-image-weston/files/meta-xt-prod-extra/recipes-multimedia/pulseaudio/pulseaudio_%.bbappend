@@ -6,7 +6,6 @@ SRC_URI_append = " \
     file://system.pa \
     file://daemon.conf \
     file://pulseaudio.service \
-    file://pulseaudio.socket \
 "
 
 SRC_URI_append_h3ulcb-4x2g-kf-xt = " \
@@ -36,7 +35,7 @@ FILES_${PN} = " \
 "
 
 SYSTEMD_PACKAGES = "${PN}"
-SYSTEMD_SERVICE_${PN} = " pulseaudio.service pulseaudio.socket"
+SYSTEMD_SERVICE_${PN} = " pulseaudio.service"
 
 set_cfg_value () {
 	sed -i -e "s~\(; *\)\?$2 =.*~$2 = $3~" "$1"
@@ -56,7 +55,6 @@ do_install_append () {
 
     install -d ${D}${systemd_system_unitdir}
     install -m 0644 ${WORKDIR}/pulseaudio.service ${D}${systemd_system_unitdir} 
-    install -m 0644 ${WORKDIR}/pulseaudio.socket ${D}${systemd_system_unitdir} 
 
     set_cfg_value ${D}/${sysconfdir}/pulse/client.conf autospawn no
     set_cfg_value ${D}/${sysconfdir}/pulse/client.conf default-server /var/run/pulse/native
