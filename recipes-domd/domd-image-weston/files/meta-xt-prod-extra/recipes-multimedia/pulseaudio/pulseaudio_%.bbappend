@@ -11,7 +11,6 @@ SRC_URI_append = " \
 SRC_URI_append_h3ulcb-4x2g-kf-xt = " \
     file://rsnddai0ak4613h.conf \
     file://hifi \
-    file://system_h3ulcb-4x2g-kf-xt.pa \
     file://pulseaudio-bluetooth.conf \
     file://pulseaudio-ofono.conf \
 "
@@ -21,9 +20,6 @@ inherit systemd
 INITSCRIPT_PACKAGES = "${PN}-server"
 INITSCRIPT_NAME_${PN}-server = "pulseaudio"
 INITSCRIPT_PARAMS_${PN}-server = "defaults 30"
-
-SYSTEM_PA = "system.pa"
-SYSTEM_PA_h3ulcb-4x2g-kf-xt = "system_h3ulcb-4x2g-kf-xt.pa"
 
 FILES_${PN}-server += " \
     ${datadir}/alsa/ucm \
@@ -47,7 +43,7 @@ set_cfg_value () {
 do_install_append () {
     install -d ${D}/etc/pulse
 
-    install -m 0644 ${WORKDIR}/${SYSTEM_PA} ${D}/etc/pulse/system.pa
+    install -m 0644 ${WORKDIR}/system.pa ${D}/etc/pulse/system.pa
     install -m 0644 ${WORKDIR}/daemon.conf ${D}/etc/pulse/daemon.conf
 
     rm -rf ${D}/usr/lib/systemd
