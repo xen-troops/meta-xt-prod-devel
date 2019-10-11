@@ -407,6 +407,16 @@ DISTRO_FEATURES_append = " virtualization"
 MACHINEOVERRIDES .= ":rcar"
 
 DISTRO_FEATURES_remove = " x11 gtk gobject-introspection-data nfc irda zeroconf 3g"
+
+# Remove multimedia options if XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR is not defined
+MACHINE_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR','','','multimedia', d)}"
+DISTRO_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR','','','mm-test', d)}"
+DISTRO_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR','','','h264dec_lib', d)}"
+DISTRO_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR','','','h264enc_lib', d)}"
+DISTRO_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR','','','aaclcdec_lib', d)}"
+DISTRO_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR','','','aaclcdec_mdw', d)}"
+DISTRO_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR','','','use_eva_pkg', d)}"
+
 ASSUME_PROVIDED += "sync-native"
 HOSTTOOLS += "sync"
 ASSUME_PROVIDED += "bison-native"
