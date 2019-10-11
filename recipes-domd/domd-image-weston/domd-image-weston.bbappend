@@ -170,6 +170,8 @@ configure_versions_rcar() {
     if echo "${MACHINEOVERRIDES}" | grep -qiv "kingfisher"; then
         base_add_conf_value ${local_conf} DISTRO_FEATURES_remove "wifi bluetooth"
     fi
+
+    base_update_conf_value ${local_conf} XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR "${XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR}"
 }
 
 # In order to copy proprietary "multimedia" packages,
