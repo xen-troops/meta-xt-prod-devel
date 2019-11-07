@@ -89,6 +89,7 @@ we have an ability to flash bootloader image(s) right here in U-Boot (images mus
 Partitions and offsets the images need to be flashed to were retrieved here:
 https://github.com/renesas-rcar/flash_writer/blob/rcar_gen3/docs/application-note.md#348-write-to-the-s-record-format-images-to-the-emmc
 
+NOTE 1
 Pay attention that tee.bin from the daily build is provided in two forms: with a prepended header and raw binary.
 In the command below, we use raw form which name starts with 'tee_raw-*'.
 File without '_raw' in the name can not be used for flashing as described below.
@@ -96,6 +97,18 @@ In case your build does not contain 'raw' tee binary, you can remove the header 
 The header can be recognized by the presence of 'OPTE' in the first four characters of the file.
 In order to remove it:
 dd bs=28 skip=1 if=<your_tee_with_header.bin> of=tee.bin
+
+NOTE 2
+To select source of loaders, use on-board switches: SW10 on Salvator-X/XS and SW6 on StarterKit.
+For Salvator boards set SW10[5..8] to [OFF OFF ON OFF] for eMMC and inverted values [ON ON OFF ON] for HyperFlash.
+For StarterKit set SW6[4] to [OFF] for bootloaders on eMMC, and [ON] for HyperFlash.
+
+NOTE 3
+To check origin of bootloaders, look for one of the following lines on board start.
+Either
+NOTICE:  BL2: Boot device is HyperFlash
+or
+NOTICE:  BL2: Boot device is eMMC
 
 setenv flash_bl2 'tftp 0x48000000 bl2.bin; mmc dev 1 1; mmc write 0x48000000 0x1E 0x162;'
 setenv flash_bl31 'tftp 0x48000000 bl31.bin; mmc dev 1 1; mmc write 0x48000000 0x200 0xE00;'
