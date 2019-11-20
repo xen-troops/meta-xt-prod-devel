@@ -279,28 +279,24 @@
 	iommus = <&ipmmu_vp1 9>;
 };
 
+&imrlx4_ch0 {
+	iommus = <&ipmmu_vc1 0>;
+};
+
+&imrlx4_ch1 {
+	iommus = <&ipmmu_vc1 0>;
+};
+
+&imrlx4_ch2 {
+	iommus = <&ipmmu_vc0 1>;
+};
+
+&imrlx4_ch3 {
+	iommus = <&ipmmu_vc0 1>;
+};
+
 / {
 	soc {
-		imr-lx4@fe860000 {
-			xen,passthrough;
-			iommus = <&ipmmu_vc1 0>;
-		};
-
-		imr-lx4@fe870000 {
-			xen,passthrough;
-			iommus = <&ipmmu_vc1 0>;
-		};
-
-		imr-lx4@fe880000 {
-			xen,passthrough;
-			iommus = <&ipmmu_vc0 1>;
-		};
-
-		imr-lx4@fe890000 {
-			xen,passthrough;
-			iommus = <&ipmmu_vc0 1>;
-		};
-
 		gsx_pv0_domd {
 			xen,passthrough;
 			iommus = <&ipmmu_pv0 0>;
@@ -500,3 +496,7 @@
 &vspbd			{ xen,passthrough; };
 &vspi0			{ xen,passthrough; };
 &vspi1			{ xen,passthrough; };
+&imrlx4_ch0		{ xen,passthrough; };
+&imrlx4_ch1		{ xen,passthrough; };
+&imrlx4_ch2		{ xen,passthrough; };
+&imrlx4_ch3		{ xen,passthrough; };
