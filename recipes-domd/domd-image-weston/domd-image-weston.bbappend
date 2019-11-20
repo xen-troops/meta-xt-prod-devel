@@ -80,6 +80,10 @@ XT_QUIRK_PATCH_SRC_URI_rcar = "\
     file://0001-Force-RCAR_LOSSY_ENABLE-to-0-until-Xen-is-fixed-to-p.patch;patchdir=meta-renesas \
 "
 
+XT_QUIRK_PATCH_SRC_URI_append_h3ulcb-4x2g-kf = "\
+    file://0001-linux-renesas-Remove-patch-230-from-renesas.scc.patch;patchdir=meta-rcar \
+"
+
 XT_BB_LOCAL_CONF_FILE_rcar = "meta-xt-prod-extra/doc/local.conf.rcar-domd-image-weston"
 XT_BB_LAYERS_FILE_rcar = "meta-xt-prod-extra/doc/bblayers.conf.rcar-domd-image-weston"
 

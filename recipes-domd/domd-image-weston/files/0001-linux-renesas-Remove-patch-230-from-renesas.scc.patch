@@ -1,0 +1,28 @@
+From d0a82d7ece78056030f67b6eba11db13a0f516ab Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Wed, 20 Nov 2019 12:01:00 +0200
+Subject: [PATCH] linux-renesas: Remove patch #230 from renesas.scc
+
+We already have this patch applied to our "v4.14.75-ltsi/rcar-3.9.6-xt0.1"
+branch.
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ meta-rcar-gen3-adas/recipes-kernel/linux/linux-renesas/renesas.scc | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/meta-rcar-gen3-adas/recipes-kernel/linux/linux-renesas/renesas.scc b/meta-rcar-gen3-adas/recipes-kernel/linux/linux-renesas/renesas.scc
+index 3114674..815527f 100644
+--- a/meta-rcar-gen3-adas/recipes-kernel/linux/linux-renesas/renesas.scc
++++ b/meta-rcar-gen3-adas/recipes-kernel/linux/linux-renesas/renesas.scc
+@@ -166,7 +166,6 @@ patch 0226-arm64-dts-renesas-r8a77980-Connect-R-Car-V3H-AVB-to-.patch
+ patch 0227-clk-renesas-r8a77980-Add-OSC-predivider-configuratio.patch
+ patch 0228-clk-renesas-r8a77980-Add-RCLK-for-watchdog-timer.patch
+ patch 0229-drm-rcar-du-lvds-add-R8A77980-support.patch
+-patch 0230-drivers-flag-buses-which-demand-DMA-configuration.patch
+ patch 0231-gpu-host1x-Call-of_dma_configure-after-setting-bus.patch
+ patch 0232-gpu-host1x-Cleanup-on-initialization-failure.patch
+ patch 0233-dma-mapping-move-dma-configuration-to-bus-infrastruc.patch
+-- 
+2.7.4
+
