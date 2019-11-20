@@ -44,6 +44,7 @@ configure_versions_kingfisher() {
     base_add_conf_value ${local_conf} DISTRO_FEATURES_remove " opencv-sdk"
     # Do not enable surroundview which cannot be used
     base_add_conf_value ${local_conf} DISTRO_FEATURES_remove " surroundview"
+    base_update_conf_value ${local_conf} PACKAGECONFIG_remove_pn-libcxx "unwind"
 }
 
 python do_configure_append_h3ulcb-4x2g-kf() {
