@@ -1,0 +1,49 @@
+From 6775e0d99b6ba800e05720458346e8b7206b3954 Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Mon, 18 Nov 2019 16:18:46 +0200
+Subject: [PATCH] Update gntdev/drm_front DMA tweaks
+
+According to recent Kingfisher related changes to Linux we have
+to update "of_dma_configure" API usage and remove "force_dma" flag.
+
+Please note, this patch will be only applied when building
+h3ulcb-4x2g-kf machine.
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ drivers/gpu/drm/xen/xen_drm_front.c | 3 +--
+ drivers/xen/gntdev.c                | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/xen/xen_drm_front.c b/drivers/gpu/drm/xen/xen_drm_front.c
+index 3345ac7..b3786c1 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front.c
++++ b/drivers/gpu/drm/xen/xen_drm_front.c
+@@ -737,9 +737,8 @@ static int xen_drv_probe(struct xenbus_device *xb_dev,
+ 	 * is not correct: to fix this call of_dma_configure() with a NULL
+ 	 * node to set default DMA ops.
+ 	 */
+-	dev->bus->force_dma = true;
+ 	dev->coherent_dma_mask = DMA_BIT_MASK(32);
+-	ret = of_dma_configure(dev, NULL);
++	ret = of_dma_configure(dev, NULL, true);
+ 	if (ret < 0) {
+ 		DRM_ERROR("Cannot setup DMA ops, ret %d", ret);
+ 		return ret;
+diff --git a/drivers/xen/gntdev.c b/drivers/xen/gntdev.c
+index 9f1f6cc..34ff062 100644
+--- a/drivers/xen/gntdev.c
++++ b/drivers/xen/gntdev.c
+@@ -614,8 +614,7 @@ static int gntdev_open(struct inode *inode, struct file *flip)
+ 	 * default DMA ops.
+ 	 */
+ 	priv->dma_dev->bus = &dma_dev_bus;
+-	priv->dma_dev->bus->force_dma = true;
+-	of_dma_configure(priv->dma_dev, NULL);
++	of_dma_configure(priv->dma_dev, NULL, true);
+ 	priv->dma_dev->bus = NULL;
+ #endif
+ 	pr_debug("priv %p\n", priv);
+-- 
+2.7.4
+

@@ -162,6 +162,7 @@ SRC_URI_append_h3ulcb-4x2g-kf-xt = " \
     file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://0001-r8a7795-6-65-.dtsi-Add-multichannel-audio-ranges-tha.patch \
     file://ulcb.cfg \
+    file://0001-Update-gntdev-drm_front-DMA-tweaks.patch \
 "
 
 KERNEL_DEVICETREE_h3ulcb-4x2g-kf-xt = " \
