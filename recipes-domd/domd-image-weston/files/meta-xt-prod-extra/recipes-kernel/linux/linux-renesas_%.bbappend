@@ -170,10 +170,6 @@ KERNEL_DEVICETREE_h3ulcb-4x2g-kf-xt = " \
     renesas/r8a7795-salvator-x-4x2g-domu.dtb \
 "
 
-SRC_URI_remove_kingfisher = " \
-    file://0112-ARM64-dts-renesas-ulcb-Make-AK4613-sound-device-name.patch \
-"
-
 do_deploy_append() {
     for DTB in ${KERNEL_DEVICETREE}
         do
