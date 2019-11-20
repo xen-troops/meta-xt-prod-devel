@@ -7,3 +7,5 @@ SRCREV = "${AUTOREV}"
 
 # W/A fix build errors with GCC 8.1
 SRC_URI_append = " file://0001-Silenced-Wcast-function-type-Wsizeof-pointer-div-and.patch"
+
+SRC_URI_append_h3ulcb-4x2g-kf-xt = " file://0001-Update-xen_back-DMA-tweaks.patch"
