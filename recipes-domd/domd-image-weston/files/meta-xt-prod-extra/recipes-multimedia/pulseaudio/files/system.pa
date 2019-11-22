@@ -62,3 +62,6 @@ load-module module-bluetooth-policy
 .ifexists module-bluetooth-discover.so
 load-module module-bluetooth-discover headset=auto
 .endif
+
+# use pcm3168 on KF
+set-default-sink alsa_output.platform-sound_0.multichannel-output
