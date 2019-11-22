@@ -48,8 +48,7 @@ IMAGE_POSTPROCESS_COMMAND += "populate_vmlinux; "
 
 install_aos () {
     if [ ! -z "${AOS_VIS_PACKAGE_DIR}" ];then
-        opkg install ${AOS_VIS_PACKAGE_DIR}/ca-certificates_20170717-r0_all.ipk \
-                     ${AOS_VIS_PACKAGE_DIR}/aos-vis_git-r0_aarch64.ipk
+        opkg install ${AOS_VIS_PACKAGE_DIR}/aos-vis
     fi
 }
 

@@ -145,7 +145,7 @@ rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domd.tar.gz
 AOS VIS prebuilts:
 
 AOS_VIS_PACKAGE_DIR should points to the directory with:
-aos-vis_git-r0_aarch64.ipk, ca-certificates_20170717-r0_all.ipk
+aos-vis package and symbolic link to corresponding *.ipk package.
 
 
 5. Run the build script for current stable release:
