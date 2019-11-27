@@ -38,12 +38,11 @@ XT_QUIRK_PATCH_SRC_URI_rcar = "\
 XT_BB_LOCAL_CONF_FILE_rcar = "meta-xt-prod-extra/doc/local.conf.rcar-domu-image-weston"
 XT_BB_LAYERS_FILE_rcar = "meta-xt-prod-extra/doc/bblayers.conf.rcar-domu-image-weston"
 
-# Path to proprietary graphic modules pre built binaries.
-# Uncomment line below and set proper path.
-#XT_RCAR_EVAPROPRIETARY_DIR = ""
-
 GLES_VERSION_rcar = "1.10"
 
+# In order to copy proprietary "graphics" packages,
+# XT_RCAR_EVAPROPRIETARY_DIR variable under [local_conf] section in
+# the configuration file should point to the real packages location.
 configure_versions_rcar() {
     local local_conf="${S}/build/conf/local.conf"
 
