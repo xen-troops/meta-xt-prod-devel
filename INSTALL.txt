@@ -7,14 +7,14 @@ Prerequisites:
                     gnupg flex bison gperf build-essential zip curl zlib1g-dev \
                     gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev \
                     x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev \
-                    libxml2-utils xsltproc unzip python-clang-5.0 gcc-5 g++-5 -y
+                    libxml2-utils xsltproc unzip python-clang-5.0 gcc-5 g++-5 bc -y
 2. Download and install Google repo: https://source.android.com/setup/build/downloading#installing-repo
 3. Checked with Python v 2.7.12, but other should also work
 
 About:
 ======
 Prod-devel product is based on Renesas BSP, Xen hypervisor and Android. It contains a set of features required to have
-both Display and GPU support in several domains at the same time (device passthrough, PVDRM, VGPU, etc).
+both Display and GPU support in several domains at the same time (device passthrough, PV Display, PV Sound, VGPU, etc).
 
 There are three domains which are running on top of Xen:
 1. Generic machine independent control domain named "Domain-0". This initramfs based domain is responsible
@@ -23,13 +23,9 @@ for managing VMs only (create/destroy/reboot guest domains). There is no HW assi
 As this domain is not 1:1 mapped, Xen controls IPMMU to do a proper address translations (IPA to PA) for DMA masters.
 It also contains different para-virtualized (PV) backends running inside it in order to provide guest domains
 (without HW assigned) with different services such as Audio, Display, Net, Block, etc.
-3. Android based domain named "DomA". It has different PV frontends running and doesn't have any HW assigned except GPU.
-The latter is shared between "DomD" and "DomA" in current setup. 
-
-It worth to mention that IPMMU for GPU is enabled in case of H3 ES3.0 only. For other supported SoCs the PVRKM
-performs IPA to PA translations using a hypercall to hypervisor.
-
-The ARM TF was patched to bring up all available CPU cores.
+3. Either Android based domain named "DomA" or Linux based domain named "DomU".
+Both have different PV frontends running and don't have any HW assigned except GPU.
+The latter is shared between "DomD" and "DomA" ("DomU") in current setup.
 
 Build:
 ======
@@ -46,11 +42,12 @@ cp gcp-build-server-devel.cfg xt-prod-devel.cfg
 
 3. Edit it to fit your environment.
 
-Please, change the variable under [git] section:
+3.1 Please, change the variable under [git] section:
 
 xt_manifest_uri = https://github.com/xen-troops/meta-xt-products.git
 
-Please, change the variables under [path] section:
+3.2 Please, change the variables under [path] section:
+
  - workspace_base_dir: change it to point to the place where the build will happen
  - workspace_storage_base_dir: change it to where downloads and other files will be put
  - workspace_cache_base_dir: it points to state cache
@@ -61,16 +58,39 @@ workspace_base_dir = /home/workspace_base
 workspace_storage_base_dir = /home/workspace_storage_base
 workspace_cache_base_dir = /home/workspace_cache
 
-The XT_RCAR_EVAPROPRIETARY_DIR, XT_ANDROID_PREBUILDS_DIR variables under [local_conf] section depends
-on whether prebuilt EVA proprietary packages are going to be used.
-If you are going to use prebuilt EVA proprietary packages, please change XT_RCAR_EVAPROPRIETARY_DIR, XT_ANDROID_PREBUILDS_DIR
-variables to point to the place where EVA proprietary packages will be copied in step #4.
+3.3 Please, change the variables under [local_conf] section:
+
+The XT_GUESTS_INSTALL and XT_GUESTS_BUILD variables select the guest domain
+to be built and installed.
+
+For example (system with DomU),
+
+XT_GUESTS_INSTALL = "domu"
+XT_GUESTS_BUILD = "domu"
+
+For example (system with DomA),
+
+XT_GUESTS_INSTALL = "doma"
+XT_GUESTS_BUILD = "doma"
+
+The XT_RCAR_EVAPROPRIETARY_DIR (DomD and DomU), XT_ANDROID_PREBUILDS_DIR (DomA) variables
+point to the place where prebuilt EVA proprietary packages will be copied in step #4.
+
 If you are going to build Graphics DDK from sources (without prebuilt EVA proprietary packages), please remove that variables.
 In that case step #4 can be omitted.
 
+Please note, the variables below are only applicable for system with DomA:
+AOS_VIS_PACKAGE_DIR should point to the directory with aos-vis package and symbolic link to
+corresponding *.ipk package.
+AOS_VIS_PLUGINS defines which VIS plugin to use as VIS data provider. This value can be set to
+"telemetryemulator", "renesassimulator".
+The "telemetryemulator" plugin uses prerecorded data which provided by telemetryemulator service launched in DomD.
+The "renesassimulator" plugin uses data provided by Renesas R-Car simulator.
+If the variable is not set, the "telemetryemulator" plugin will be built.
+
 4. Download and copy EVA proprietary packages to your local filesystem at some directory:
 
-DomA prebuilts:
+4.1 DomA prebuilts:
 
  - rcar-prebuilts-salvator-xs-h3-xt-doma.tar.gz
 
@@ -124,29 +144,35 @@ I.e. you should have such directories structure:
             └── libusc.so
 
 
-XT_ANDROID_PREBUILDS_DIR should points to "..ANDROID_PREBUILTS_FOLDER_PATH.." folder.
+XT_ANDROID_PREBUILDS_DIR should point to "..ANDROID_PREBUILTS_FOLDER_PATH.." folder.
 
-DomD prebuilts:
+4.2 DomD and DomU (if latter is used instead of DomA) prebuilts:
 
-- rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz
+For example (Salvator-X board with H3 ES3.0 SoC installed, 8GB RAM),
+
+ - rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz
+ - rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domu.tar.gz
 
 Copy it to "..PROPRIETARY_FOLDER_PATH.." folder.
 
-XT_RCAR_EVAPROPRIETARY_DIR should points to "..PROPRIETARY_FOLDER_PATH.." folder.
+XT_RCAR_EVAPROPRIETARY_DIR should point to "..PROPRIETARY_FOLDER_PATH.." folder.
 
-Due to the fact that the SoC is not actually changed for Salvator-XS board,
+Due to the fact that the SoC is not actually changed for Salvator-XS 8GB and H3ULCB(-KF) 8GB boards (H3 ES3.0),
 you could reuse already provided binaries by making symlinks to corresponding archives.
 
-For example (Salvator-XS case),
+For example (Salvator-XS),
 
 ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz \
 rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domd.tar.gz
+ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domu.tar.gz \
+rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domu.tar.gz
 
-AOS VIS prebuilts:
+For example (H3ULCB),
 
-AOS_VIS_PACKAGE_DIR should points to the directory with:
-aos-vis package and symbolic link to corresponding *.ipk package.
-
+ln -s rcar-proprietary-graphic-salvator-x-h3-xt-domd.tar.gz \
+rcar-proprietary-graphic-h3ulcb-4x2g-xt-domd.tar.gz
+ln -s rcar-proprietary-graphic-salvator-x-h3-xt-domu.tar.gz \
+rcar-proprietary-graphic-h3ulcb-4x2g-xt-domu.tar.gz
 
 5. Run the build script for current stable release:
 
@@ -163,14 +189,20 @@ just by pointing a proper release name.
 Please note, if "branch" parameter is not set then the current product's snapshot will be built.
 
 Hereafter the supported MACHINE_NAMEs are:
-- salvator-x-h3  (Salvator-X board with H3 ES2.0 SoC installed)
-- salvator-x-h3-4x2g (Salvator-X board with H3 ES3.0 SoC installed)
-- salvator-xs-h3  (Salvator-XS board with H3 ES2.0 SoC installed)
-- salvator-xs-h3-2x2g (Salvator-XS board with H3 ES3.0 SoC installed)
-- salvator-xs-h3-4x2g (Salvator-XS board with H3 ES3.0 SoC installed)
+- salvator-x-h3  (Salvator-X board with H3 ES2.0 SoC installed, 4GB RAM)
+- salvator-x-h3-4x2g (Salvator-X board with H3 ES3.0 SoC installed, 8GB RAM)
+- salvator-x-m3  (Salvator-X board with M3 SoC installed, 4GB RAM)
+- salvator-xs-h3  (Salvator-XS board with H3 ES2.0 SoC installed, 4GB RAM)
+- salvator-xs-h3-2x2g (Salvator-XS board with H3 ES3.0 SoC installed, 4GB RAM)
+- salvator-xs-h3-4x2g (Salvator-XS board with H3 ES3.0 SoC installed, 8GB RAM)
+- salvator-xs-m3n (Salvator-XS board with M3N SoC installed, 2GB RAM)
+- h3ulcb (H3ULCB board with H3 ES2.0 SoC installed, 4GB RAM)
+- m3ulcb (M3ULCB board with M3 SoC installed, 2GB RAM)
 - h3ulcb-4x2g (H3ULCB board with H3 ES3.0 SoC installed, 8GB RAM)
 - h3ulcb-4x2g-kf (H3ULCB KF board with H3 ES3.0 SoC installed, 8GB RAM)
 
+Please note, you are not able to build and run DomA for the m3ulcb and salvator-xs-m3n
+machines due to limited memory resources (only 2GB RAM). The system with DomU is only an option for them.
 
 6. You are done. The artifacts of the build are located at workspace_base directory:
 
@@ -192,7 +224,15 @@ workspace_base/build/build/deploy/
 │           ├── userdata.img
 │           ├── vendor.img
 │           └── vmlinux
+│
+│  - or -
+│
+├── domu-image-weston
+│   └── images
+│       └── MACHINE_NAME-xt
+│
 └── mk_sdcard_image.sh
+
 
 Images are located at:
 
@@ -220,13 +260,20 @@ Here we get a rootfs image for DomU:
   - vendor.img - android vendor image
   - userdata.img - android vendor image
 
+- DomU:
+workspace_base/build/build/deploy/domu-image-weston/images/MACHINE-NAME-xt
+Here we get a rootfs image for DomU:
+  - core-image-weston-MACHINE_NAME-xt.tar.bz2 - rootfs image for DomU
+
 Build logs are located at:
 - Domain-0:
 workspace_base/build/build/log/dom0-image-thin-initramfs/cooker/generic-armv8-xt
 - DomD:
-workspace_base/build/tmp/log/domd-image-weston/cooker/MACHINE-NAME-xt
+workspace_base/build/build/log/domd-image-weston/cooker/MACHINE-NAME-xt
 - DomA:
 workspace_base/build/build/log/domu-image-android/cooker/qemux86-64
+- DomU:
+workspace_base/build/build/log/domu-image-weston/cooker/MACHINE-NAME-xt
 
 7. If one wants to build any domain's images by hand, at the time of development
 for instance, it is possible by going into desired directory and using poky to build:
@@ -240,12 +287,15 @@ cd workspace_base/build/build/tmp/work/x86_64-xt-linux/domd-image-weston/1.0-r0/
 - For building DomA:
 cd workspace_base/build/build/tmp/work/x86_64-xt-linux/domu-image-android/1.0-r0/repo/
 
+- For building DomU:
+cd workspace_base/build/build/tmp/work/x86_64-xt-linux/domu-image-weston/1.0-r0/repo/
+
 source poky/oe-init-build-env
 
 - For building Domain-0:
 bitbake core-image-thin-initramfs
 
-- For building DomD or DomA:
+- For building DomD or DomU:
 bitbake core-image-weston
 
 - For building DomA:
@@ -253,6 +303,8 @@ bitbake android
 
 Usage:
 ======
+It is possible to run system either using TFTP boot with NFS root or keeping
+all images on a storage device such as eMMC or SD card.
 
 Different helpers scripts and docs are located at:
 build-workspace/build/meta-xt-prod-devel/doc
@@ -284,7 +336,12 @@ and using "dd" command just copy blob to eMMC.
 For example,
 
 prepare an image blob:
+
+- For system with DomA:
 sudo ./mk_sdcard_image.sh -p /IMAGE_FOLDER -d /home/emmc.img -c devel
+
+- For system with DomU:
+sudo ./mk_sdcard_image.sh -p /IMAGE_FOLDER -d /home/emmc.img -c gen3
 
 and then run on target:
 dd if=/home/emmc.img of=/dev/mmcblk0
@@ -293,9 +350,55 @@ After getting eMMC flashed we have to choose it to be an boot device in a simila
 for SD card.
 See u-boot-env.txt for details.
 
+2. Using TFTP boot with NFS root.
+In case of TFTP booting we have to copy the following boot images into target-accessible TFTP boot
+directory and extract guest domain rootfs images for being an NFS root directories for guest domains.
+See https://github.com/xen-troops/manifests/wiki on how to setup TFTP, NFS, etc.
+
+For example (for system with DomU),
+
+copy boot images to TFTP boot directory:
+sudo mkdir /srv
+cd workspace_base/build/build/tmp/deploy/dom0-image-thin-initramfs/images/generic-armv8-xt/
+sudo cp uInitramfs /srv/
+sudo cp Image /srv/
+cd workspace_base/build/build/tmp/deploy/domd-image-weston/images/MACHINE_NAME-xt/
+sudo cp dom0.dtb /srv/
+sudo cp xenpolicy /srv/
+sudo cp xen-uImage /srv/
+
+extract DomD rootfs images:
+sudo mkdir /srv/domd
+cd workspace_base/build/build/tmp/deploy/domd-image-weston/images/MACHINE_NAME-xt/
+sudo tar -xf core-image-weston-MACHINE_NAME-xt.tar.bz2 -C /srv/domd/
+
+extract DomU rootfs images:
+sudo mkdir /srv/domu
+cd workspace_base/build/build/tmp/deploy/domu-image-weston/images/MACHINE_NAME-xt/
+sudo tar -xf core-image-weston-MACHINE_NAME-xt.tar.bz2 -C /srv/domu/
+
+It worth mentioning that some changes to domain config files are necessary to switch between NFS
+and any of storage devices.
+
+There are two options for doing that. Either by modifying source files followed by rebuilding
+the whole Domain-0 or by modifying domain config files right in a built uInitramfs image which
+implies unpacking an image before and packing it back after (an "uirfs.sh" script which
+we will consider down the document is intended to help with that).
+
+In order to modify sources go to the files location in inner yocto:
+cd workspace_base/build/build/tmp/work/x86_64-xt-linux/dom0-image-thin-initramfs/1.0-r0/repo/meta-xt-prod-extra/recipes-extended/guest-addons/files
+
+- Edit domd-MACHINE_NAME.cfg to uncomment "extra" option which corresponds to NFS.
+- Edit domu-MACHINE_NAME.cfg to uncomment "extra" option which corresponds to NFS and comment "disk" option.
+
+and then rebuild Domain-0 manually:
+cd workspace_base/build/build/tmp/work/x86_64-xt-linux/dom0-image-thin-initramfs/1.0-r0/repo/
+source poky/oe-init-build-env
+bitbake core-image-thin-initramfs
+
 So, as you can see, varying U-Boot's "boot_dev" and "bootcmd" environment variables
 and domain config's "extra" and "disk" options it is possible to choose  different boot device
-for each system component.
+for each system component. For example, boot system using TFTP and then use SD card for guest domains.
 
 Additional script available in the product.
 1. uirfs.sh.
@@ -317,7 +420,7 @@ For example, domain config files located at:
 pack it back:
 sudo ./uirfs.sh pack uInitramfs initramfs
 
-2. Product image structure
+2. Product image structure (for system with DomA)
 
 When you create image(or flash product to SD-card) using mk_sdcard_image.sh, volume structure of it will be
 the following:
