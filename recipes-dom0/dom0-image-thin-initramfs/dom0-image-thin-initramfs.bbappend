@@ -63,3 +63,9 @@ python do_configure_append() {
     bb.build.exec_func("add_to_local_conf", d)
 }
 
+do_install_append () {
+    local LAYERDIR=${TOPDIR}/../meta-xt-prod-devel
+    local TARGET="generic-armv8-xt"
+    find ${LAYERDIR}/doc -iname "uirfs.sh" -exec cp -f {} ${DEPLOY_DIR}/dom0-image-thin-initramfs/images/${TARGET} \; || true
+}
+
