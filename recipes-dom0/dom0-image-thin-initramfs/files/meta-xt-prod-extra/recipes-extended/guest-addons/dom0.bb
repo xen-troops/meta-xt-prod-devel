@@ -21,6 +21,10 @@ DOM0_ALLOWED_PCPUS_salvator-xs-h3-xt = "4-7"
 DOM0_ALLOWED_PCPUS_salvator-x-h3-4x2g-xt = "4-7"
 DOM0_ALLOWED_PCPUS_salvator-xs-h3-4x2g-xt = "4-7"
 DOM0_ALLOWED_PCPUS_salvator-xs-h3-2x2g-xt = "4-7"
+DOM0_ALLOWED_PCPUS_m3ulcb-xt = "2-5"
+DOM0_ALLOWED_PCPUS_h3ulcb-xt = "4-7"
+# Actually M3N SoC doesn't have little CPUs, so allow Dom0 to run on all available CPUs
+DOM0_ALLOWED_PCPUS_salvator-xs-m3n-xt = "0-1"
 DOM0_ALLOWED_PCPUS_h3ulcb-4x2g-xt = "4-7"
 DOM0_ALLOWED_PCPUS_h3ulcb-4x2g-kf-xt = "4-7"
 
