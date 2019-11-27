@@ -132,6 +132,51 @@ KERNEL_DEVICETREE_salvator-x-m3-xt = " \
 "
 
 ##############################################################################
+# M3ULCB
+###############################################################################
+SRC_URI_append_m3ulcb-xt = " \
+    file://r8a7796-m3ulcb-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7796-m3ulcb-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7796-m3ulcb-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+"
+
+KERNEL_DEVICETREE_m3ulcb-xt = " \
+    renesas/r8a7796-m3ulcb-dom0.dtb \
+    renesas/r8a7796-m3ulcb-domd.dtb \
+    renesas/r8a7796-m3ulcb-domu.dtb \
+"
+
+##############################################################################
+# H3ULCB
+###############################################################################
+SRC_URI_append_h3ulcb-xt = " \
+    file://r8a7795-h3ulcb-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-h3ulcb-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-h3ulcb-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+"
+
+KERNEL_DEVICETREE_h3ulcb-xt = " \
+    renesas/r8a7795-h3ulcb-dom0.dtb \
+    renesas/r8a7795-h3ulcb-domd.dtb \
+    renesas/r8a7795-h3ulcb-domu.dtb \
+"
+
+##############################################################################
+# Salvator-XS M3N
+###############################################################################
+SRC_URI_append_salvator-xs-m3n-xt = " \
+    file://r8a77965-salvator-xs-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a77965-salvator-xs-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a77965-salvator-xs-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+"
+
+KERNEL_DEVICETREE_salvator-xs-m3n-xt = " \
+    renesas/r8a77965-salvator-xs-dom0.dtb \
+    renesas/r8a77965-salvator-xs-domd.dtb \
+    renesas/r8a77965-salvator-xs-domu.dtb \
+"
+
+##############################################################################
 # H3ULCB ES3.0 4x2G
 ###############################################################################
 # N.B. DomU device tree is reused from Salvator-X H3 ES3.0 4x2G
