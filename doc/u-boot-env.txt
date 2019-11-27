@@ -30,9 +30,9 @@ for tftp boot:
 ===================================
 
 setenv bootcmd run bootcmd_tftp
-setenv bootcmd_tftp 'run tftp_xen_load; run tftp_dtb_load; run tftp_kernel_load; run tftp_xenpolicy_load; run tftp_initramfs_load; bootm 0x48080000 0x76000000 0x48000000'
+setenv bootcmd_tftp 'run tftp_xen_load; run tftp_dtb_load; run tftp_kernel_load; run tftp_xenpolicy_load; run tftp_initramfs_load; bootm 0x48080000 0x74000000 0x48000000'
 setenv tftp_dtb_load 'tftp 0x48000000 dom0.dtb; fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device nfs'
-setenv tftp_initramfs_load tftp 0x76000000 uInitramfs
+setenv tftp_initramfs_load tftp 0x74000000 uInitramfs
 setenv tftp_kernel_load tftp 0x7a000000 Image
 setenv tftp_xen_load tftp 0x48080000 xen-uImage
 setenv tftp_xenpolicy_load tftp 0x7c000000 xenpolicy
@@ -41,9 +41,9 @@ for SD0 card boot:
 ===================================
 
 setenv bootcmd run bootcmd_mmc0
-setenv bootcmd_mmc0 'run mmc0_xen_load; run mmc0_dtb_load; run mmc0_kernel_load; run mmc0_xenpolicy_load; run mmc0_initramfs_load; bootm 0x48080000 0x76000000 0x48000000'
+setenv bootcmd_mmc0 'run mmc0_xen_load; run mmc0_dtb_load; run mmc0_kernel_load; run mmc0_xenpolicy_load; run mmc0_initramfs_load; bootm 0x48080000 0x74000000 0x48000000'
 setenv mmc0_dtb_load 'ext2load mmc 0:1 0x48000000 /boot/dom0.dtb; fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device mmcblk1'
-setenv mmc0_initramfs_load ext2load mmc 0:1 0x76000000 /boot/uInitramfs
+setenv mmc0_initramfs_load ext2load mmc 0:1 0x74000000 /boot/uInitramfs
 setenv mmc0_kernel_load ext2load mmc 0:1 0x7a000000 /boot/Image
 setenv mmc0_xen_load ext2load mmc 0:1 0x48080000 /boot/xen-uImage
 setenv mmc0_xenpolicy_load ext2load mmc 0:1 0x7c000000 /boot/xenpolicy
@@ -52,9 +52,9 @@ for SD3 card boot (Salvator-X(S) only):
 ===================================
 
 setenv bootcmd run bootcmd_mmc1
-setenv bootcmd_mmc1 'run mmc1_xen_load; run mmc1_dtb_load; run mmc1_kernel_load; run mmc1_xenpolicy_load; run mmc1_initramfs_load; bootm 0x48080000 0x76000000 0x48000000'
+setenv bootcmd_mmc1 'run mmc1_xen_load; run mmc1_dtb_load; run mmc1_kernel_load; run mmc1_xenpolicy_load; run mmc1_initramfs_load; bootm 0x48080000 0x74000000 0x48000000'
 setenv mmc1_dtb_load 'ext2load mmc 2:1 0x48000000 /boot/dom0.dtb; fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device mmcblk2'
-setenv mmc1_initramfs_load ext2load mmc 2:1 0x76000000 /boot/uInitramfs
+setenv mmc1_initramfs_load ext2load mmc 2:1 0x74000000 /boot/uInitramfs
 setenv mmc1_kernel_load ext2load mmc 2:1 0x7a000000 /boot/Image
 setenv mmc1_xen_load ext2load mmc 2:1 0x48080000 /boot/xen-uImage
 setenv mmc1_xenpolicy_load ext2load mmc 2:1 0x7c000000 /boot/xenpolicy
@@ -63,9 +63,9 @@ for eMMC boot:
 ===================================
 
 setenv bootcmd run bootcmd_emmc
-setenv bootcmd_emmc 'run emmc_xen_load; run emmc_dtb_load; run emmc_kernel_load; run emmc_xenpolicy_load; run emmc_initramfs_load; bootm 0x48080000 0x76000000 0x48000000'
+setenv bootcmd_emmc 'run emmc_xen_load; run emmc_dtb_load; run emmc_kernel_load; run emmc_xenpolicy_load; run emmc_initramfs_load; bootm 0x48080000 0x74000000 0x48000000'
 setenv emmc_dtb_load 'ext2load mmc 1:1 0x48000000 /boot/dom0.dtb; fdt addr 0x48000000; fdt resize; fdt mknode / boot_dev; fdt set /boot_dev device mmcblk0'
-setenv emmc_initramfs_load ext2load mmc 1:1 0x76000000 /boot/uInitramfs
+setenv emmc_initramfs_load ext2load mmc 1:1 0x74000000 /boot/uInitramfs
 setenv emmc_kernel_load ext2load mmc 1:1 0x7a000000 /boot/Image
 setenv emmc_xen_load ext2load mmc 1:1 0x48080000 /boot/xen-uImage
 setenv emmc_xenpolicy_load ext2load mmc 1:1 0x7c000000 /boot/xenpolicy
