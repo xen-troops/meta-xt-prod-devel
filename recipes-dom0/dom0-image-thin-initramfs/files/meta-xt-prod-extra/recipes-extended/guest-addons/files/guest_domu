@@ -22,7 +22,7 @@ DOMAIN_NAME="DomU"
 SCRIPT_NAME="start_guest.sh"
 SCRIPT_PATH="/xt/scripts"
 GUEST="domu"
-GUEST_DEPENDENCIES="displbe bridge"
+GUEST_DEPENDENCIES="displbe bridge sndbe"
 
 # not running in Xen dom0 or domU
 if ! test -d /proc/xen ; then

@@ -18,8 +18,12 @@ DOMF_ALLOWED_PCPUS_salvator-x-m3-xt = "2-5"
 DOMF_ALLOWED_PCPUS_salvator-x-h3-xt = "4-7"
 DOMF_ALLOWED_PCPUS_salvator-xs-h3-xt = "4-7"
 DOMF_ALLOWED_PCPUS_salvator-x-h3-4x2g-xt = "4-7"
+DOMF_ALLOWED_PCPUS_m3ulcb-xt = "2-5"
+DOMF_ALLOWED_PCPUS_h3ulcb-xt = "4-7"
 DOMF_ALLOWED_PCPUS_h3ulcb-4x2g-xt = "4-7"
 DOMF_ALLOWED_PCPUS_h3ulcb-4x2g-kf-xt = "4-7"
+# Actually M3N SoC doesn't have little CPUs, so allow DomF to run on all available CPUs
+DOMF_ALLOWED_PCPUS_salvator-xs-m3n-xt = "0-1"
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domf.cfg \
