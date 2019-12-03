@@ -25,7 +25,12 @@
 	};
 
 	/delete-node/memory@600000000;
-	/delete-node/reserved-memory;
+
+	reserved-memory {
+		/delete-node/linux,cma@57000000;
+		/delete-node/linux,multimedia@70000000;
+	};
+
 	/delete-node/mmngr;
 	/delete-node/mmngrbuf;
 
