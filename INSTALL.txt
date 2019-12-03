@@ -60,7 +60,7 @@ workspace_cache_base_dir = /home/workspace_cache
 
 3.3 Please, change the variables under [local_conf] section:
 
-The XT_GUESTS_INSTALL and XT_GUESTS_BUILD variables select the guest domain
+3.3.1 The XT_GUESTS_INSTALL and XT_GUESTS_BUILD variables select the guest domain
 to be built and installed.
 
 For example (system with DomU),
@@ -73,13 +73,18 @@ For example (system with DomA),
 XT_GUESTS_INSTALL = "doma"
 XT_GUESTS_BUILD = "doma"
 
-The XT_RCAR_EVAPROPRIETARY_DIR (DomD and DomU), XT_ANDROID_PREBUILDS_DIR (DomA) variables
-point to the place where prebuilt EVA proprietary packages will be copied in step #4.
+3.3.2 The XT_RCAR_EVAPROPRIETARY_DIR (DomD and DomU), XT_ANDROID_PREBUILDS_DIR (DomA) variables
+point to the place where prebuilt EVA proprietary "graphics" packages (hereafter "graphics" packages) will be copied in step #4.
 
-If you are going to build Graphics DDK from sources (without prebuilt EVA proprietary packages), please remove that variables.
+If you are going to build Graphics DDK from sources (and don't use "graphics" packages), please remove that variables.
 In that case step #4 can be omitted.
 
-Please note, the variables below are only applicable for system with DomA:
+3.3.3 The XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR (DomD) variable points to the place where proprietary "multimedia" packages
+(hereafter "multimedia" packages) will be copied in step #5.
+
+If you are not going to use multimedia in DomD, please remove that variable. In that case step #5 can be omitted.
+
+3.3.4 Please note, the variables below are only applicable for system with DomA:
 AOS_VIS_PACKAGE_DIR should point to the directory with aos-vis package and symbolic link to
 corresponding *.ipk package.
 AOS_VIS_PLUGINS defines which VIS plugin to use as VIS data provider. This value can be set to
@@ -88,7 +93,7 @@ The "telemetryemulator" plugin uses prerecorded data which provided by telemetry
 The "renesassimulator" plugin uses data provided by Renesas R-Car simulator.
 If the variable is not set, the "telemetryemulator" plugin will be built.
 
-4. Download and copy EVA proprietary packages to your local filesystem at some directory:
+4. Download and copy "graphics" packages to your local filesystem at some directory:
 
 4.1 DomA prebuilts:
 
@@ -174,13 +179,22 @@ rcar-proprietary-graphic-h3ulcb-4x2g-xt-domd.tar.gz
 ln -s rcar-proprietary-graphic-salvator-x-h3-xt-domu.tar.gz \
 rcar-proprietary-graphic-h3ulcb-4x2g-xt-domu.tar.gz
 
-5. Run the build script for current stable release:
+5. Only for the multimedia usage.
+Follow the procedure described in "Preliminary steps #1" from https://elinux.org/R-Car/Boards/Yocto-Gen3
+to download Multimedia and Graphics library and related Linux drivers. These software packages
+should be stored at the directory pointed by XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR variable.
+
+Please note, although only "multimedia" packages will be used here, there is no need
+to re-pack package archives in order to remove "graphics" packages, unneeded packages
+will be just skipped.
+
+6. Run the build script for current stable release:
 
 python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product PRODUCT_NAME \
 --branch RELEASE_NAME --with-local-conf --config xt-prod-devel.cfg --with-do-build
 
-Where the PRODUCT_NAME depends on whether prebuilt EVA proprietary packages are used or not:
-- devel (to use prebuilt EVA proprietary packages)
+Where the PRODUCT_NAME depends on whether "graphics" packages are used or not:
+- devel (to use "graphics" packages)
 - devel-src (to build Graphics DDK from sources)
 
 Where the RELEASE_NAME name is the name of the release to be built.
@@ -204,7 +218,7 @@ Hereafter the supported MACHINE_NAMEs are:
 Please note, you are not able to build and run DomA for the m3ulcb and salvator-xs-m3n
 machines due to limited memory resources (only 2GB RAM). The system with DomU is only an option for them.
 
-6. You are done. The artifacts of the build are located at workspace_base directory:
+7. You are done. The artifacts of the build are located at workspace_base directory:
 
 workspace_base/build/build/deploy/
 ├── dom0-image-thin-initramfs
@@ -275,7 +289,7 @@ workspace_base/build/build/log/domu-image-android/cooker/qemux86-64
 - DomU:
 workspace_base/build/build/log/domu-image-weston/cooker/MACHINE-NAME-xt
 
-7. If one wants to build any domain's images by hand, at the time of development
+8. If one wants to build any domain's images by hand, at the time of development
 for instance, it is possible by going into desired directory and using poky to build:
 
 - For building Domain-0:
