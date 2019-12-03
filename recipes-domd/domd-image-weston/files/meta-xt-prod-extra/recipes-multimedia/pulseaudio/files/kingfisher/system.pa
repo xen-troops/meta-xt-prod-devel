@@ -23,7 +23,14 @@
 ## MOST drivers does not like how pulse probing it and crashes system
 
 ### Force use of ALSA
-load-module module-udev-detect
+# load-module module-udev-detect
+# This script is dedicated for Starterkit with Kingfisher, so we know
+# audio cards used, and we can load modules directly without udev-detect.
+# card 0 is pcm3168a
+load-module module-alsa-card device_id="0"
+# card 1 is ak4613
+load-module module-alsa-card device_id="1"
+# for now we do not load alsa-card modules for radio and BT
 
 ### Load several protocols
 .ifexists module-esound-protocol-unix.so
@@ -63,3 +70,5 @@ load-module module-bluetooth-policy
 load-module module-bluetooth-discover headset=auto
 .endif
 
+# use pcm3168 on KF
+set-default-sink alsa_output.0.multichannel-output
