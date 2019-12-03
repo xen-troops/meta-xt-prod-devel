@@ -421,33 +421,38 @@ pack it back:
 sudo ./uirfs.sh pack uInitramfs initramfs
 
 2. Product image structure (for system with DomA)
+The product image contains the following partitions: dom0, domd, domu/doma.
+DomA itself contains its partitions: system, vendor, misc, vbmeta, metadata, userdata.
 
-When you create image(or flash product to SD-card) using mk_sdcard_image.sh, volume structure of it will be
-the following:
+You can inspect partitions using losetup and lsblk.
+See example below for Ubuntu 18, assuming that the image was named 'prod-devel.img'.
+Pay attention that text after ## is a comment to console output.
+Sizes of partitions may vary.
 
-Device       Start      End Sectors  Size Id Type
-/dev/sdX1     2048   526335  524288  256M 83 Linux  <---- Ext4 boot partition used by U-Boot to load xen,
-                                                               Dom0 kernel, Dom0 initramfs
-/dev/sdX2   526336  4622335 4096000    2G 83 Linux  <---- Ext4 partition used by DomD
-/dev/sdX3  4622336 13680639 9058304  4,3G 83 Linux  <---- Virtualized block device for DomA
+```
+$ sudo losetup --find --partscan --show ./prod-devel.img
+/dev/loop23
 
-/dev/sdX3 is not a typical partition. It contains complete disk device for DomA. To access its internal partitions
-you need to do the following:
+$ lsblk /dev/loop23
+NAME       MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+loop23       7:23   0    7G  0 loop
+├─loop23p1 259:0    0  256M  0 loop                 ## dom0
+├─loop23p2 259:1    0    2G  0 loop                 ## domd
+└─loop23p3 259:2    0  4.3G  0 loop                 ## doma in this case
 
-sudo losetup -P -f /dev/sdX3
+$ sudo losetup --find --partscan --show /dev/loop23p3
+/dev/loop24
 
-it will create new loop device(/dev/loopX), to retrive particular device name:
+$ lsblk /dev/loop24
+NAME       MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+loop24       7:24   0  4.3G  0 loop
+├─loop24p1 259:3    0  3.1G  0 loop                 ## system
+├─loop24p2 259:4    0  269M  0 loop                 ## vendor
+├─loop24p3 259:5    0    1M  0 loop                 ## misc
+├─loop24p4 259:6    0    1M  0 loop                 ## vbmeta
+├─loop24p5 259:7    0   11M  0 loop                 ## metadata
+└─loop24p6 259:8    0 1000M  0 loop                 ## userdata
 
-echo `sudo losetup -j /dev/sdX3 | cut -d":" -f1`
-
-It will have following partitions:
-
-Device         Start     End Sectors   Size Type
-/dev/loopXp1    2048 6148095 6146048     3G Linux  <---- Ext4 android system partition
-/dev/loopXp2 6150144 6676479  526336   257M Linux  <---- Ext4 android vendor partition
-/dev/loopXp3 6678528 6680575    2048     1M Linux  <---- Raw android misc partition
-/dev/loopXp4 6681640 8634765 1953126 953,7M Linux  <---- Ext4 Android userdata partition
-
-To delete loop device:
-
-sudo losetup -d /dev/loopX
+sudo losetup -d /dev/loop24
+sudo losetup -d /dev/loop23
+```
