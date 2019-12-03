@@ -21,7 +21,11 @@
 		bootargs = "dom0_mem=256M console=dtuart dtuart=serial0 dom0_max_vcpus=2 bootscrub=0 loglvl=info sched_ratelimit_us=100 xsm=dummy";
 	};
 
-	/delete-node/reserved-memory;
+	reserved-memory {
+		/delete-node/linux,adsp@57000000;
+		/delete-node/linux,cma@58000000;
+		/delete-node/linux,multimedia@70000000;
+	};
 
 	/delete-node/mmngr;
 	/delete-node/mmngrbuf;
