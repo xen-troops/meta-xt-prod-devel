@@ -1,0 +1,76 @@
+From da4e2d5fc00117b84a7271aa85c4084db5b8629e Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Wed, 28 Aug 2019 15:48:06 +0300
+Subject: [PATCH] recipes-kernel: Load multimedia related modules automatically
+
+Which is equivalent to the following command:
+modprobe -a mmngr mmngrbuf vspm_if uvcs_drv
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ .../recipes-kernel/kernel-module-mmngr/kernel-module-mmngr.bb      | 3 +++
+ .../recipes-kernel/kernel-module-mmngr/kernel-module-mmngrbuf.bb   | 3 +++
+ .../recipes-kernel/kernel-module-uvcs/kernel-module-uvcs-drv.bb    | 7 +++++++
+ .../recipes-kernel/kernel-module-vspmif/kernel-module-vspmif.bb    | 3 +++
+ 4 files changed, 16 insertions(+)
+
+diff --git a/meta-rcar-gen3/recipes-kernel/kernel-module-mmngr/kernel-module-mmngr.bb b/meta-rcar-gen3/recipes-kernel/kernel-module-mmngr/kernel-module-mmngr.bb
+index 5a67095..48ca755 100644
+--- a/meta-rcar-gen3/recipes-kernel/kernel-module-mmngr/kernel-module-mmngr.bb
++++ b/meta-rcar-gen3/recipes-kernel/kernel-module-mmngr/kernel-module-mmngr.bb
+@@ -69,6 +69,9 @@ PACKAGES = "\
+ 
+ FILES_${PN} = " \
+     /lib/modules/${KERNEL_VERSION}/extra/mmngr.ko \
++    ${sysconfdir}/modules-load.d \
+ "
+ 
+ RPROVIDES_${PN} += "kernel-module-mmngr"
++
++KERNEL_MODULE_AUTOLOAD_append = " mmngr"
+diff --git a/meta-rcar-gen3/recipes-kernel/kernel-module-mmngr/kernel-module-mmngrbuf.bb b/meta-rcar-gen3/recipes-kernel/kernel-module-mmngr/kernel-module-mmngrbuf.bb
+index 4e99549..5217cf2 100644
+--- a/meta-rcar-gen3/recipes-kernel/kernel-module-mmngr/kernel-module-mmngrbuf.bb
++++ b/meta-rcar-gen3/recipes-kernel/kernel-module-mmngr/kernel-module-mmngrbuf.bb
+@@ -50,6 +50,9 @@ PACKAGES = "\
+ 
+ FILES_${PN} = " \
+     /lib/modules/${KERNEL_VERSION}/extra/mmngrbuf.ko \
++    ${sysconfdir}/modules-load.d \
+ "
+ 
+ RPROVIDES_${PN} += "kernel-module-mmngrbuf"
++
++KERNEL_MODULE_AUTOLOAD_append = " mmngrbuf"
+diff --git a/meta-rcar-gen3/recipes-kernel/kernel-module-uvcs/kernel-module-uvcs-drv.bb b/meta-rcar-gen3/recipes-kernel/kernel-module-uvcs/kernel-module-uvcs-drv.bb
+index b7ba373..18e0c47 100644
+--- a/meta-rcar-gen3/recipes-kernel/kernel-module-uvcs/kernel-module-uvcs-drv.bb
++++ b/meta-rcar-gen3/recipes-kernel/kernel-module-uvcs/kernel-module-uvcs-drv.bb
+@@ -66,3 +66,10 @@ PACKAGES = " \
+ FILES_${PN}-sstate = " \
+     ${includedir}/uvcs_ioctl.h \
+ "
++
++FILES_${PN} = " \
++    /lib/modules/${KERNEL_VERSION}/extra/uvcs_drv.ko \
++    ${sysconfdir}/modules-load.d \
++"
++
++KERNEL_MODULE_AUTOLOAD_append = " uvcs_drv"
+diff --git a/meta-rcar-gen3/recipes-kernel/kernel-module-vspmif/kernel-module-vspmif.bb b/meta-rcar-gen3/recipes-kernel/kernel-module-vspmif/kernel-module-vspmif.bb
+index 95e71c4..bd156ca 100644
+--- a/meta-rcar-gen3/recipes-kernel/kernel-module-vspmif/kernel-module-vspmif.bb
++++ b/meta-rcar-gen3/recipes-kernel/kernel-module-vspmif/kernel-module-vspmif.bb
+@@ -62,6 +62,9 @@ PACKAGES = "\
+ 
+ FILES_${PN} = " \
+     /lib/modules/${KERNEL_VERSION}/extra/vspm_if.ko \
++    ${sysconfdir}/modules-load.d \
+ "
+ 
+ RPROVIDES_${PN} += "kernel-module-vspmif kernel-module-vspm-if"
++
++KERNEL_MODULE_AUTOLOAD_append = " vspm_if"
+-- 
+2.7.4
+
