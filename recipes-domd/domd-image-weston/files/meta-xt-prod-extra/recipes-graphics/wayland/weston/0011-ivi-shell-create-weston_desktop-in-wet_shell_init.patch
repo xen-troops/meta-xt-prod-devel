@@ -1,0 +1,42 @@
+From b79cadb1602a5bfbd2aa9f8d8d74012e5d356cd6 Mon Sep 17 00:00:00 2001
+From: Michael Teyfel <mteyfel@de.adit-jv.com>
+Date: Tue, 17 Oct 2017 11:10:58 +0200
+Subject: [PATCH 11/15] ivi-shell: create weston_desktop in wet_shell_init
+
+Signed-off-by: Michael Teyfel <mteyfel@de.adit-jv.com>
+---
+ ivi-shell/ivi-shell.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/ivi-shell/ivi-shell.c b/ivi-shell/ivi-shell.c
+index 59a35b8..dd16940 100644
+--- a/ivi-shell/ivi-shell.c
++++ b/ivi-shell/ivi-shell.c
+@@ -662,16 +662,23 @@ wet_shell_init(struct weston_compositor *compositor,
+ 	if (!shell->text_backend)
+ 		goto err_shell;
+ 
++	shell->desktop = weston_desktop_create(compositor, &shell_desktop_api, shell);
++	if (!shell->desktop)
++		goto err_text_backend;
++
+ 	if (wl_global_create(compositor->wl_display,
+ 			     &ivi_application_interface, 1,
+ 			     shell, bind_ivi_application) == NULL)
+-		goto err_text_backend;
++		goto err_desktop;
+ 
+ 	ivi_layout_init_with_compositor(compositor);
+ 	shell_add_bindings(compositor, shell);
+ 
+ 	return IVI_SUCCEEDED;
+ 
++err_desktop:
++	weston_desktop_destroy(shell->desktop);
++
+ err_text_backend:
+ 	text_backend_destroy(shell->text_backend);
+ 
+-- 
+2.7.4
+

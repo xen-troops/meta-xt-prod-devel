@@ -1,0 +1,59 @@
+From 863a1705792b2e7b2e0b739ef4bec7a64a5925bb Mon Sep 17 00:00:00 2001
+From: Michael Teyfel <mteyfel@de.adit-jv.com>
+Date: Tue, 26 Sep 2017 17:12:08 +0200
+Subject: [PATCH 01/15] ivi-shell: rework goto labels to avoid memory leaks
+
+Signed-off-by: Michael Teyfel <mteyfel@de.adit-jv.com>
+---
+ ivi-shell/ivi-shell.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/ivi-shell/ivi-shell.c b/ivi-shell/ivi-shell.c
+index 58f53bc..1814c7f 100644
+--- a/ivi-shell/ivi-shell.c
++++ b/ivi-shell/ivi-shell.c
+@@ -484,7 +484,6 @@ wet_shell_init(struct weston_compositor *compositor,
+ 	       int *argc, char *argv[])
+ {
+ 	struct ivi_shell *shell;
+-	int retval = -1;
+ 
+ 	shell = zalloc(sizeof *shell);
+ 	if (shell == NULL)
+@@ -499,22 +498,27 @@ wet_shell_init(struct weston_compositor *compositor,
+ 	wl_signal_add(&compositor->wake_signal, &shell->wake_listener);
+ 
+ 	if (input_panel_setup(shell) < 0)
+-		goto out;
++		goto err_shell;
+ 
+ 	shell->text_backend = text_backend_init(compositor);
+ 	if (!shell->text_backend)
+-		goto out;
++		goto err_shell;
+ 
+ 	if (wl_global_create(compositor->wl_display,
+ 			     &ivi_application_interface, 1,
+ 			     shell, bind_ivi_application) == NULL)
+-		goto out;
++		goto err_text_backend;
+ 
+ 	ivi_layout_init_with_compositor(compositor);
+ 	shell_add_bindings(compositor, shell);
+ 
+-	retval = 0;
++	return IVI_SUCCEEDED;
+ 
+-out:
+-	return retval;
++err_text_backend:
++	text_backend_destroy(shell->text_backend);
++
++err_shell:
++	free(shell);
++
++	return IVI_FAILED;
+ }
+-- 
+2.7.4
+
