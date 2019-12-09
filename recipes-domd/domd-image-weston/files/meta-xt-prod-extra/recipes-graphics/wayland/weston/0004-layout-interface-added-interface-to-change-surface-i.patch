@@ -1,0 +1,91 @@
+From 6e14ae10e2b46a5c9f536b7f8b3049869fe74058 Mon Sep 17 00:00:00 2001
+From: Michael Teyfel <mteyfel@de.adit-jv.com>
+Date: Tue, 17 Oct 2017 10:35:47 +0200
+Subject: [PATCH 04/15] layout-interface: added interface to change surface id
+
+This interface enables an id-agent to change the surface ids of an
+ivi-layout-surface once.
+
+Signed-off-by: Michael Teyfel <mteyfel@de.adit-jv.com>
+---
+ ivi-shell/ivi-layout-export.h |  6 ++++++
+ ivi-shell/ivi-layout.c        | 39 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+)
+
+diff --git a/ivi-shell/ivi-layout-export.h b/ivi-shell/ivi-layout-export.h
+index 27be1e4..17ca137 100644
+--- a/ivi-shell/ivi-layout-export.h
++++ b/ivi-shell/ivi-layout-export.h
+@@ -334,6 +334,12 @@ struct ivi_layout_interface {
+ 					uint32_t duration);
+ 
+ 	/**
++	 * \brief set id of ivi_layout_surface
++	 */
++	int32_t (*surface_set_id)(struct ivi_layout_surface *ivisurf,
++				  uint32_t id_surface);
++
++	/**
+ 	 * layer controller interface
+ 	 */
+ 
+diff --git a/ivi-shell/ivi-layout.c b/ivi-shell/ivi-layout.c
+index 968819f..50ff0a2 100644
+--- a/ivi-shell/ivi-layout.c
++++ b/ivi-shell/ivi-layout.c
+@@ -1809,6 +1809,44 @@ ivi_layout_surface_set_transition_duration(struct ivi_layout_surface *ivisurf,
+ 	return 0;
+ }
+ 
++/*
++ * This interface enables e.g. an id agent to set the id of an ivi-layout
++ * surface, that has been created by a desktop application. This can only be
++ * done once as long as the initial surface id equals IVI_INVALID_ID. Afterwards
++ * two events are emitted, namely surface_created and surface_configured.
++ */
++static int32_t
++ivi_layout_surface_set_id(struct ivi_layout_surface *ivisurf,
++			  uint32_t id_surface)
++{
++	struct ivi_layout *layout = get_instance();
++	struct ivi_layout_surface *search_ivisurf = NULL;
++
++	if (!ivisurf) {
++		weston_log("%s: invalid argument\n", __func__);
++		return IVI_FAILED;
++	}
++
++	if (ivisurf->id_surface != IVI_INVALID_ID) {
++		weston_log("surface id can only be set once\n");
++		return IVI_FAILED;
++	}
++
++	search_ivisurf = get_surface(&layout->surface_list, id_surface);
++	if (search_ivisurf) {
++		weston_log("id_surface(%d) is already created\n", id_surface);
++		return IVI_FAILED;
++	}
++
++	ivisurf->id_surface = id_surface;
++
++	wl_signal_emit(&layout->surface_notification.created, ivisurf);
++	wl_signal_emit(&layout->surface_notification.configure_changed,
++		       ivisurf);
++
++	return IVI_SUCCEEDED;
++}
++
+ static int32_t
+ ivi_layout_surface_set_transition(struct ivi_layout_surface *ivisurf,
+ 				  enum ivi_layout_transition_type type,
+@@ -1973,6 +2011,7 @@ static struct ivi_layout_interface ivi_layout_interface = {
+ 	.surface_get_weston_surface		= ivi_layout_surface_get_weston_surface,
+ 	.surface_set_transition			= ivi_layout_surface_set_transition,
+ 	.surface_set_transition_duration	= ivi_layout_surface_set_transition_duration,
++	.surface_set_id				= ivi_layout_surface_set_id,
+ 
+ 	/**
+ 	 * layer controller interfaces
+-- 
+2.7.4
+
