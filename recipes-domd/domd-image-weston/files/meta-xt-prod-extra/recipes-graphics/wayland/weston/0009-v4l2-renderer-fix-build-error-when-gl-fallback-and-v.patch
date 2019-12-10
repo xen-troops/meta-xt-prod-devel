@@ -1,0 +1,74 @@
+From 929b46a36761c8c218b0430c5a1a477606697d0f Mon Sep 17 00:00:00 2001
+From: Tomohito Esaki <etom@igel.co.jp>
+Date: Wed, 10 Apr 2019 16:02:12 +0900
+Subject: [PATCH 09/12] v4l2-renderer: fix build error when gl-fallback and vsp
+ scaling is disabled
+
+Use libkms and libdrm API in vsp2-renderer even when gl-fallback and vsp
+scaling is disabled.
+---
+ libweston/v4l2-renderer-device.h | 2 --
+ libweston/v4l2-renderer.c        | 4 +---
+ libweston/vsp2-renderer.c        | 3 ---
+ 3 files changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/libweston/v4l2-renderer-device.h b/libweston/v4l2-renderer-device.h
+index b9ea6ea7..330ee5c0 100644
+--- a/libweston/v4l2-renderer-device.h
++++ b/libweston/v4l2-renderer-device.h
+@@ -45,10 +45,8 @@ struct v4l2_renderer_device {
+ 	int media_fd;
+ 	const char *device_name;
+ 	bool enable_composition_with_damage;
+-#if defined(V4L2_GL_FALLBACK_ENABLED) || defined(VSP2_SCALER_ENABLED)
+ 	struct kms_driver *kms;
+ 	int drm_fd;
+-#endif
+ };
+ 
+ struct v4l2_renderer_output {
+diff --git a/libweston/v4l2-renderer.c b/libweston/v4l2-renderer.c
+index 32afa718..8fb86796 100644
+--- a/libweston/v4l2-renderer.c
++++ b/libweston/v4l2-renderer.c
+@@ -2160,11 +2160,10 @@ v4l2_renderer_init(struct weston_compositor *ec, struct v4l2_renderer_config *co
+ 	renderer->base.query_dmabuf_formats = v4l2_renderer_query_dmabuf_formats;
+ 	renderer->base.query_dmabuf_modifiers = v4l2_renderer_query_dmabuf_modifiers;
+ 
+-#if defined(V4L2_GL_FALLBACK_ENABLED) || defined(VSP2_SCALER_ENABLED)
+ 	renderer->device->kms = renderer->kms;
+ 	renderer->device->drm_fd = drm_fd;
+ 
+-#  ifdef V4L2_GL_FALLBACK_ENABLED
++#ifdef V4L2_GL_FALLBACK_ENABLED
+ 	if (renderer->gl_fallback) {
+ 		/* we now initialize gl-renderer for fallback */
+ 		renderer->gbm = gbm;
+@@ -2173,7 +2172,6 @@ v4l2_renderer_init(struct weston_compositor *ec, struct v4l2_renderer_config *co
+ 			renderer->gbm = NULL;
+ 		}
+ 	}
+-#  endif
+ #endif
+ 
+ 	ec->renderer = &renderer->base;
+diff --git a/libweston/vsp2-renderer.c b/libweston/vsp2-renderer.c
+index f74e57c9..e3d97326 100644
+--- a/libweston/vsp2-renderer.c
++++ b/libweston/vsp2-renderer.c
+@@ -50,12 +50,9 @@
+ 
+ #include "shared/helpers.h"
+ 
+-#if defined(V4L2_GL_FALLBACK_ENABLED) || defined(VSP2_SCALER_ENABLED)
+ #include <unistd.h>
+ #include <xf86drm.h>
+ #include <libkms/libkms.h>
+-#endif
+-
+ #include <drm_fourcc.h>
+ 
+ #if 0
+-- 
+2.17.1
+

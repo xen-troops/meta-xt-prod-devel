@@ -1,0 +1,34 @@
+From c96b9dedd67785cac15791919a0d13272bfd1324 Mon Sep 17 00:00:00 2001
+From: Tomohito Esaki <etom@igel.co.jp>
+Date: Wed, 10 Apr 2019 15:28:52 +0900
+Subject: [PATCH 10/12] v4l2-renderer: fix header file name in Makefile.am
+
+---
+ Makefile.am | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 42941803..302d5e70 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -337,7 +337,7 @@ v4l2_renderer_la_CFLAGS =				\
+ v4l2_renderer_la_SOURCES =			\
+ 	libweston/v4l2-renderer.c			\
+ 	libweston/v4l2-renderer.h			\
+-	libweston/v4l2-device.h
++	libweston/v4l2-renderer-device.h
+ 
+ libweston_module_LTLIBRARIES += v4l2-vsp2-device.la
+ v4l2_vsp2_device_la_LDFLAGS = -module -avoid-version
+@@ -348,7 +348,7 @@ v4l2_vsp2_device_la_CFLAGS =				\
+ 	$(GCC_CFLAGS)
+ v4l2_vsp2_device_la_SOURCES =			\
+ 	libweston/vsp2-renderer.c			\
+-	libweston/v4l2-device.h
++	libweston/v4l2-renderer-device.h
+ endif
+ 
+ if ENABLE_X11_COMPOSITOR
+-- 
+2.17.1
+
