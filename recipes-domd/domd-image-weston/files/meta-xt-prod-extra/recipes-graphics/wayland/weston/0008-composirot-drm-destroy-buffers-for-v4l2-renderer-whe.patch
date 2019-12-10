@@ -1,0 +1,38 @@
+From c7ea1844782c4c853e4cbbe02163b34c828a3240 Mon Sep 17 00:00:00 2001
+From: Tomohito Esaki <etom@igel.co.jp>
+Date: Thu, 28 Mar 2019 18:39:37 +0900
+Subject: [PATCH 08/12] composirot-drm: destroy buffers for v4l2-renderer when
+ the output is disabled
+
+Destroy buffers for v4l2-renderer and clear drm_plane status for scanout
+plane when output become disabled.
+---
+ libweston/compositor-drm.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/libweston/compositor-drm.c b/libweston/compositor-drm.c
+index 41cedecf..6db66d08 100644
+--- a/libweston/compositor-drm.c
++++ b/libweston/compositor-drm.c
+@@ -4933,6 +4933,18 @@ static void
+ drm_output_fini_v4l2(struct drm_output *output)
+ {
+ 	unsigned int i;
++	struct drm_backend *b = to_drm_backend(output->base.compositor);
++
++	/* Destroying the v4l2-renderer surface will destroy all our buffers,
++	 * regardless of refcount. Ensure we destroy them here. */
++	if ((!b->shutting_down) &&
++	    (output->scanout_plane->state_cur->fb) &&
++	    (output->scanout_plane->state_cur->fb->type == BUFFER_PIXMAN_DUMB)) {
++		drm_plane_state_free(output->scanout_plane->state_cur, true);
++		output->scanout_plane->state_cur =
++			drm_plane_state_alloc(NULL, output->scanout_plane);
++		output->scanout_plane->state_cur->complete = true;
++	}
+ 
+ 	v4l2_renderer->output_destroy(&output->base);
+ 
+-- 
+2.17.1
+
