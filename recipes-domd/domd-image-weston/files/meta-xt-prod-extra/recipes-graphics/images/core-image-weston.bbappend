@@ -16,6 +16,8 @@ IMAGE_INSTALL_append = " \
 python __anonymous () {
     if (d.getVar("AOS_VIS_PACKAGE_DIR", True) or "") == "" and not "domu" in (d.getVar("XT_GUESTS_INSTALL", True).split()):
         d.appendVar("IMAGE_INSTALL", "aos-vis")
+    if (d.getVar("AOS_VIS_PACKAGE_DIR", True) or "") != "" and not "domu" in (d.getVar("XT_GUESTS_INSTALL", True).split()):
+        d.appendVar("IMAGE_INSTALL", "ca-certificates")
 }
 
 # Configuration for ARM Trusted Firmware
