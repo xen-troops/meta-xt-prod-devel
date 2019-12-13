@@ -1,3 +1,5 @@
+require include/multimedia-control.inc
+
 do_install_append() {
     if echo "${DISTRO_FEATURES}" | grep -qi "ivi-shell"; then
         sed -i '/repaint-window=34/c\repaint-window=34\nshell=ivi-shell.so\nmodules=ivi-controller.so' \
@@ -14,6 +16,14 @@ do_install_append() {
             -e '$a\[desktop-app-default]' \
             -e '$a\default-surface-id=2000000' \
             -e '$a\default-surface-id-max=2001000' \
+            -i ${D}/${sysconfdir}/xdg/weston/weston.ini
+    fi
+
+    if [ "X${USE_MULTIMEDIA}" = "X1" -a "X${USE_V4L2_RENDERER}" = "X1" ]; then
+        sed -e '$a\\' \
+            -e '$a\[v4l2-renderer]' \
+            -e '$a\device-module=vsp2' \
+            -e '$a\device=/dev/vsp2-renderer' \
             -i ${D}/${sysconfdir}/xdg/weston/weston.ini
     fi
 }
