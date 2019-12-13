@@ -44,6 +44,7 @@ SRC_URI_V4L2_RENDERER = " \
     file://0009-v4l2-renderer-fix-build-error-when-gl-fallback-and-v.patch \
     file://0010-v4l2-renderer-fix-header-file-name-in-Makefile.am.patch    \
     file://0012-v4l2-renderer-add-support-dmabuf-buffer-offset.patch       \
+    file://vsp2.rules                                                      \
 "
 
 SRC_URI_append = "file://weston-seats.rules \
@@ -55,10 +56,20 @@ SRC_URI_append = "file://weston-seats.rules \
 FILES_${PN} += " \
     ${sysconfdir}/udev/rules.d/weston-seats.rules \
     ${sysconfdir}/udev/rules.d/camera_front.rules \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'v4l2-renderer', '${sysconfdir}/udev/rules.d/vsp2.rules', '', d)} \
 "
+
+python __anonymous () {
+    if bb.utils.contains('DISTRO_FEATURES', 'v4l2-renderer', True, False, d):
+        d.appendVar('PACKAGECONFIG', ' v4l2')
+        d.setVarFlag('PACKAGECONFIG', 'v4l2', '--enable-v4l2, --disable-v4l2, , kernel-module-vsp2driver')
+}
 
 do_install_append() {
     install -d ${D}${sysconfdir}/udev/rules.d
     install -m 0644 ${WORKDIR}/weston-seats.rules ${D}${sysconfdir}/udev/rules.d/weston-seats.rules
     install -m 0644 ${WORKDIR}/camera_front.rules ${D}${sysconfdir}/udev/rules.d/camera_front.rules
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'v4l2-renderer', 'true', 'false', d)}; then
+        install -m 0644 ${WORKDIR}/vsp2.rules ${D}${sysconfdir}/udev/rules.d/vsp2.rules
+    fi
 }

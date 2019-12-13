@@ -1,0 +1,1 @@
+SUBSYSTEM=="media", DEVPATH=="*/fe960000.vsp/media*", SYMLINK+="vsp2-renderer"
