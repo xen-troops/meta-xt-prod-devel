@@ -174,9 +174,9 @@ rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domu.tar.gz
 
 For example (H3ULCB),
 
-ln -s rcar-proprietary-graphic-salvator-x-h3-xt-domd.tar.gz \
+ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz \
 rcar-proprietary-graphic-h3ulcb-4x2g-xt-domd.tar.gz
-ln -s rcar-proprietary-graphic-salvator-x-h3-xt-domu.tar.gz \
+ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domu.tar.gz \
 rcar-proprietary-graphic-h3ulcb-4x2g-xt-domu.tar.gz
 
 5. Only for the multimedia usage.
