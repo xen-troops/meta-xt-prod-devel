@@ -73,27 +73,6 @@ KERNEL_DEVICETREE_salvator-xs-h3-4x2g-xt = " \
 "
 
 ##############################################################################
-# Salvator-XS H3 ES3.0 2x2GB
-###############################################################################
-# N.B. Device trees for ES 3.0 2x2G are based on and use device trees
-# for Salvator-XS H3 ES3.0 4x2G: Dom0 has memory and GSX adjustments
-# and DomD and DomU are used as is.
-###############################################################################
-SRC_URI_append_salvator-xs-h3-2x2g-xt = " \
-    file://r8a7795-salvator-xs-4x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-salvator-xs-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-salvator-xs-2x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-"
-
-KERNEL_DEVICETREE_salvator-xs-h3-2x2g-xt = " \
-    renesas/r8a7795-salvator-xs-4x2g-dom0.dtb \
-    renesas/r8a7795-salvator-xs-4x2g-domd.dtb \
-    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
-    renesas/r8a7795-salvator-xs-2x2g-dom0.dtb \
-"
-
-##############################################################################
 # Salvator-XS H3 ES2.0
 ###############################################################################
 # N.B. Device trees for ES 2.0 are based on and use device trees
