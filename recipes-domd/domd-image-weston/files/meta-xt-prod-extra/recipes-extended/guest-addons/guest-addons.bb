@@ -16,11 +16,6 @@ SRC_URI = " \
     file://android-disks.service \
     file://android-disks.conf \
     file://bridge-up-notification.service \
-    file://display-manager.service \
-    file://dm-salvator-x-m3.cfg \
-    file://dm-salvator-x-h3.cfg \
-    file://dm-ulcb.cfg \
-    file://dm-salvator-xs-m3n.cfg \
     file://eth0.network \
     file://xenbr0.netdev \
     file://xenbr0.network \
@@ -35,7 +30,6 @@ inherit systemd
 
 PACKAGES += " \
     ${PN}-bridge-config \
-    ${PN}-display-manager-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
@@ -50,12 +44,9 @@ FILES_${PN}-bridge-config = " \
 "
 
 SYSTEMD_PACKAGES = " \
-    ${PN}-display-manager-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
-
-SYSTEMD_SERVICE_${PN}-display-manager-service = " display-manager.service"
 
 SYSTEMD_SERVICE_${PN}-android-disks-service = " android-disks.service"
 
@@ -67,25 +58,12 @@ FILES_${PN}-android-disks-service = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/android-disks.sh \
 "
 
-FILES_${PN}-display-manager-service = " \
-    ${systemd_system_unitdir}/display-manager.service \
-"
-
 FILES_${PN}-bridge-up-notification-service = " \
     ${systemd_system_unitdir}/bridge-up-notification.service \
 "
 RDEPENDS_${PN}-bridge-config = " \
     ethtool \
 "
-
-DM_CONFIG_salvator-x-m3-xt = "dm-salvator-x-m3.cfg"
-DM_CONFIG_salvator-x-h3-xt = "dm-salvator-x-h3.cfg"
-DM_CONFIG_salvator-xs-h3-xt = "dm-salvator-x-h3.cfg"
-DM_CONFIG_salvator-xs-h3-4x2g-xt = "dm-salvator-x-h3.cfg"
-DM_CONFIG_salvator-x-h3-4x2g-xt = "dm-salvator-x-h3.cfg"
-DM_CONFIG_ulcb = "dm-ulcb.cfg"
-DM_CONFIG_kingfisher_r8a7795 = "dm-salvator-x-h3.cfg"
-DM_CONFIG_salvator-xs-m3n-xt = "dm-salvator-xs-m3n.cfg"
 
 do_install() {
     install -d ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
@@ -107,13 +85,9 @@ do_install() {
 
     install -d ${D}${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d
     install -m 0644 ${WORKDIR}/systemd-networkd-wait-online.conf ${D}${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d
-
-    install -d ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_CFG}
-    install -m 0744 ${WORKDIR}/${DM_CONFIG} ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_CFG}/dm.cfg
 }
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/*.sh \
-    ${base_prefix}${XT_DIR_ABS_ROOTFS_CFG}/*.cfg \
 "
 
