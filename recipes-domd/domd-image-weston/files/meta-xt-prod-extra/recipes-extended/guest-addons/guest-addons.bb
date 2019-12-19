@@ -13,7 +13,6 @@ SRC_URI = " \
     file://doma_loop_detach.sh \
     file://doma_loop_setup.sh \
     file://android-disks.sh \
-    file://displbe.service \
     file://android-disks.service \
     file://android-disks.conf \
     file://bridge-up-notification.service \
@@ -27,7 +26,6 @@ SRC_URI = " \
     file://xenbr0.network \
     file://xenbr0-systemd-networkd.conf \
     file://port-forward-systemd-networkd.conf \
-    file://sndbe.service \
     file://systemd-networkd-wait-online.conf \
 "
 
@@ -37,8 +35,6 @@ inherit systemd
 
 PACKAGES += " \
     ${PN}-bridge-config \
-    ${PN}-displbe-service \
-    ${PN}-sndbe-service \
     ${PN}-display-manager-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
@@ -54,16 +50,10 @@ FILES_${PN}-bridge-config = " \
 "
 
 SYSTEMD_PACKAGES = " \
-    ${PN}-displbe-service \
-    ${PN}-sndbe-service \
     ${PN}-display-manager-service \
     ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
-
-SYSTEMD_SERVICE_${PN}-displbe-service = " displbe.service"
-
-SYSTEMD_SERVICE_${PN}-sndbe-service = " sndbe.service"
 
 SYSTEMD_SERVICE_${PN}-display-manager-service = " display-manager.service"
 
@@ -75,14 +65,6 @@ FILES_${PN}-android-disks-service = " \
     ${systemd_system_unitdir}/android-disks.service \
     ${sysconfdir}/tmpfiles.d/android-disks.conf \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/android-disks.sh \
-"
-
-FILES_${PN}-displbe-service = " \
-    ${systemd_system_unitdir}/displbe.service \
-"
-
-FILES_${PN}-sndlbe-service = " \
-    ${systemd_system_unitdir}/sndbe.service \
 "
 
 FILES_${PN}-display-manager-service = " \
