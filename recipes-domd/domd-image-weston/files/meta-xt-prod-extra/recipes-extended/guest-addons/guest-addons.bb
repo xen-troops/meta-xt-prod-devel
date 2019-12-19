@@ -48,7 +48,7 @@ SYSTEMD_PACKAGES = " \
     ${PN}-bridge-up-notification-service \
 "
 
-SYSTEMD_SERVICE_${PN}-android-disks-service = " android-disks.service"
+SYSTEMD_SERVICE_${PN}-android-disks-service = "${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'android-disks.service', '', d)}"
 
 SYSTEMD_SERVICE_${PN}-bridge-up-notification-service = " bridge-up-notification.service"
 
@@ -66,14 +66,13 @@ RDEPENDS_${PN}-bridge-config = " \
 "
 
 do_install() {
+    # Install bridge/network artifacts
     install -d ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
-    install -m 0744 ${WORKDIR}/*.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
+    install -m 0744 ${WORKDIR}/bridge-nfsroot.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
+    install -m 0744 ${WORKDIR}/bridge.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
 
     install -d ${D}${systemd_system_unitdir}
-    install -m 0644 ${WORKDIR}/*.service ${D}${systemd_system_unitdir}
-
-    install -d ${D}${sysconfdir}/tmpfiles.d
-    install -m 0644 ${WORKDIR}/android-disks.conf ${D}${sysconfdir}/tmpfiles.d/android-disks.conf
+    install -m 0644 ${WORKDIR}/bridge-up-notification.service ${D}${systemd_system_unitdir}
 
     install -d ${D}${sysconfdir}/systemd/network/
     install -m 0644 ${WORKDIR}/*.network ${D}${sysconfdir}/systemd/network
@@ -85,6 +84,18 @@ do_install() {
 
     install -d ${D}${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d
     install -m 0644 ${WORKDIR}/systemd-networkd-wait-online.conf ${D}${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d
+
+    if ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'true', 'false', d)}; then
+        # Install android-disks artifacts
+        install -d ${D}${sysconfdir}/tmpfiles.d
+        install -m 0644 ${WORKDIR}/android-disks.conf ${D}${sysconfdir}/tmpfiles.d/android-disks.conf
+
+        install -m 0744 ${WORKDIR}/doma_loop_detach.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
+        install -m 0744 ${WORKDIR}/doma_loop_setup.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
+        install -m 0744 ${WORKDIR}/android-disks.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
+
+        install -m 0644 ${WORKDIR}/android-disks.service ${D}${systemd_system_unitdir}
+    fi
 }
 
 FILES_${PN} = " \
