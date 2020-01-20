@@ -611,4 +611,17 @@ fi
 print_step "Syncing"
 sync
 sudo losetup -d $loop_dev_in
+
+# if we write to file and we have bmaptool installed then
+# let's create .bmap to speed up flashing of image
+if [ ! -z `which bmaptool` ]; then
+    if  [ ! -b $ARG_DEPLOY_DEV ] ; then
+        print_step "Creating .bmap file"
+        bmaptool create $ARG_DEPLOY_DEV -o $ARG_DEPLOY_DEV.bmap
+        echo ".bmap was created, you can use"
+        echo "sudo bmaptool copy $ARG_DEPLOY_DEV --bmap $ARG_DEPLOY_DEV.bmap /dev/sdX"
+        echo "use 'sudo umount /dev/sdX?' if bmaptool has no exclusive access to /dev/sdX"
+    fi
+fi
+
 print_step "Done all steps"
