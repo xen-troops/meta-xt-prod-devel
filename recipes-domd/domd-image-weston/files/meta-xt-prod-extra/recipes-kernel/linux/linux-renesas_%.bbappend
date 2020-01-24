@@ -13,11 +13,13 @@ SRC_URI_append = " \
 
 SRC_URI_append_rcar = " \
     file://salvator-generic-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://salvator-generic-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://xen-chosen.dtsi;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_append_rcar = " \
     renesas/salvator-generic-doma.dtb \
+    renesas/salvator-generic-domu.dtb \
 "
 
 DEPLOYDIR="${XT_DIR_ABS_SHARED_BOOT_DOMD}"
@@ -28,13 +30,11 @@ DEPLOYDIR="${XT_DIR_ABS_SHARED_BOOT_DOMD}"
 SRC_URI_append_salvator-x-h3-4x2g-xt = " \
     file://r8a7795-salvator-x-4x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-x-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-x-h3-4x2g-xt = " \
     renesas/r8a7795-salvator-x-4x2g-dom0.dtb \
     renesas/r8a7795-salvator-x-4x2g-domd.dtb \
-    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
 "
 
 ##############################################################################
@@ -47,14 +47,12 @@ KERNEL_DEVICETREE_salvator-x-h3-4x2g-xt = " \
 SRC_URI_append_salvator-x-h3-xt = " \
     file://r8a7795-salvator-x-4x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-x-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-x-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-x-h3-xt = " \
     renesas/r8a7795-salvator-x-dom0.dtb \
     renesas/r8a7795-salvator-x-4x2g-domd.dtb \
-    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
 "
 
 ##############################################################################
@@ -63,13 +61,11 @@ KERNEL_DEVICETREE_salvator-x-h3-xt = " \
 SRC_URI_append_salvator-xs-h3-4x2g-xt = " \
     file://r8a7795-salvator-xs-4x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-xs-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-xs-h3-4x2g-xt = " \
     renesas/r8a7795-salvator-xs-4x2g-dom0.dtb \
     renesas/r8a7795-salvator-xs-4x2g-domd.dtb \
-    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
 "
 
 ##############################################################################
@@ -82,14 +78,12 @@ KERNEL_DEVICETREE_salvator-xs-h3-4x2g-xt = " \
 SRC_URI_append_salvator-xs-h3-xt = " \
     file://r8a7795-salvator-xs-4x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-xs-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-salvator-xs-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-xs-h3-xt = " \
     renesas/r8a7795-salvator-xs-4x2g-dom0.dtb \
     renesas/r8a7795-salvator-xs-4x2g-domd.dtb \
-    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
     renesas/r8a7795-salvator-xs-dom0.dtb \
 "
 
@@ -101,13 +95,11 @@ KERNEL_DEVICETREE_salvator-xs-h3-xt = " \
 SRC_URI_append_salvator-x-m3-xt = " \
     file://r8a7796-salvator-x-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7796-salvator-x-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7796-salvator-x-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-x-m3-xt = " \
     renesas/r8a7796-salvator-x-dom0.dtb \
     renesas/r8a7796-salvator-x-domd.dtb \
-    renesas/r8a7796-salvator-x-domu.dtb \
 "
 
 ##############################################################################
@@ -116,13 +108,11 @@ KERNEL_DEVICETREE_salvator-x-m3-xt = " \
 SRC_URI_append_m3ulcb-xt = " \
     file://r8a7796-m3ulcb-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7796-m3ulcb-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7796-m3ulcb-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_m3ulcb-xt = " \
     renesas/r8a7796-m3ulcb-dom0.dtb \
     renesas/r8a7796-m3ulcb-domd.dtb \
-    renesas/r8a7796-m3ulcb-domu.dtb \
 "
 
 ##############################################################################
@@ -131,13 +121,11 @@ KERNEL_DEVICETREE_m3ulcb-xt = " \
 SRC_URI_append_h3ulcb-xt = " \
     file://r8a7795-h3ulcb-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-h3ulcb-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-h3ulcb-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_h3ulcb-xt = " \
     renesas/r8a7795-h3ulcb-dom0.dtb \
     renesas/r8a7795-h3ulcb-domd.dtb \
-    renesas/r8a7795-h3ulcb-domu.dtb \
 "
 
 ##############################################################################
@@ -146,36 +134,29 @@ KERNEL_DEVICETREE_h3ulcb-xt = " \
 SRC_URI_append_salvator-xs-m3n-xt = " \
     file://r8a77965-salvator-xs-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a77965-salvator-xs-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a77965-salvator-xs-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_salvator-xs-m3n-xt = " \
     renesas/r8a77965-salvator-xs-dom0.dtb \
     renesas/r8a77965-salvator-xs-domd.dtb \
-    renesas/r8a77965-salvator-xs-domu.dtb \
 "
 
 ##############################################################################
 # H3ULCB ES3.0 4x2G
 ###############################################################################
-# N.B. DomU device tree is reused from Salvator-X H3 ES3.0 4x2G
-###############################################################################
 SRC_URI_append_h3ulcb-4x2g-xt = " \
     file://r8a7795-h3ulcb-4x2g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-h3ulcb-4x2g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_h3ulcb-4x2g-xt = " \
     renesas/r8a7795-h3ulcb-4x2g-dom0.dtb \
     renesas/r8a7795-h3ulcb-4x2g-domd.dtb \
-    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
 "
 
 ##############################################################################
 # H3ULCB ES3.0 4x2G KF
 ###############################################################################
-# N.B. DomU device tree is reused from Salvator-X H3 ES3.0 4x2G
 # FIXME: ulcb.cfg comes from CogentEmbedded's meta-rcar layer, but is only used
 # for {h|m}3ulcb machines while we are building for XT machine
 # (h3ulcb-4x2g-kf-xt)
@@ -183,7 +164,6 @@ KERNEL_DEVICETREE_h3ulcb-4x2g-xt = " \
 SRC_URI_append_h3ulcb-4x2g-kf-xt = " \
     file://r8a7795-h3ulcb-4x2g-kf-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-h3ulcb-4x2g-kf-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://r8a7795-salvator-x-4x2g-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://0001-r8a7795-6-65-.dtsi-Add-multichannel-audio-ranges-tha.patch \
     file://ulcb.cfg \
     file://0001-Update-gntdev-drm_front-DMA-tweaks.patch \
@@ -192,7 +172,6 @@ SRC_URI_append_h3ulcb-4x2g-kf-xt = " \
 KERNEL_DEVICETREE_h3ulcb-4x2g-kf-xt = " \
     renesas/r8a7795-h3ulcb-4x2g-kf-dom0.dtb \
     renesas/r8a7795-h3ulcb-4x2g-kf-domd.dtb \
-    renesas/r8a7795-salvator-x-4x2g-domu.dtb \
 "
 
 do_deploy_append() {
