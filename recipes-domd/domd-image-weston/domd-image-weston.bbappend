@@ -1,3 +1,5 @@
+require inc/xt_shared_env.inc
+
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 FILESEXTRAPATHS_prepend := "${THISDIR}/../../recipes-domx:"
@@ -200,4 +202,10 @@ do_install_append () {
     -exec cp -f {} ${DEPLOY_DIR} \; || true
     find ${DEPLOY_DIR}/${PN}/ipk/aarch64 -iname "aos-vis_git*" -exec cp -f {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt \; && \
     find ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt -iname "aos-vis_git*" -exec ln -sfr {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt/aos-vis \; || true
+
+    rm -rf ${XT_DIR_ABS_SHARED_BOOT_DOMD}/xen
+    install -d ${XT_DIR_ABS_SHARED_BOOT_DOMD}/xen
+
+    find ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt/xen*.uImage -type f | xargs -I{} cp -f {} ${XT_DIR_ABS_SHARED_BOOT_DOMD}/xen
+    find ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt/xenpolicy* -type f | xargs -I{} cp -f {} ${XT_DIR_ABS_SHARED_BOOT_DOMD}/xen
 }
