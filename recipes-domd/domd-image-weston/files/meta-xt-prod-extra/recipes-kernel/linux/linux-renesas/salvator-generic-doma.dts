@@ -34,7 +34,7 @@
 					dev = "/dev/block/xvda2";
 					type = "ext4";
 					mnt_flags = "ro,barrier=1";
-					fsmgr_flags = "wait,avb";
+					fsmgr_flags = "wait";
 				};
 			};
 		};
