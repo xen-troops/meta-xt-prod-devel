@@ -1,0 +1,27 @@
+From 5da36607c92158805e43d786c0224dfd5e38a6c5 Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Thu, 13 Feb 2020 17:45:24 +0200
+Subject: [PATCH] Modify gstvspfilter-salvator-x_r8a7795.conf to use
+ video_input(output) names
+
+Where
+video_input would be a symlink to "fe9a0000.vsp rpf.0 input" channel
+video_output would be a symlink to "fe9a0000.vsp wpf.0 output" channel
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ .../gstvspfilter-salvator-x_r8a7795.conf                              | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugin-vspfilter/gstvspfilter-salvator-x_r8a7795.conf b/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugin-vspfilter/gstvspfilter-salvator-x_r8a7795.conf
+index 586b13b..bfe72f8 100644
+--- a/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugin-vspfilter/gstvspfilter-salvator-x_r8a7795.conf
++++ b/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugin-vspfilter/gstvspfilter-salvator-x_r8a7795.conf
+@@ -1,2 +1,2 @@
+-input-device-name=/dev/video20
+-output-device-name=/dev/video21
++input-device-name=/dev/video_input
++output-device-name=/dev/video_output
+-- 
+2.7.4
+

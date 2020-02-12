@@ -1,0 +1,2 @@
+SUBSYSTEM=="video4linux", ENV{ID_V4L_PRODUCT}=="fe9a0000.vsp rpf.0 input", SYMLINK+="video_input"
+SUBSYSTEM=="video4linux", ENV{ID_V4L_PRODUCT}=="fe9a0000.vsp wpf.0 output", SYMLINK+="video_output"
