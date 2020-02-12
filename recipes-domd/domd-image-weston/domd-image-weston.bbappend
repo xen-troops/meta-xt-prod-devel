@@ -81,6 +81,7 @@ XT_QUIRK_PATCH_SRC_URI_rcar = "\
     file://0001-copyscript-Set-GFX-Library-List-to-empty-string.patch;patchdir=meta-renesas \
     file://0001-Add-vspfilter-configs.patch;patchdir=meta-renesas \
     file://0001-recipes-kernel-Load-multimedia-related-modules-autom.patch;patchdir=meta-renesas \
+    file://0001-Modify-gstvspfilter-salvator-x_r8a7795.conf-to-use-v.patch;patchdir=meta-renesas \
 "
 
 XT_QUIRK_PATCH_SRC_URI_append_h3ulcb-4x2g-kf = "\
