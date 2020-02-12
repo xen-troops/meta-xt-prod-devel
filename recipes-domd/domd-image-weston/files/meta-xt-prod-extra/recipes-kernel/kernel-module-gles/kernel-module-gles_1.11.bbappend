@@ -9,3 +9,8 @@ SRCREV = "${AUTOREV}"
 SRC_URI_append = " file://0001-Silenced-Wcast-function-type-Wsizeof-pointer-div-and.patch"
 
 SRC_URI_append_h3ulcb-4x2g-kf-xt = " file://0001-Update-xen_back-DMA-tweaks.patch"
+
+# Linux based guests do not require such option to be enabled in a host
+EXTRA_OEMAKE += "\
+    ${@bb.utils.contains('XT_GUESTS_INSTALL', 'domu', 'PVRSRV_SYNC_CHECKPOINT_CCB=0', '', d)} \
+"

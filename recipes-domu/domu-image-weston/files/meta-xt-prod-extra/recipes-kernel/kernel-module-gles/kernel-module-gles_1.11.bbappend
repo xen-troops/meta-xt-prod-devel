@@ -7,3 +7,6 @@ SRCREV = "${AUTOREV}"
 
 # W/A fix build errors with GCC 8.1
 SRC_URI_append = " file://0001-Silenced-Wcast-function-type-Wsizeof-pointer-div-and.patch"
+
+# Linux based guests do not require such option itself
+EXTRA_OEMAKE += "PVRSRV_SYNC_CHECKPOINT_CCB=0"
