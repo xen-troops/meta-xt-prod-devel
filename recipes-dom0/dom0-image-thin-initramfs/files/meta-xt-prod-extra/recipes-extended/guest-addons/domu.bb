@@ -13,6 +13,7 @@ SRC_URI = "\
     file://domu-salvator-x-m3.cfg \
     file://domu-salvator-xs-m3n.cfg \
     file://domu-generic-h3-4x2g.cfg \
+    file://domu-vdevices.cfg \
     file://guest_domu \
 "
 
@@ -52,6 +53,7 @@ INITSCRIPT_PARAMS_${PN}-run = "defaults 87"
 do_install() {
     install -d ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}
     install -m 0744 ${WORKDIR}/${DOMU_CONFIG} ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
+    cat ${WORKDIR}/domu-vdevices.cfg >> ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
 
     install -d ${D}${sysconfdir}/init.d
     install -m 0744 ${WORKDIR}/guest_domu ${D}${sysconfdir}/init.d/
