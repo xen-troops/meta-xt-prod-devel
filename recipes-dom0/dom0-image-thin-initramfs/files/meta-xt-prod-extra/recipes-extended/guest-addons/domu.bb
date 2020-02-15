@@ -9,11 +9,10 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 
 SRC_URI = "\
     file://domu-m3ulcb.cfg \
-    file://domu-h3ulcb.cfg \
+    file://domu-generic-h3.cfg \
     file://domu-salvator-x-m3.cfg \
-    file://domu-salvator-x-h3.cfg \
     file://domu-salvator-xs-m3n.cfg \
-    file://domu-salvator-x-h3-4x2g.cfg \
+    file://domu-generic-h3-4x2g.cfg \
     file://guest_domu \
     file://domx-pvcamera.cfg \
 "
@@ -21,15 +20,15 @@ SRC_URI = "\
 S = "${WORKDIR}"
 
 DOMU_CONFIG_salvator-x-m3-xt = "domu-salvator-x-m3.cfg"
-DOMU_CONFIG_salvator-x-h3-xt = "domu-salvator-x-h3.cfg"
+DOMU_CONFIG_salvator-x-h3-xt = "domu-generic-h3.cfg"
 DOMU_CONFIG_salvator-xs-m3n-xt = "domu-salvator-xs-m3n.cfg"
-DOMU_CONFIG_salvator-x-h3-4x2g-xt = "domu-salvator-x-h3-4x2g.cfg"
-DOMU_CONFIG_salvator-xs-h3-xt = "domu-salvator-x-h3.cfg"
-DOMU_CONFIG_salvator-xs-h3-4x2g-xt = "domu-salvator-x-h3-4x2g.cfg"
+DOMU_CONFIG_salvator-x-h3-4x2g-xt = "domu-generic-h3-4x2g.cfg"
+DOMU_CONFIG_salvator-xs-h3-xt = "domu-generic-h3.cfg"
+DOMU_CONFIG_salvator-xs-h3-4x2g-xt = "domu-generic-h3-4x2g.cfg"
 DOMU_CONFIG_m3ulcb-xt = "domu-m3ulcb.cfg"
-DOMU_CONFIG_h3ulcb-xt = "domu-h3ulcb.cfg"
-DOMU_CONFIG_h3ulcb-4x2g-xt = "domu-salvator-x-h3-4x2g.cfg"
-DOMU_CONFIG_h3ulcb-4x2g-kf-xt = "domu-salvator-x-h3-4x2g.cfg"
+DOMU_CONFIG_h3ulcb-xt = "domu-generic-h3.cfg"
+DOMU_CONFIG_h3ulcb-4x2g-xt = "domu-generic-h3-4x2g.cfg"
+DOMU_CONFIG_h3ulcb-4x2g-kf-xt = "domu-generic-h3-4x2g.cfg"
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg \
