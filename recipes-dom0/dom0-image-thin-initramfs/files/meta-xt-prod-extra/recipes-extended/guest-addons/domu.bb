@@ -15,6 +15,7 @@ SRC_URI = "\
     file://domu-salvator-xs-m3n.cfg \
     file://domu-salvator-x-h3-4x2g.cfg \
     file://guest_domu \
+    file://domx-pvcamera.cfg \
 "
 
 S = "${WORKDIR}"
@@ -57,4 +58,9 @@ do_install() {
     install -d ${D}${sysconfdir}/init.d
     install -m 0744 ${WORKDIR}/guest_domu ${D}${sysconfdir}/init.d/
 
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'pvcamera', 'true', 'false', d)}; then
+        cat ${WORKDIR}/domx-pvcamera.cfg >> ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
+        # Update GUEST_DEPENDENCIES by adding camerabe after sndbe
+        sed -i 's/\<sndbe\>/& camerabe/' ${D}${sysconfdir}/init.d/guest_domu
+    fi
 }
