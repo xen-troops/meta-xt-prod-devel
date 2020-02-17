@@ -222,6 +222,9 @@ CONF_VERSION = "1"
 DISTRO_FEATURES_append = " virtualization"
 DISTRO_FEATURES_append = " xen"
 
+# Configuration for Para-virtual camera
+#DISTRO_FEATURES_append = " pvcamera"
+
 DEPLOY_DIR = "${TMPDIR}/deploy"
 IMAGE_ROOTFS = "${TMPDIR}/rootfs"
 XT_SHARED_ROOTFS_DIR = "${IMAGE_ROOTFS}/shared_rootfs"

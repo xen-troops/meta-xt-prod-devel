@@ -11,6 +11,7 @@ SRC_URI = "\
     file://doma-salvator-generic.cfg \
     file://doma-salvator-x-h3-4x2g.cfg \
     file://guest_doma \
+    file://domx-pvcamera.cfg \
 "
 
 S = "${WORKDIR}"
@@ -48,4 +49,9 @@ do_install() {
     install -d ${D}${sysconfdir}/init.d
     install -m 0744 ${WORKDIR}/guest_doma ${D}${sysconfdir}/init.d/
 
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'pvcamera', 'true', 'false', d)}; then
+        cat ${WORKDIR}/domx-pvcamera.cfg >> ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
+        # Update GUEST_DEPENDENCIES by adding camerabe after sndbe
+        sed -i 's/\<sndbe\>/& camerabe/' ${D}${sysconfdir}/init.d/guest_doma
+    fi
 }

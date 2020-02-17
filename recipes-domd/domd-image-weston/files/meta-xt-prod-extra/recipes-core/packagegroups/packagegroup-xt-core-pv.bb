@@ -8,5 +8,5 @@ RDEPENDS_packagegroup-xt-core-pv = "\
     libxenbe \
     displbe \
     sndbe \
-    camerabe \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'pvcamera', 'camerabe', '', d)} \
 "
