@@ -223,7 +223,7 @@ DISTRO_FEATURES_append = " virtualization"
 DISTRO_FEATURES_append = " xen"
 
 # Configuration for Para-virtual camera
-#DISTRO_FEATURES_append = " pvcamera"
+DISTRO_FEATURES_append = " pvcamera"
 
 DEPLOY_DIR = "${TMPDIR}/deploy"
 IMAGE_ROOTFS = "${TMPDIR}/rootfs"
