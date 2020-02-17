@@ -407,7 +407,7 @@ MACHINE_FEATURES_append = " cas"
 DISTRO_FEATURES_append = " virtualization"
 
 # Configuration for Para-virtual camera
-#DISTRO_FEATURES_append = " pvcamera"
+DISTRO_FEATURES_append = " pvcamera"
 
 DISTRO_FEATURES_remove = " x11 gtk gobject-introspection-data nfc irda zeroconf 3g"
 
