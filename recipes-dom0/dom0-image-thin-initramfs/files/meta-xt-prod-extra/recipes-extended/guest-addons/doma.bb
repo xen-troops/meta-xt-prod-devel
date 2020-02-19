@@ -10,6 +10,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 SRC_URI = "\
     file://doma-generic-h3.cfg \
     file://doma-generic-h3-4x2g.cfg \
+    file://doma-vdevices.cfg \
     file://guest_doma \
     file://domx-pvcamera.cfg \
 "
@@ -45,6 +46,7 @@ INITSCRIPT_PARAMS_${PN}-run = "defaults 87"
 do_install() {
     install -d ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}
     install -m 0744 ${WORKDIR}/${DOMA_CONFIG} ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
+    cat ${WORKDIR}/doma-vdevices.cfg       >> ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
 
     install -d ${D}${sysconfdir}/init.d
     install -m 0744 ${WORKDIR}/guest_doma ${D}${sysconfdir}/init.d/
