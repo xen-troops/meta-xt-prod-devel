@@ -7,7 +7,7 @@ After=proc-xen.mount
 Type=simple
 Environment="XDG_RUNTIME_DIR=/run/user/0"
 ExecStartPre=
-ExecStart=/usr/bin/camera_be
+ExecStart=/usr/bin/camera_be -c /xt/cfg/camera_be.cfg
 ExecStartPost=/usr/bin/xenstore-write drivers/camerabe/status ready
 ExecStop=/usr/bin/xenstore-write drivers/camerabe/status dead
 ExecStopPost=/usr/bin/xenstore-write drivers/camerabe/status dead
