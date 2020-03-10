@@ -12,7 +12,7 @@ SRC_URI_append_rcar = " \
 
 EXTRA_OECMAKE_append_rcar = " -DWITH_DOC=OFF"
 
-RDEPENDS_${PN} = "libxenbe libconfig libv4l"
+RDEPENDS_${PN} = "libxenbe libconfig libv4l media-ctl v4l-utils"
 
 inherit systemd
 
