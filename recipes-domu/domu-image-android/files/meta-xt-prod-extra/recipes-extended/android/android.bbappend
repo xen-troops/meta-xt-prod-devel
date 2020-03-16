@@ -3,23 +3,25 @@ SRCREV = "${AUTOREV}"
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI_append = " \
-    repo://github.com/xen-troops/android_manifest;protocol=https;branch=android-10.0.0_r3-master;manifest=doma.xml;scmdata=keep "
+    repo://github.com/arminn/android_manifest;protocol=https;branch=CI_TEST_security_mr26;manifest=doma.xml;scmdata=keep "
 
 # put it out of the source tree, so it can be reused after cleanup
 ANDROID_OUT_DIR_COMMON_BASE = "${SSTATE_DIR}/../${ANDROID_PRODUCT}-${SOC_FAMILY}"
 ANDROID_PRODUCT_OUT = "${ANDROID_OUT_DIR_COMMON_BASE}/target/product/${ANDROID_PRODUCT}"
+ANDROID_HOST_PYTHON="$(dirname ${PYTHON})"
 
 EXTRA_OEMAKE_append = " \
     TARGET_BOARD_PLATFORM=${SOC_FAMILY} \
     TARGET_SOC_REVISION=${SOC_REVISION} \
     OUT_DIR=${ANDROID_OUT_DIR_COMMON_BASE} \
     PRODUCT_OUT=${ANDROID_PRODUCT_OUT} \
+    HOST_PYTHON=${ANDROID_HOST_PYTHON} \
 "
 
 ANDROID_KERNEL_NAME ?= "kernel"
 ANDROID_UNPACKED_KERNEL_NAME ?= "vmlinux"
 PATCHTOOL = "git"
-DEPENDS += " python-clang-native"
+DEPENDS += " python-clang-native python-pycrypto-native"
 
 ################################################################################
 # Renesas R-Car
