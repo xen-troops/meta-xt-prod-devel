@@ -20,6 +20,7 @@ ANDROID_KERNEL_NAME ?= "kernel"
 ANDROID_UNPACKED_KERNEL_NAME ?= "vmlinux"
 PATCHTOOL = "git"
 DEPENDS += " python-clang-native"
+DEPENDS += "python-pycrypto-native"
 
 ################################################################################
 # Renesas R-Car
