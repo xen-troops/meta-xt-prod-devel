@@ -1,0 +1,108 @@
+From f23acef7fdf141878247aa5a5a91c5cc95fec445 Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Thu, 19 Mar 2020 16:44:55 +0200
+Subject: [PATCH] v4l2-renderer: Introduce detach_buffer op to
+ v4l2_device_interface
+
+Extend v4l2_device_interface by adding detach_buffer operation
+the main purpose of which is to ask renderer backend device
+to completely release attached dma buffer if it is still in use.
+There may be a case when no new composition is going to be done
+later and we may end up with dma buffer which has never been released
+(actually what we observe when using ivi-shell).
+
+Call this operation if client asks to release current buffer
+by attaching null buffer to the surface.
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ libweston/v4l2-renderer-device.h |  1 +
+ libweston/v4l2-renderer.c        |  6 +++++-
+ libweston/vsp2-renderer.c        | 35 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 41 insertions(+), 1 deletion(-)
+
+diff --git a/libweston/v4l2-renderer-device.h b/libweston/v4l2-renderer-device.h
+index c06f1f6..12b974f 100644
+--- a/libweston/v4l2-renderer-device.h
++++ b/libweston/v4l2-renderer-device.h
+@@ -131,6 +131,7 @@ struct v4l2_device_interface {
+ 
+ 	struct v4l2_surface_state *(*create_surface)(struct v4l2_renderer_device *dev);
+ 	int (*attach_buffer)(struct v4l2_surface_state *vs);
++	void (*detach_buffer)(struct v4l2_renderer_device *dev, struct v4l2_surface_state *vs);
+ 
+ 	bool (*begin_compose)(struct v4l2_renderer_device *dev, struct v4l2_renderer_output *out);
+ 	void (*finish_compose)(struct v4l2_renderer_device *dev);
+diff --git a/libweston/v4l2-renderer.c b/libweston/v4l2-renderer.c
+index e337dff..b288639 100644
+--- a/libweston/v4l2-renderer.c
++++ b/libweston/v4l2-renderer.c
+@@ -1689,7 +1689,11 @@ v4l2_renderer_attach(struct weston_surface *es, struct weston_buffer *buffer)
+ 	} else {
+ 		// null buffer is a special case: current buffer needs to be
+ 		// released, so reference counter of the attached
+-		// dma buffer is dropped from us now
++		// dma buffer is dropped from us now,
++		// also we ask renderer backend device to completely release
++		// the attached dma buffer if it is still in use
++
++		device_interface->detach_buffer(vs->renderer->device, vs);
+ 		v4l2_release_dmabuf(vs);
+ 		v4l2_release_kms_bo(vs);
+ 	}
+diff --git a/libweston/vsp2-renderer.c b/libweston/vsp2-renderer.c
+index a131ff3..b83c0ca 100644
+--- a/libweston/vsp2-renderer.c
++++ b/libweston/vsp2-renderer.c
+@@ -744,6 +744,40 @@ vsp2_attach_buffer(struct v4l2_surface_state *surface_state)
+ }
+ 
+ static int
++vsp2_comp_setup_inputs(struct vsp_device *vsp, struct vsp_input *input, bool enable);
++
++static void
++vsp2_detach_buffer(struct v4l2_renderer_device *dev, struct v4l2_surface_state *surface_state)
++{
++	struct vsp_surface_state *vs = (struct vsp_surface_state*)surface_state;
++	struct vsp_device *vsp = (struct vsp_device*)dev;
++	int i;
++
++	if (vsp->state != VSP_STATE_IDLE)
++		return;
++
++	for (i = 0; i < vsp->input_max; i++) {
++		struct vsp_input *input = &vsp->inputs[i];
++
++		/* Find input pad corresponding to that surface */
++		if (input->input_surface_states == vs) {
++			/*
++			 * Disable input pad in order to "dump the old setting". The main
++			 * reason of that action is to request outbut buffer by issuing
++			 * VIDIOC_REQBUFS ioctl with buffer count 0), to drop reference
++			 * counter of the attached dma buffer and release it completely.
++			 * It is going to be safe as such buffer is requested to be released
++			 * and all references to it have been already dropped (except
++			 * last one here).
++			 */
++			DBG("Disable input %d to release attached dma buffer\n", i);
++			vsp2_comp_setup_inputs(vsp, input, false);
++			return;
++		}
++	}
++}
++
++static int
+ vsp2_set_format(int fd, struct v4l2_format *fmt, int opaque)
+ {
+ 	int ret;
+@@ -1907,6 +1941,7 @@ WL_EXPORT struct v4l2_device_interface v4l2_device_interface = {
+ 
+ 	.create_surface = vsp2_create_surface,
+ 	.attach_buffer = vsp2_attach_buffer,
++	.detach_buffer = vsp2_detach_buffer,
+ 
+ 	.begin_compose = vsp2_comp_begin,
+ 	.finish_compose = vsp2_comp_finish,
+-- 
+2.7.4
+

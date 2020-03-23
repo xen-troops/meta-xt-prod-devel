@@ -44,6 +44,7 @@ SRC_URI_V4L2_RENDERER = " \
     file://0009-v4l2-renderer-fix-build-error-when-gl-fallback-and-v.patch \
     file://0010-v4l2-renderer-fix-header-file-name-in-Makefile.am.patch    \
     file://0012-v4l2-renderer-add-support-dmabuf-buffer-offset.patch       \
+    file://0001-v4l2-renderer-Introduce-detach_buffer-op-to-v4l2_dev.patch \
     file://vsp2.rules                                                      \
 "
 
