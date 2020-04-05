@@ -423,3 +423,6 @@ ASSUME_PROVIDED += "sync-native"
 HOSTTOOLS += "sync"
 ASSUME_PROVIDED += "bison-native"
 HOSTTOOLS += "bison"
+
+# Add development tools (gcc, make, pkgconfig etc.)
+EXTRA_IMAGE_FEATURES += "tools-sdk"
