@@ -1,0 +1,28 @@
+From a0aa158d39e814da2535765b5de4ea945376df06 Mon Sep 17 00:00:00 2001
+From: Julien Grall <julien.grall@arm.com>
+Date: Fri, 10 Apr 2020 16:05:58 +0300
+Subject: [PATCH] virtio: Don't use DMA API
+
+Seems to break block virtio
+---
+ drivers/virtio/virtio_ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 71458f4..dc9afe5 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -156,8 +156,8 @@ static bool vring_use_dma_api(struct virtio_device *vdev)
+ 	 * the DMA API if we're a Xen guest, which at least allows
+ 	 * all of the sensible Xen configurations to work correctly.
+ 	 */
+-	if (xen_domain())
+-		return true;
++//	if (xen_domain())
++//		return true;
+ 
+ 	return false;
+ }
+-- 
+2.7.4
+
