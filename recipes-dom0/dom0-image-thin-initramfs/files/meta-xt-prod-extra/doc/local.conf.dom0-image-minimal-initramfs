@@ -225,6 +225,9 @@ DISTRO_FEATURES_append = " xen"
 # Configuration for Para-virtual camera
 DISTRO_FEATURES_append = " pvcamera"
 
+# Configuration for VirtIO feature
+#DISTRO_FEATURES_append = " virtio"
+
 DEPLOY_DIR = "${TMPDIR}/deploy"
 IMAGE_ROOTFS = "${TMPDIR}/rootfs"
 XT_SHARED_ROOTFS_DIR = "${IMAGE_ROOTFS}/shared_rootfs"
