@@ -437,6 +437,9 @@ DISTRO_FEATURES_append = " virtualization"
 # Configuration for Para-virtual camera
 DISTRO_FEATURES_append = " pvcamera"
 
+# Configuration for VirtIO feature
+#DISTRO_FEATURES_append = " virtio"
+
 DISTRO_FEATURES_remove = " x11 gtk gobject-introspection-data nfc irda zeroconf 3g"
 
 # Remove multimedia options if XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR is not defined
