@@ -2,7 +2,7 @@ Prerequisites:
 ==============
 0. Ubuntu 16.04 should be used as host OS for build.
 1. Install tools : apt-get install gawk wget diffstat texinfo chrpath socat libsdl1.2-dev \
-                    python-crypto repo checkpolicy python-git \
+                    python-crypto repo checkpolicy python-git python-github \
                     python-ctypeslib bzr pigz m4 lftp openjdk-8-jdk git-core \
                     gnupg flex bison gperf build-essential zip curl zlib1g-dev \
                     gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev \
