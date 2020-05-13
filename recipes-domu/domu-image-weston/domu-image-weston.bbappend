@@ -4,8 +4,6 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/../../recipes-domx:"
 
 do_configure[depends] += "domd-image-weston:do_domd_install_machine_overrides"
 
-XT_PRODUCT_NAME ?= "prod-devel"
-
 python __anonymous () {
     product_name = d.getVar('XT_PRODUCT_NAME', True)
     folder_name = product_name.replace("-", "_")
