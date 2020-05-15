@@ -16,8 +16,3 @@ BBLAYERS ?= " \
   ${TOPDIR}/../meta-openembedded/meta-filesystems \
   ${TOPDIR}/../meta-virtualization \
 "
-
-BBLAYERS_NON_REMOVABLE ?= " \
-  ${TOPDIR}/../poky/meta \
-  ${TOPDIR}/../poky/meta-poky \
-"
