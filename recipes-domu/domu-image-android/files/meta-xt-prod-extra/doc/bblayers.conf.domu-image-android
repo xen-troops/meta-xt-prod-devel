@@ -11,8 +11,3 @@ BBLAYERS ?= " \
   ${TOPDIR}/../meta-openembedded/meta-oe \
   ${TOPDIR}/../meta-openembedded/meta-python \
 "
-
-BBLAYERS_NON_REMOVABLE ?= " \
-  ${TOPDIR}/../poky/meta \
-  ${TOPDIR}/../poky/meta-poky \
-"
