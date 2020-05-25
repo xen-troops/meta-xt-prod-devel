@@ -8,6 +8,13 @@ XT_GUESTS_BUILD ?= "doma"
 XT_GUESTS_INSTALL ?= "doma"
 
 python __anonymous () {
+    machine = d.getVar('MACHINE', True)
+    not_supported_machines = ["salvator-x-m3", "salvator-xs-h3", "h3ulcb", "m3ulcb", "salvator-x-h3"]
+    if machine in not_supported_machines:
+        warning = 'The machine {} is not supported.'.format(machine) 
+        bb.warn(warning)
+        bb.fatal("Use prod-devel-unsafe of prod-devel to support.")
+
     guests = d.getVar('XT_GUESTS_BUILD', True).split()
     if "doma" in guests :
         d.appendVarFlag("do_compile", "depends", " domu-image-android:do_${BB_DEFAULT_TASK} ")
