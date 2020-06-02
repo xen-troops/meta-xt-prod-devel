@@ -9,7 +9,6 @@ SRCREV = "${AUTOREV}"
 LINUX_VERSION = "4.14.75"
 SRC_URI_append = " \
     file://defconfig \
-    file://0001-virtio-Don-t-use-DMA-API.patch \
 "
 
 DEPLOYDIR="${XT_DIR_ABS_SHARED_BOOT_DOMU}"
