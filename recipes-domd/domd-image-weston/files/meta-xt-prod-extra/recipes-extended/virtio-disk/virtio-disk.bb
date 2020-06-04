@@ -20,15 +20,13 @@ SRC_URI_append = " \
     file://virtio-disk.service \
 "
 
-inherit systemd pkgconfig
+inherit systemd pkgconfig autotools-brokensep
 
 SYSTEMD_SERVICE_${PN} = "virtio-disk.service"
 
 do_install_append() {
     install -d ${D}${systemd_system_unitdir}
     install -m 0644 ${WORKDIR}/virtio-disk.service ${D}${systemd_system_unitdir}
-
-    install -Dm755 ${S}/demu ${D}${bindir}/virtio-disk
 }
 
 FILES_${PN} += " \
