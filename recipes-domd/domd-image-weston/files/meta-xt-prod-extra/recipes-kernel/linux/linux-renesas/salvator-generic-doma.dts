@@ -31,7 +31,7 @@
 
 				vendor {
 					compatible = "android,vendor";
-					dev = "/dev/block/xvda2";
+					dev = "/dev/block/by-name/vendor";
 					type = "ext4";
 					mnt_flags = "ro,barrier=1";
 					fsmgr_flags = "wait";
