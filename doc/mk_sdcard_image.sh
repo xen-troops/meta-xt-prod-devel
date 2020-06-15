@@ -199,12 +199,12 @@ partition_image()
 
 		# parted generates error on all operation with "nested" disk, guard it with || true
 		sudo parted $loop_dev_a -s mklabel gpt || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_SYSTEM_PARTITION_ID}    ext4 1MiB  3148MiB || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_VENDOR_PARTITION_ID}    ext4 3149MiB  3418MiB || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_MISC_PARTITION_ID}      ext4 3419MiB  3420MiB || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_VBMETA_PARTITION_ID}    ext4 3421MiB  3422MiB || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_METADATA_PARTITION_ID}  ext4 3423MiB  3434MiB || true
-		sudo parted $loop_dev_a -s mkpart xvda${DOMA_USERDATA_PARTITION_ID}  ext4 3435MiB  4435MiB || true
+		sudo parted $loop_dev_a -s mkpart system    ext4 1MiB  3148MiB || true
+		sudo parted $loop_dev_a -s mkpart vendor    ext4 3149MiB  3418MiB || true
+		sudo parted $loop_dev_a -s mkpart misc      ext4 3419MiB  3420MiB || true
+		sudo parted $loop_dev_a -s mkpart vbmeta    ext4 3421MiB  3422MiB || true
+		sudo parted $loop_dev_a -s mkpart metadata  ext4 3423MiB  3434MiB || true
+		sudo parted $loop_dev_a -s mkpart userdata  ext4 3435MiB  4435MiB || true
 		sudo parted $loop_dev_a -s print
 		sudo partprobe $loop_dev_a || true
 
