@@ -18,10 +18,10 @@ Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
  3 files changed, 42 insertions(+), 8 deletions(-)
 
 diff --git a/tools/libxl/libxl_arm.c b/tools/libxl/libxl_arm.c
-index 94eb54f..2ac1234 100644
+index e70acc5..4225cf6 100644
 --- a/tools/libxl/libxl_arm.c
 +++ b/tools/libxl/libxl_arm.c
-@@ -270,20 +270,46 @@ static int fdt_property_regs(libxl__gc *gc, void *fdt,
+@@ -278,20 +278,46 @@ static int fdt_property_regs(libxl__gc *gc, void *fdt,
  
  static int make_root_properties(libxl__gc *gc,
                                  const libxl_version_info *vers,
@@ -75,7 +75,7 @@ index 94eb54f..2ac1234 100644
      if (res) return res;
  
      res = fdt_property_cell(fdt, "interrupt-parent", GUEST_PHANDLE_GIC);
-@@ -930,7 +956,7 @@ next_resize:
+@@ -938,7 +964,7 @@ next_resize:
  
          FDT( fdt_begin_node(fdt, "") );
  
@@ -85,10 +85,10 @@ index 94eb54f..2ac1234 100644
          FDT( make_cpus_node(gc, fdt, info->max_vcpus, ainfo) );
          FDT( make_psci_node(gc, fdt) );
 diff --git a/tools/libxl/libxl_types.idl b/tools/libxl/libxl_types.idl
-index 5c02fb1..0af8852 100644
+index 679dac6..2505220 100644
 --- a/tools/libxl/libxl_types.idl
 +++ b/tools/libxl/libxl_types.idl
-@@ -543,6 +543,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
+@@ -550,6 +550,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
      # Note that the partial device tree should avoid to use the phandle
      # 65000 which is reserved by the toolstack.
      ("device_tree",      string),
@@ -97,10 +97,10 @@ index 5c02fb1..0af8852 100644
      ("bootloader",       string),
      ("bootloader_args",  libxl_string_list),
 diff --git a/tools/xl/xl_parse.c b/tools/xl/xl_parse.c
-index 640c6ae..d6f7b03 100644
+index 1e6871a..863c6ee 100644
 --- a/tools/xl/xl_parse.c
 +++ b/tools/xl/xl_parse.c
-@@ -2405,6 +2405,13 @@ skip_vfb:
+@@ -2663,6 +2663,13 @@ skip_vfb:
          }
      }
  

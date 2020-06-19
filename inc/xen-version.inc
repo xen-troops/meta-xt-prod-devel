@@ -3,6 +3,6 @@
 # Following inc file defines XEN version and needed glue info to get it
 # built with the current yocto version
 ################################################################################
-require ../meta-xt-images-domx/recipes-extended/xen/xen-4.13-thud.inc
+require ../meta-xt-images-domx/recipes-extended/xen/xen-4.14-thud.inc
 
-SRC_URI = "git://github.com/xen-troops/xen.git;protocol=https;branch=RELEASE-4.13.0-xt0.2.prod-devel"
+SRC_URI = "git://github.com/xen-troops/xen.git;protocol=https;branch=xen-4.14rc-migration"
