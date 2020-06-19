@@ -7,6 +7,7 @@ IMAGE_INSTALL_append = " \
     xen-xencommons \
     xen-xenstat \
     xen-misc \
+    xen-xenhypfs \
     dom0 \
     dom0-run-vcpu_pin \
     dom0-run-set_root_dev \

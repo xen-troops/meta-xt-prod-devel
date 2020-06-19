@@ -28,13 +28,7 @@ FILES_${PN}-flask = " \
 "
 
 do_configure_append() {
-    export XEN_CONFIG_EXPERT=y
-
     oe_runmake xt_defconfig
-}
-
-do_compile_prepend () {
-    export XEN_CONFIG_EXPERT=y
 }
 
 do_deploy_append_rcar () {

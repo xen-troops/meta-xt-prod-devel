@@ -20,10 +20,10 @@ Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
  3 files changed, 24 insertions(+), 4 deletions(-)
 
 diff --git a/tools/libxl/libxl_arm.c b/tools/libxl/libxl_arm.c
-index 2ac1234..e32ed15 100644
+index 4225cf6..1e9f04c 100644
 --- a/tools/libxl/libxl_arm.c
 +++ b/tools/libxl/libxl_arm.c
-@@ -835,9 +835,10 @@ static int copy_node_by_path(libxl__gc *gc, const char *path,
+@@ -843,9 +843,10 @@ static int copy_node_by_path(libxl__gc *gc, const char *path,
   *  - /passthrough node
   *  - /aliases node
   */
@@ -36,7 +36,7 @@ index 2ac1234..e32ed15 100644
  
      r = copy_node_by_path(gc, "/passthrough", fdt, pfdt);
      if (r < 0) {
-@@ -851,6 +852,16 @@ static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt)
+@@ -859,6 +860,16 @@ static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt)
          return r;
      }
  
@@ -53,7 +53,7 @@ index 2ac1234..e32ed15 100644
      return 0;
  }
  
-@@ -863,7 +874,8 @@ static int check_partial_fdt(libxl__gc *gc, void *fdt, size_t size)
+@@ -871,7 +882,8 @@ static int check_partial_fdt(libxl__gc *gc, void *fdt, size_t size)
      return ERROR_FAIL;
  }
  
@@ -63,7 +63,7 @@ index 2ac1234..e32ed15 100644
  {
      /*
       * We should never be here when the partial device tree is not
-@@ -989,7 +1001,7 @@ next_resize:
+@@ -997,7 +1009,7 @@ next_resize:
              FDT( make_optee_node(gc, fdt) );
  
          if (pfdt)
@@ -73,10 +73,10 @@ index 2ac1234..e32ed15 100644
          FDT( fdt_end_node(fdt) );
  
 diff --git a/tools/libxl/libxl_types.idl b/tools/libxl/libxl_types.idl
-index 0af8852..92b989e 100644
+index 2505220..90425f1 100644
 --- a/tools/libxl/libxl_types.idl
 +++ b/tools/libxl/libxl_types.idl
-@@ -544,6 +544,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
+@@ -551,6 +551,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
      # 65000 which is reserved by the toolstack.
      ("device_tree",      string),
      ("dt_compatible",    libxl_string_list),
@@ -85,10 +85,10 @@ index 0af8852..92b989e 100644
      ("bootloader",       string),
      ("bootloader_args",  libxl_string_list),
 diff --git a/tools/xl/xl_parse.c b/tools/xl/xl_parse.c
-index d6f7b03..2dc72b5 100644
+index 863c6ee..6c00d16 100644
 --- a/tools/xl/xl_parse.c
 +++ b/tools/xl/xl_parse.c
-@@ -2412,6 +2412,13 @@ skip_vfb:
+@@ -2670,6 +2670,13 @@ skip_vfb:
              exit(-ERROR_FAIL);
      }
  
