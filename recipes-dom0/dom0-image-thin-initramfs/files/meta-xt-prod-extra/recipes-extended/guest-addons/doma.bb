@@ -56,4 +56,25 @@ do_install() {
         # Update GUEST_DEPENDENCIES by adding camerabe after sndbe
         sed -i 's/\<sndbe\>/& camerabe/' ${D}${sysconfdir}/init.d/guest_doma
     fi
+
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'virtio', 'true', 'false', d)}; then
+        # Comment disk and uncomment vdisk + virtio properties
+        sed -i 's/\bdisk =/#disk =/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
+        sed -i 's/#vdisk =/vdisk =/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
+        sed -i 's/#virtio =/virtio =/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
+
+        # Update root by changing xvda1 to vda1
+        sed -i 's/root=\/dev\/xvda1/root=\/dev\/vda1/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
+
+        # Update boot_devices by changing 51712 to 2000000
+        sed -i 's/androidboot.boot_devices=51712/androidboot.boot_devices=2000000.virtio/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
+
+        # Update GUEST_DEPENDENCIES by adding virtio-disk after sndbe
+        sed -i 's/\<sndbe\>/& virtio-disk/' ${D}${sysconfdir}/init.d/guest_doma
+    fi
 }

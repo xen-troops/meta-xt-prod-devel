@@ -60,4 +60,10 @@ do_install() {
 
     install -d ${D}${sysconfdir}/init.d
     install -m 0744 ${WORKDIR}/guest_domd ${D}${sysconfdir}/init.d/
+
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'virtio', 'true', 'false', d)}; then
+        # Increase XT page pool
+        sed -i 's/xt_page_pool=67108864/xt_page_pool=603979776/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domd.cfg
+    fi
 }
