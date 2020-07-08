@@ -226,7 +226,7 @@ DISTRO_FEATURES_append = " xen"
 DISTRO_FEATURES_append = " pvcamera"
 
 # Configuration for VirtIO feature
-#DISTRO_FEATURES_append = " virtio"
+DISTRO_FEATURES_append = " virtio"
 
 DEPLOY_DIR = "${TMPDIR}/deploy"
 IMAGE_ROOTFS = "${TMPDIR}/rootfs"

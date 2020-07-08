@@ -410,7 +410,7 @@ DISTRO_FEATURES_append = " virtualization"
 DISTRO_FEATURES_append = " pvcamera"
 
 # Configuration for VirtIO feature
-#DISTRO_FEATURES_append = " virtio"
+DISTRO_FEATURES_append = " virtio"
 
 DISTRO_FEATURES_remove = " x11 gtk gobject-introspection-data nfc irda zeroconf 3g"
 
