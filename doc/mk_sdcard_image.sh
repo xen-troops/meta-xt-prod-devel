@@ -18,7 +18,7 @@ DOMA_USERDATA_PARTITION_ID=6
 usage()
 {
 	echo "###############################################################################"
-	echo "SD card image builder script v1.4"
+	echo "SD card image builder script v1.5"
 	echo "###############################################################################"
 	echo "Usage:"
 	echo "`basename "$0"` <-p image-folder> <-d image-file> <-c config> [-s image-size] [-u domain]"
