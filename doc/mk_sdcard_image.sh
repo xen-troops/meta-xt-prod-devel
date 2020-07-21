@@ -519,14 +519,6 @@ unpack_domain()
 	esac
 }
 
-print_step "Checking for simg2img"
-
-if [ $(dpkg-query -W -f='${Status}' android-tools-fsutils 2>/dev/null | grep -c "ok installed") -eq 0 ];
-then
-   echo "Please install simg2img (in debian-based: apt-get install android-tools-fsutils). Exiting.";
-   exit;
-fi
-
 print_step "Parsing input parameters"
 
 while getopts ":p:d:c:s:u:f" opt; do
@@ -567,6 +559,7 @@ fi
 define_partitions $ARG_CONFIGURATION
 
 # Check that deploy path contains dom0, domd and doma
+# also check for simg2img for android related images
 dom0_name=`ls ${ARG_DEPLOY_PATH} | grep dom0-image-thin` || true
 if [ -z "$dom0_name" ]; then
 	echo "Error: deploy path has no dom0."
@@ -585,6 +578,13 @@ if [ ! -z ${DOMF_START} ]; then
 	fi
 fi
 if [ ! -z ${DOMA_START} ]; then
+	# simg2img is used only if we have android as guest
+	if [ $(dpkg-query -W -f='${Status}' android-tools-fsutils 2>/dev/null | grep -c "ok installed") -eq 0 ];
+	then
+		echo "Please install simg2img (in debian-based: apt-get install android-tools-fsutils). Exiting.";
+		exit;
+	fi
+
 	doma_name=`ls ${ARG_DEPLOY_PATH} | grep android` || true
 	if [ -z "$doma_name" ]; then
 		echo "Error: deploy path has no doma."
