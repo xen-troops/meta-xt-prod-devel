@@ -8,6 +8,8 @@ IMAGE_INSTALL_append = " \
     xen-xenstat \
     xen-misc \
     xen-xenhypfs \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'xen-base', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'xen-devd', '', d)} \
     dom0 \
     dom0-run-vcpu_pin \
     dom0-run-set_root_dev \
