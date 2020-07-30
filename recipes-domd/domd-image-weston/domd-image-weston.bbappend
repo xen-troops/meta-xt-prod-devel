@@ -181,6 +181,10 @@ configure_versions_rcar() {
         base_set_conf_value ${local_conf} DISTRO_FEATURES_remove "virtio"
     fi
 
+    if [ ! -z "${XT_COMMON_DISTRO_FEATURES_APPEND}" ]; then
+        base_set_conf_value ${local_conf} DISTRO_FEATURES_append " ${XT_COMMON_DISTRO_FEATURES_APPEND}"
+    fi
+
     base_update_conf_value ${local_conf} XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR "${XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR}"
 }
 
