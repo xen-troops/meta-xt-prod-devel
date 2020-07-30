@@ -2,6 +2,8 @@ DEPENDS += "u-boot-mkimage-native"
 
 inherit deploy
 
+IMAGE_FSTYPES += "ext4"
+
 #Add Xen and additional packages to build
 IMAGE_INSTALL_append = " \
     xen-xencommons \

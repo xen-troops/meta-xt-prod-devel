@@ -1,3 +1,5 @@
+IMAGE_FSTYPES += "ext4"
+
 IMAGE_INSTALL_append = " \
     pulseaudio \
     alsa-utils \

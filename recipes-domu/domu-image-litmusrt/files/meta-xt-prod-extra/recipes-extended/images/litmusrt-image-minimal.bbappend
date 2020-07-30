@@ -1,5 +1,7 @@
 require inc/xt_shared_env.inc
 
+IMAGE_FSTYPES += "ext4"
+
 share_artifacts () {
     mkdir -p ${XT_DIR_ABS_SHARED_BOOT_DOMR}
     rm -f ${XT_DIR_ABS_SHARED_BOOT_DOMR}/*.cpio.gz
