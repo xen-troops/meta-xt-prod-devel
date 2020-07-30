@@ -16,6 +16,7 @@ SRC_URI = "\
     file://domu-vdevices.cfg \
     file://guest_domu \
     file://domx-pvcamera.cfg \
+    file://domu-qemu.cfg \
 "
 
 S = "${WORKDIR}"
@@ -63,5 +64,9 @@ do_install() {
         cat ${WORKDIR}/domx-pvcamera.cfg >> ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
         # Update GUEST_DEPENDENCIES by adding camerabe after sndbe
         sed -i 's/\<sndbe\>/& camerabe/' ${D}${sysconfdir}/init.d/guest_domu
+    fi
+    # For QEMU+Xen use explicit configuration w/o any addons
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'true', 'false', d)}; then
+        install -m 0744 ${WORKDIR}/domu-qemu.cfg ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
     fi
 }
