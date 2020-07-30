@@ -64,6 +64,10 @@ add_to_local_conf() {
     base_update_conf_value ${local_conf} PREFERRED_VERSION_xen "4.13.0+git\%"
 
     base_update_conf_value ${local_conf} XT_GUESTS_INSTALL "${XT_GUESTS_INSTALL}"
+
+    if [ ! -z ${XT_COMMON_DISTRO_FEATURES_APPEND} ]; then
+        base_set_conf_value ${local_conf} DISTRO_FEATURES_append " ${XT_COMMON_DISTRO_FEATURES_APPEND}"
+    fi
 }
 
 python do_configure_append() {
