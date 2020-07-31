@@ -112,9 +112,7 @@ define_partitions()
 print_step()
 {
 	local caption=$1
-	echo "###############################################################################"
-	echo "Step $CUR_STEP: $caption"
-	echo "###############################################################################"
+	echo "##### Step $CUR_STEP: $caption"
 	((CUR_STEP++))
 }
 
@@ -126,8 +124,6 @@ inflate_image()
 	local dev=$1
 	local size_gb=$2
 
-	print_step "Inflate image"
-	echo "DEV -" $dev
 	if  [ -b "$dev" ] ; then
 		echo "Using physical block device $dev"
 		return 0
@@ -141,8 +137,6 @@ inflate_image()
 		echo "Error: device is not connected."
 		exit 1
 	fi
-
-	echo "Inflating image file at $dev of size ${size_gb}GiB"
 
 	local inflate=1
 	if [ -e $1 ] && [ $FORCE_INFLATION -ne 1 ] ; then
@@ -161,7 +155,7 @@ inflate_image()
 		esac
 	fi
 	if [[ $inflate == 1 ]] ; then
-		sudo dd if=/dev/zero of=$dev bs=1M count=0 seek=$(($size_gb*1024)) || exit 1
+		sudo dd if=/dev/zero of=$dev bs=1M count=0 seek=$(($size_gb*1024)) status=none || exit 1
 	fi
 }
 
@@ -193,7 +187,7 @@ partition_image()
 		# We have special handling for Android, because it has it's own partitions.
 		# So, Android has dedicated partition number DOMA_PARTITION. And this partition
 		# contains few 'internal' (Android's native) partitions.
-		print_step "Make Android partitions on "${1}p$DOMA_PARTITION
+		print_step "Make Android partitions"
 
 		local loop_dev_a=`sudo losetup --find --partscan --show ${1}p$DOMA_PARTITION`
 
@@ -222,9 +216,7 @@ mkfs_one()
 	local part=$2
 	local label=$3
 
-	print_step "Making ext4 filesystem for $label"
-
-	sudo mkfs.ext4 -O ^64bit -F ${loop_base}p${part} -L $label
+	sudo mkfs.ext4 -O ^64bit -F ${loop_base}p${part} -L $label > /dev/null
 }
 
 mkfs_boot()
@@ -314,7 +306,8 @@ unpack_dom_from_tar()
 	# take the latest - useful if making image from local build
 	local rootfs=`find $dom_root -name "*rootfs.tar.bz2" | xargs ls -t | head -1`
 
-	echo "Root filesystem is at $rootfs"
+	# align position of filename with similar info for dom0
+	echo "Root filesystem:  " `realpath --relative-to=$db_base_folder $rootfs`
 
 	mount_part $loop_base $part $MOUNT_POINT
 
@@ -345,11 +338,11 @@ unpack_dom0()
 	local xenpolicy=`find $domd_root -name xenpolicy`
 	local xenuImage=`find $domd_root -name xen-uImage`
 
-	echo "Dom0 kernel image is at $Image"
-	echo "Dom0 initramfs is at $uInitramfs"
-	echo "Dom0 device tree is at $dom0dtb"
-	echo "Xen policy is at $xenpolicy"
-	echo "Xen image is at $xenuImage"
+	echo "Dom0 kernel image:" `realpath --relative-to=$db_base_folder $Image`
+	echo "Dom0 initramfs:   " `realpath --relative-to=$db_base_folder $uInitramfs`
+	echo "Dom0 device tree: " `realpath --relative-to=$db_base_folder $dom0dtb`
+	echo "Xen policy:       " `realpath --relative-to=$db_base_folder $xenpolicy`
+	echo "Xen image:        " `realpath --relative-to=$db_base_folder $xenuImage`
 
 	if [ $(echo "$Image" | wc -w) -gt 1 ]; then
 		echo "Error: Too many kernel images were found."
@@ -413,21 +406,28 @@ unpack_doma()
 	local vendor=`find $doma_root -name "vendor.img"`
 	local vbmeta=`find $doma_root -name "vbmeta.img"`
 
-	echo "DomA system image is at $system"
-	echo "DomA vendor image is at $vendor"
+	echo "DomA system image:" `realpath --relative-to=$db_base_folder $system`
+	echo "DomA vendor image:" `realpath --relative-to=$db_base_folder $vendor`
 
 	simg2img $system $raw_system
 	simg2img $vendor $raw_vendor
 
-	sudo dd if=$raw_system of=${loop_base}p${DOMA_SYSTEM_PARTITION_ID} bs=1M status=progress
-	sudo dd if=$raw_vendor of=${loop_base}p${DOMA_VENDOR_PARTITION_ID} bs=1M status=progress
-
-	if [ ! -z ${vbmeta} ]; then
-		sudo dd if=$vbmeta of=${loop_base}p${DOMA_VBMETA_PARTITION_ID} bs=1M status=progress
+	if  [ -b $ARG_DEPLOY_DEV ] ; then
+		# show progress only if write to phisical device because it's long
+		sudo dd if=$raw_system of=${loop_base}p${DOMA_SYSTEM_PARTITION_ID} bs=1M status=progress
+		sudo dd if=$raw_vendor of=${loop_base}p${DOMA_VENDOR_PARTITION_ID} bs=1M status=progress
+	else
+		# if we write to file - no need to show progress for few seconds of writing
+		sudo dd if=$raw_system of=${loop_base}p${DOMA_SYSTEM_PARTITION_ID} bs=1M status=none
+		sudo dd if=$raw_vendor of=${loop_base}p${DOMA_VENDOR_PARTITION_ID} bs=1M status=none
 	fi
 
-	echo "Wipe out DomA/misc"
-	sudo dd if=/dev/zero of=${loop_base}p${DOMA_MISC_PARTITION_ID} bs=1M count=1 || true
+	if [ ! -z ${vbmeta} ]; then
+		sudo dd if=$vbmeta of=${loop_base}p${DOMA_VBMETA_PARTITION_ID} bs=1M status=none
+	fi
+
+	# Wipe out DomA/misc
+	sudo dd if=/dev/zero of=${loop_base}p${DOMA_MISC_PARTITION_ID} bs=1M count=1 status=none
 
 	rm -f $raw_system $raw_vendor
 }
@@ -448,7 +448,7 @@ unpack_image()
 
 	if [ ! -z ${DOMA_START} ]; then
 		local out_adev=${img_output_file}p$DOMA_PARTITION
-		sudo umount $out_adev || true
+		if [[ ! -z `findmnt ${out_adev}` ]] ; then sudo umount -l -f ${out_adev} ; fi
 		while [[ ! (-b $out_adev) ]]; do
 			# wait for $out_adev to appear
 			sleep 1
@@ -468,10 +468,10 @@ make_image()
 	local db_base_folder=$1
 	local img_output_file=$2
 
-	print_step "Preparing image at ${img_output_file}"
-	ls ${img_output_file}?* | xargs -n1 sudo umount -l -f || true
-
-	sudo umount -f ${img_output_file}* || true
+	# some partition may be mounted, so unmount them
+	for f in ${img_output_file}* ; do
+		if [[ ! -z `findmnt "${f}"` ]] ; then sudo umount -l -f "${f}" ; fi
+	done
 
 	partition_image $img_output_file
 
@@ -519,7 +519,7 @@ unpack_domain()
 	esac
 }
 
-print_step "Parsing input parameters"
+#print_step "Parsing input parameters"
 
 while getopts ":p:d:c:s:u:f" opt; do
 	case $opt in
@@ -592,9 +592,6 @@ if [ ! -z ${DOMA_START} ]; then
 	fi
 fi
 
-echo "Using deploy path: \"$ARG_DEPLOY_PATH\""
-echo "Using device     : \"$ARG_DEPLOY_DEV\""
-
 if [ -z ${ARG_IMG_SIZE_GIB} ]; then
 	ARG_IMG_SIZE_GIB=${DEFAULT_IMAGE_SIZE_GIB}
 fi
@@ -615,13 +612,13 @@ sudo losetup -d $loop_dev_in
 # if we write to file and we have bmaptool installed then
 # let's create .bmap to speed up flashing of image
 if [ ! -z `which bmaptool` ]; then
-    if  [ ! -b $ARG_DEPLOY_DEV ] ; then
-        print_step "Creating .bmap file"
-        bmaptool create $ARG_DEPLOY_DEV -o $ARG_DEPLOY_DEV.bmap
-        echo ".bmap was created, you can use"
-        echo "sudo bmaptool copy $ARG_DEPLOY_DEV --bmap $ARG_DEPLOY_DEV.bmap /dev/sdX"
-        echo "use 'sudo umount /dev/sdX?' if bmaptool has no exclusive access to /dev/sdX"
-    fi
+	if  [ ! -b $ARG_DEPLOY_DEV ] ; then
+		print_step "Creating .bmap file"
+		bmaptool create $ARG_DEPLOY_DEV -o $ARG_DEPLOY_DEV.bmap
+		echo ".bmap was created, you can use"
+		echo "sudo bmaptool copy $ARG_DEPLOY_DEV --bmap $ARG_DEPLOY_DEV.bmap /dev/sdX"
+		echo "if bmaptool has no exclusive access to /dev/sdX then use 'sudo umount /dev/sdX?'"
+	fi
 fi
 
 print_step "Done all steps"
