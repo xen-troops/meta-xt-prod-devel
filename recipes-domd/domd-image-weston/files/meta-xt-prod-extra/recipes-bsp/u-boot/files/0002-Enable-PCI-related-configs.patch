@@ -1,0 +1,25 @@
+From dd06304cd6d068eedeb96b19b0544c1e07010f72 Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Sun, 26 Jul 2020 15:49:07 +0300
+Subject: [PATCH 2/3] Enable PCI related configs
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ configs/r8a7795_salvator-x-4x2g_defconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/configs/r8a7795_salvator-x-4x2g_defconfig b/configs/r8a7795_salvator-x-4x2g_defconfig
+index b41bb4d..6b09384 100644
+--- a/configs/r8a7795_salvator-x-4x2g_defconfig
++++ b/configs/r8a7795_salvator-x-4x2g_defconfig
+@@ -64,3 +64,7 @@ CONFIG_USB_EHCI_GENERIC=y
+ CONFIG_USB_STORAGE=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
+ CONFIG_SMBIOS_MANUFACTURER=""
++CONFIG_CMD_PCI=y
++CONFIG_PCI=y
++CONFIG_DM_PCI=y
++CONFIG_PCI_RCAR_GEN3=y
+-- 
+2.7.4
+

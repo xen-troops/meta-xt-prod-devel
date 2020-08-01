@@ -1,0 +1,30 @@
+From 9128abfcac889dfe0de53b1449b58b34576d7944 Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Sun, 26 Jul 2020 15:49:30 +0300
+Subject: [PATCH 3/3] Fix missing MACCTLR register setting in initialization
+ sequence
+
+Write the initial value (= H'80FF 0000) to MACCTLR before
+enabling PCIETCTLR.CFINIT.
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ drivers/pci/pci-rcar-gen3.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/pci/pci-rcar-gen3.c b/drivers/pci/pci-rcar-gen3.c
+index 52ca13b..c095789 100644
+--- a/drivers/pci/pci-rcar-gen3.c
++++ b/drivers/pci/pci-rcar-gen3.c
+@@ -312,6 +312,8 @@ static int rcar_gen3_pcie_hw_init(struct udevice *dev)
+ 	/* Terminate list of capabilities (Next Capability Offset=0) */
+ 	rcar_rmw32(dev, RVCCAP(0), 0xfff00000, 0);
+ 
++	writel(0x80FF0000, priv->regs + MACCTLR);
++
+ 	/* Finish initialization - establish a PCI Express link */
+ 	writel(CFINIT, priv->regs + PCIETCTLR);
+ 
+-- 
+2.7.4
+
