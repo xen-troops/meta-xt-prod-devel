@@ -1,5 +1,5 @@
 /*
- * Device Tree Source for the Salvator-X 2nd version board with R-Car H3 ES2.0
+ * Device Tree Source for the Salvator-X 2nd version board with R-Car H3 ES3.0
  * running XEN hypervisor
  *
  * Copyright (C) 2018 Renesas Electronics Corp.
@@ -9,7 +9,7 @@
  * kind, whether express or implied.
  */
 
-#include "r8a7795-salvator-xs.dts"
+#include "r8a7795-salvator-xs-4x2g.dts"
 #include "xen-chosen.dtsi"
 
 / {

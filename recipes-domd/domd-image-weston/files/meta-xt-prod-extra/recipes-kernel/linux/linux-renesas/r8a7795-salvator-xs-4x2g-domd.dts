@@ -9,7 +9,7 @@
  * kind, whether express or implied.
  */
 
-#include "r8a7795-salvator-xs.dts"
+#include "r8a7795-salvator-xs-4x2g.dts"
 
 /*
  * The device tree compiler (DTC) is allocating the phandle from 1 to
