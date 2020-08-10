@@ -32,6 +32,10 @@ python __anonymous () {
         d.appendVar("IMAGE_INSTALL", " domr domr-run domr-install-artifacts")
     if "domu" in guests :
         d.appendVar("IMAGE_INSTALL", " domu domu-run domu-install-artifacts")
+    rootfs_extra_space = d.getVar("DISTRO_FEATURES", True).split()
+    # Check if extra rootfs space, KBytes, required
+    if "qemu_xen" in rootfs_extra_space :
+        d.setVar("IMAGE_ROOTFS_EXTRA_SPACE", "102400")
 }
 
 generate_uboot_image() {
