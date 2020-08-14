@@ -585,10 +585,9 @@ if [ ! -z ${DOMF_START} ]; then
 fi
 if [ ! -z ${DOMA_START} ]; then
 	# simg2img is used only if we have android as guest
-	if [ $(dpkg-query -W -f='${Status}' android-tools-fsutils 2>/dev/null | grep -c "ok installed") -eq 0 ];
-	then
-		echo "Please install simg2img (in debian-based: apt-get install android-tools-fsutils). Exiting.";
-		exit;
+	if [ -z "`which simg2img`" ]; then
+		echo "Error: can't find simg2img. Please install it.";
+		exit 2
 	fi
 
 	doma_name=`ls ${ARG_DEPLOY_PATH} | grep android` || true
