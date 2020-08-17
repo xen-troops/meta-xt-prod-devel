@@ -52,7 +52,11 @@ define_partitions()
 			DOMF_END=$((DOMF_START+4000))  # 8257
 			DOMF_PARTITION=3
 			DOMF_LABEL=domf
-			DEFAULT_IMAGE_SIZE_GIB=$(((DOMF_END/1024)+1))
+			AOS_START=$DOMF_END
+			AOS_END=$((AOS_START+1024))  # 9281
+			AOS_PARTITION=4
+			AOS_LABEL=aos
+			DEFAULT_IMAGE_SIZE_GIB=$(((AOS_END/1024)+1))
 		;;
 		ces2019)
 			# prod-ces2019 [1..257][257..4257][4257..8680]
@@ -173,6 +177,7 @@ partition_image()
 	sudo parted -s $1 mkpart primary ext4 ${DOMD_START}MiB ${DOMD_END}MiB || true
 	if [ ! -z ${DOMF_START} ]; then
 		sudo parted -s $1 mkpart primary ext4 ${DOMF_START}MiB ${DOMF_END}MiB || true
+		sudo parted -s $1 mkpart primary ext4 ${AOS_START}MiB ${AOS_END}MiB || true
 	fi
 	if [ ! -z ${DOMU_START} ]; then
 		sudo parted -s $1 mkpart primary ext4 ${DOMU_START}MiB ${DOMU_END}MiB || true
@@ -232,6 +237,7 @@ mkfs_domd()
 mkfs_domf()
 {
 	mkfs_one $1 $DOMF_PARTITION $DOMF_LABEL
+	mkfs_one $1 $AOS_PARTITION $AOS_LABEL
 }
 
 mkfs_doma()
