@@ -1,3 +1,5 @@
+require inc/xt_shared_env.inc 
+
 IMAGE_INSTALL_append = " \
     pulseaudio \
     alsa-utils \
@@ -21,6 +23,8 @@ python __anonymous () {
 
 # Configuration for ARM Trusted Firmware
 EXTRA_IMAGEDEPENDS += " arm-trusted-firmware"
+
+IMAGE_FSTYPES += " ext4" 
 
 # u-boot
 DEPENDS += " u-boot"
@@ -54,6 +58,11 @@ install_aos () {
     if [ ! -z "${AOS_VIS_PACKAGE_DIR}" ];then
         opkg install ${AOS_VIS_PACKAGE_DIR}/aos-vis
     fi
+}
+
+addtask populate_artifacts after do_image_complete before do_build
+do_populate_artifacts() {
+    ln -sfr ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.ext4 ${XT_DIR_ABS_SHARED_BOOT_DOMD}
 }
 
 ROOTFS_POSTPROCESS_COMMAND += "install_aos; "

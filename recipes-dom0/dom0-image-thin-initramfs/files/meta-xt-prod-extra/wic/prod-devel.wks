@@ -1,0 +1,10 @@
+# short-description: Create SD card image with a boot partition
+# long-description:
+# Create an image that can be written onto a SD card using dd for use
+# with i.MX SoC family
+# It uses u-boot + other binaries gathered together on imx-boot file
+#
+part / --source rootfs --rootfs-dir=rootfs_boot --ondisk mmcblk --fstype=vfat --label kernel --active --align 16384 --size 32
+part --source rawcopy --sourceparams=file="domd.ext4" --ondisk mmcblk --fstype=ext4 --label domd --align 8192 --size 2G
+
+bootloader --ptable msdos
