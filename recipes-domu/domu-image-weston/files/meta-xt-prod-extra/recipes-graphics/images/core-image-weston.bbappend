@@ -1,4 +1,5 @@
 IMAGE_INSTALL_append = " \
+    pciutils \
     pulseaudio \
     alsa-utils \
     kernel-modules \
