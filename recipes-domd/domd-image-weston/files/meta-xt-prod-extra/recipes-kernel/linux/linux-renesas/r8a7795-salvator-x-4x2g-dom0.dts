@@ -273,6 +273,10 @@
 	iommus = <&ipmmu_vp1 9>;
 };
 
+&pciec0 {
+	iommus = <&ipmmu_hc 0>;
+};
+
 &ehci0 {
 	iommus = <&ipmmu_hc 4>;
 };
