@@ -1,4 +1,4 @@
-DEPENDS += "u-boot-mkimage-native"
+DEPENDS += "${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'u-boot', '', d)} u-boot-mkimage-native"
 
 inherit deploy
 
@@ -14,6 +14,7 @@ IMAGE_INSTALL_append = " \
     domd \
     domd-run \
     domd-install-artifacts \
+    ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'u-boot', '', d)} \
 "
 
 XT_GUESTS_INSTALL ?= "doma domf"
@@ -21,7 +22,7 @@ XT_GUESTS_INSTALL ?= "doma domf"
 python __anonymous () {
     guests = d.getVar("XT_GUESTS_INSTALL", True).split()
     if "doma" in guests :
-        d.appendVar("IMAGE_INSTALL", " doma doma-run doma-install-artifacts")
+        d.appendVar("IMAGE_INSTALL", " doma doma-run")
     if "domf" in guests :
         d.appendVar("IMAGE_INSTALL", " domf domf-run domf-install-artifacts")
     if "domr" in guests :
