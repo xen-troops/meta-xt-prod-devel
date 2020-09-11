@@ -1,4 +1,4 @@
-From 8561720d294b4b19934b20cec1daf2a6e12913ea Mon Sep 17 00:00:00 2001
+From 8701a270e95cce8c29b645121edd1914b1b65aff Mon Sep 17 00:00:00 2001
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 Date: Wed, 4 Apr 2018 20:15:50 +0300
 Subject: [PATCH 1/2] libxl: Add DTB compatible list to config file
@@ -12,16 +12,16 @@ by providing "dtb_compatible" list of strings separated by comas.
 Signed-off-by: Iurii Konovalenko <iurii.konovalenko@globallogic.com>
 Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 ---
- tools/libxl/libxl_arm.c     | 42 ++++++++++++++++++++++++++++++++++--------
- tools/libxl/libxl_types.idl |  1 +
- tools/xl/xl_parse.c         |  7 +++++++
+ tools/libs/light/libxl_arm.c     | 42 ++++++++++++++++++++++++++++++++--------
+ tools/libs/light/libxl_types.idl |  1 +
+ tools/xl/xl_parse.c              |  7 +++++++
  3 files changed, 42 insertions(+), 8 deletions(-)
 
-diff --git a/tools/libxl/libxl_arm.c b/tools/libxl/libxl_arm.c
-index e70acc5..4225cf6 100644
---- a/tools/libxl/libxl_arm.c
-+++ b/tools/libxl/libxl_arm.c
-@@ -278,20 +278,46 @@ static int fdt_property_regs(libxl__gc *gc, void *fdt,
+diff --git a/tools/libs/light/libxl_arm.c b/tools/libs/light/libxl_arm.c
+index eb9376b..13a8cae 100644
+--- a/tools/libs/light/libxl_arm.c
++++ b/tools/libs/light/libxl_arm.c
+@@ -319,20 +319,46 @@ static int fdt_property_regs(libxl__gc *gc, void *fdt,
  
  static int make_root_properties(libxl__gc *gc,
                                  const libxl_version_info *vers,
@@ -75,7 +75,7 @@ index e70acc5..4225cf6 100644
      if (res) return res;
  
      res = fdt_property_cell(fdt, "interrupt-parent", GUEST_PHANDLE_GIC);
-@@ -938,7 +964,7 @@ next_resize:
+@@ -1012,7 +1038,7 @@ next_resize:
  
          FDT( fdt_begin_node(fdt, "") );
  
@@ -84,10 +84,10 @@ index e70acc5..4225cf6 100644
          FDT( make_chosen_node(gc, fdt, !!dom->modules[0].blob, state, info) );
          FDT( make_cpus_node(gc, fdt, info->max_vcpus, ainfo) );
          FDT( make_psci_node(gc, fdt) );
-diff --git a/tools/libxl/libxl_types.idl b/tools/libxl/libxl_types.idl
-index 679dac6..2505220 100644
---- a/tools/libxl/libxl_types.idl
-+++ b/tools/libxl/libxl_types.idl
+diff --git a/tools/libs/light/libxl_types.idl b/tools/libs/light/libxl_types.idl
+index 7a2efd6..f99ca7f 100644
+--- a/tools/libs/light/libxl_types.idl
++++ b/tools/libs/light/libxl_types.idl
 @@ -550,6 +550,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
      # Note that the partial device tree should avoid to use the phandle
      # 65000 which is reserved by the toolstack.
@@ -97,10 +97,10 @@ index 679dac6..2505220 100644
      ("bootloader",       string),
      ("bootloader_args",  libxl_string_list),
 diff --git a/tools/xl/xl_parse.c b/tools/xl/xl_parse.c
-index 1e6871a..863c6ee 100644
+index 680f9df..780b778 100644
 --- a/tools/xl/xl_parse.c
 +++ b/tools/xl/xl_parse.c
-@@ -2663,6 +2663,13 @@ skip_vfb:
+@@ -2779,6 +2779,13 @@ skip_vfb:
          }
      }
  
