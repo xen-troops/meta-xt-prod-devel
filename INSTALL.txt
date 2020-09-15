@@ -105,20 +105,20 @@ I.e. you should have such directories structure:
 ├── pvr-km
 │   └── pvrsrvkm.ko
 └── pvr-um
-    ├── data
     ├── prebuilds.mk
-    ├── system
     └── vendor
         ├── bin
         │   ├── hwperfbin2jsont
         │   ├── pvrhwperf
         │   ├── pvrlogdump
         │   ├── pvrlogsplit
-        │   └── pvrsrvctl
+        │   ├── pvrsrvctl
+        │   └── rscompiler
         ├── etc
-        │   └── firmware
-        │       ├── rgx.fw.signed.4.46.6.62
-        │       └── rgx.fw.signed.4.46.6.62.vz
+        │   ├── firmware
+        │   │   ├── rgx.fw.4.46.6.62
+        │   │   └── rgx.fw.4.46.6.62.vz
+        │   └── powervr.ini
         ├── lib
         │   ├── egl
         │   │   ├── libEGL_POWERVR_ROGUE.so
@@ -126,13 +126,17 @@ I.e. you should have such directories structure:
         │   │   └── libGLESv2_POWERVR_ROGUE.so
         │   ├── hw
         │   │   ├── gralloc.r8a7795.so
-        │   │   └── memtrack.r8a7795.so
+        │   │   ├── memtrack.r8a7795.so
+        │   │   └── vulkan.r8a7795.so
+        │   ├── libAppHintsIPC.so
         │   ├── libglslcompiler.so
         │   ├── libIMGegl.so
+        │   ├── libPVRRS.so
         │   ├── libPVRScopeServices.so
         │   ├── libsrv_um.so
-        │   ├── libtqvalidate.so
-        │   └── libusc.so
+        │   ├── libufwriter.so
+        │   ├── libusc.so
+        │   └── vendor.imagination.gpu.apphints@1.0.so
         └── lib64
             ├── egl
             │   ├── libEGL_POWERVR_ROGUE.so
@@ -140,13 +144,17 @@ I.e. you should have such directories structure:
             │   └── libGLESv2_POWERVR_ROGUE.so
             ├── hw
             │   ├── gralloc.r8a7795.so
-            │   └── memtrack.r8a7795.so
+            │   ├── memtrack.r8a7795.so
+            │   └── vulkan.r8a7795.so
+            ├── libAppHintsIPC.so
             ├── libglslcompiler.so
             ├── libIMGegl.so
+            ├── libPVRRS.so
             ├── libPVRScopeServices.so
             ├── libsrv_um.so
-            ├── libtqvalidate.so
-            └── libusc.so
+            ├── libufwriter.so
+            ├── libusc.so
+            └── vendor.imagination.gpu.apphints@1.0.so
 
 
 XT_ANDROID_PREBUILDS_DIR should point to "..ANDROID_PREBUILTS_FOLDER_PATH.." folder.
