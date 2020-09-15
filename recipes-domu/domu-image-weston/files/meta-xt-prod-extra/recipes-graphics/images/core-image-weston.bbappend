@@ -4,6 +4,7 @@ IMAGE_INSTALL_append = " \
     alsa-utils \
     kernel-modules \
     kmscube \
+    linux-firmware \
 "
 
 IMAGE_INSTALL_remove = " \

@@ -11,6 +11,7 @@ IMAGE_INSTALL_append = " \
     kmscube \
     optee-os \
     ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'displaymanager', '', d)} \
+    linux-firmware \
 "
 
 python __anonymous () {

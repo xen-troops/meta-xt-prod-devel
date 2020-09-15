@@ -9,7 +9,12 @@ SRCREV = "a49b495859d0d379ac4ca2068a5c42c1452df8b3"
 LINUX_VERSION = "4.14.75"
 SRC_URI_append = " \
     file://defconfig \
+    file://r8169.cfg \
 "
+
+# Do not autoload r8169 driver
+KERNEL_MODULE_PROBECONF += "r8169"
+module_conf_r8169 = "blacklist r8169"
 
 DEPLOYDIR="${XT_DIR_ABS_SHARED_BOOT_DOMU}"
 
