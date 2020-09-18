@@ -10,6 +10,7 @@ LINUX_VERSION = "4.14.75"
 SRC_URI_append = " \
     file://defconfig \
     file://r8169.cfg \
+    file://0001-r8169-Implement-IRQ-via-timer-polling.patch \
 "
 
 # Do not autoload r8169 driver

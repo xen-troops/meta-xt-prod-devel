@@ -1,0 +1,84 @@
+From 93da7beed98c0505f77ffb9a72838efd880df8e1 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Fri, 18 Sep 2020 08:59:47 +0300
+Subject: [PATCH] r8169: Implement IRQ via timer/polling
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ drivers/net/ethernet/realtek/r8169.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/realtek/r8169.c b/drivers/net/ethernet/realtek/r8169.c
+index f7e540eeb877..c7416178498f 100644
+--- a/drivers/net/ethernet/realtek/r8169.c
++++ b/drivers/net/ethernet/realtek/r8169.c
+@@ -33,6 +33,8 @@
+ #include <asm/io.h>
+ #include <asm/irq.h>
+ 
++#define RTL8169_IRQ_PERIOD	(msecs_to_jiffies(100))
++
+ #define RTL8169_VERSION "2.3LK-NAPI"
+ #define MODULENAME "r8169"
+ #define PFX MODULENAME ": "
+@@ -774,6 +776,7 @@ struct rtl8169_stats {
+ };
+ 
+ struct rtl8169_private {
++	struct timer_list timer_irq;
+ 	void __iomem *mmio_addr;	/* memory map physical address */
+ 	struct pci_dev *pci_dev;
+ 	struct net_device *dev;
+@@ -7491,10 +7494,15 @@ static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, u32 budget
+ static irqreturn_t rtl8169_interrupt(int irq, void *dev_instance)
+ {
+ 	struct net_device *dev = dev_instance;
+-	struct rtl8169_private *tp = netdev_priv(dev);
++	struct rtl8169_private *tp;
+ 	int handled = 0;
+ 	u16 status;
+ 
++	if (irq < 0)
++		tp = (struct rtl8169_private *)dev_instance;
++	else
++		tp = netdev_priv(dev);
++
+ 	status = rtl_get_events(tp);
+ 	if (status && status != 0xffff) {
+ 		status &= RTL_EVENT_NAPI | tp->event_slow;
+@@ -7508,6 +7516,14 @@ static irqreturn_t rtl8169_interrupt(int irq, void *dev_instance)
+ 	return IRQ_RETVAL(handled);
+ }
+ 
++static void timer_callback(unsigned long data)
++{
++	struct rtl8169_private *tp = (struct rtl8169_private *)data;
++
++	mod_timer(&tp->timer_irq, jiffies + RTL8169_IRQ_PERIOD);
++	rtl8169_interrupt(-1, tp);
++}
++
+ /*
+  * Workqueue context.
+  */
+@@ -7624,6 +7640,7 @@ static void rtl8169_down(struct net_device *dev)
+ 	void __iomem *ioaddr = tp->mmio_addr;
+ 
+ 	del_timer_sync(&tp->timer);
++	del_timer_sync(&tp->timer_irq);
+ 
+ 	napi_disable(&tp->napi);
+ 	netif_stop_queue(dev);
+@@ -7752,6 +7769,9 @@ static int rtl_open(struct net_device *dev)
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 
+ 	rtl8169_check_link_status(dev, tp, ioaddr);
++
++	setup_timer(&tp->timer_irq, timer_callback, (unsigned long)tp);
++	mod_timer(&tp->timer_irq, jiffies + RTL8169_IRQ_PERIOD);
+ out:
+ 	return retval;
+ 
+-- 
+2.17.1
+
