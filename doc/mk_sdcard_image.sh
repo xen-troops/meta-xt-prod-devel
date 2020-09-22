@@ -8,12 +8,14 @@ FORCE_INFLATION=0
 ###############################################################################
 # DomA configuration
 ###############################################################################
-DOMA_SYSTEM_PARTITION_ID=1
-DOMA_VENDOR_PARTITION_ID=2
-DOMA_MISC_PARTITION_ID=3
-DOMA_VBMETA_PARTITION_ID=4
-DOMA_METADATA_PARTITION_ID=5
-DOMA_USERDATA_PARTITION_ID=6
+DOMA_BOOTIMAGE_A_PARTITION_ID=1
+DOMA_BOOTIMAGE_B_PARTITION_ID=2
+DOMA_VBMETA_A_PARTITION_ID=3
+DOMA_VBMETA_B_PARTITION_ID=4
+DOMA_MISC_PARTITION_ID=5
+DOMA_METADATA_PARTITION_ID=6
+DOMA_SUPER_PARTITION_ID=7
+DOMA_USERDATA_PARTITION_ID=8
 
 usage()
 {
@@ -75,7 +77,7 @@ define_partitions()
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
 		;;
 		devel)
-			# prod-devel [1..257][257..2257][2257..6680]
+			# prod-devel [1..257][257..2257][2257..7968]
 			DOM0_START=1
 			DOM0_END=$((DOM0_START+256))  # 257
 			DOM0_PARTITION=1
@@ -85,7 +87,7 @@ define_partitions()
 			DOMD_PARTITION=2
 			DOMD_LABEL=domd
 			DOMA_START=$DOMD_END  # Also is used as flag that DomA is defined
-			DOMA_END=$((DOMA_START+4440))  # 6697
+			DOMA_END=$((DOMA_START+7710))  # 9967
 			DOMA_PARTITION=3
 			DOMA_LABEL=doma
 			DEFAULT_IMAGE_SIZE_GIB=$(((DOMA_END/1024)+1))
@@ -198,12 +200,14 @@ partition_image()
 
 		# parted generates error on all operation with "nested" disk, guard it with || true
 		sudo parted $loop_dev_a -s mklabel gpt || true
-		sudo parted $loop_dev_a -s mkpart system    ext4 1MiB  3148MiB || true
-		sudo parted $loop_dev_a -s mkpart vendor    ext4 3149MiB  3418MiB || true
-		sudo parted $loop_dev_a -s mkpart misc      ext4 3419MiB  3420MiB || true
-		sudo parted $loop_dev_a -s mkpart vbmeta    ext4 3421MiB  3422MiB || true
-		sudo parted $loop_dev_a -s mkpart metadata  ext4 3423MiB  3434MiB || true
-		sudo parted $loop_dev_a -s mkpart userdata  ext4 3435MiB  4435MiB || true
+		sudo parted $loop_dev_a -s mkpart boot_a    ext4 1MiB  31MiB || true # 30 MiB
+		sudo parted $loop_dev_a -s mkpart boot_b    ext4 32MiB  62MiB || true # 30 MiB
+		sudo parted $loop_dev_a -s mkpart vbmeta_a  ext4 63MiB  64MiB || true # 1 MiB
+		sudo parted $loop_dev_a -s mkpart vbmeta_b  ext4 65MiB  66MiB || true # 1 MiB
+		sudo parted $loop_dev_a -s mkpart misc      ext4 67MiB  68MiB || true # 1 MiB
+		sudo parted $loop_dev_a -s mkpart metadata  ext4 69MiB  80MiB || true # 11 MiB
+		sudo parted $loop_dev_a -s mkpart super     ext4 81MiB  4705MiB || true # 4624 MiB
+		sudo parted $loop_dev_a -s mkpart userdata  ext4 4706MiB  7706MiB || true # 3000 MiB
 		sudo parted $loop_dev_a -s print
 		sudo partprobe $loop_dev_a || true
 
@@ -400,42 +404,33 @@ unpack_doma()
 {
 	local db_base_folder=$1
 	local loop_base=$2
-
-	local raw_system="/tmp/system.raw"
-	local raw_vendor="/tmp/vendor.raw"
+	local raw_super="/tmp/super.raw"
 
 	print_step "Unpacking DomA"
 
 	local doma_name=`ls $db_base_folder | grep android`
 	local doma_root=$db_base_folder/$doma_name
-	local system=`find $doma_root -name "system.img"`
-	local vendor=`find $doma_root -name "vendor.img"`
 	local vbmeta=`find $doma_root -name "vbmeta.img"`
+	local bootimage=`find $doma_root -name "boot.img"`
+	local superimage=`find $doma_root -name "super.img"`
 
-	echo "DomA system image:" `realpath --relative-to=$db_base_folder $system`
-	echo "DomA vendor image:" `realpath --relative-to=$db_base_folder $vendor`
+	echo "DomA vbmeta image is at $vbmeta"
+	echo "DomA bootimage image is at $bootimage"
+	echo "DomA superimage image is at $superimage"
 
-	simg2img $system $raw_system
-	simg2img $vendor $raw_vendor
+	simg2img $superimage $raw_super
 
-	if  [ -b $ARG_DEPLOY_DEV ] ; then
-		# show progress only if write to phisical device because it's long
-		sudo dd if=$raw_system of=${loop_base}p${DOMA_SYSTEM_PARTITION_ID} bs=1M status=progress
-		sudo dd if=$raw_vendor of=${loop_base}p${DOMA_VENDOR_PARTITION_ID} bs=1M status=progress
-	else
-		# if we write to file - no need to show progress for few seconds of writing
-		sudo dd if=$raw_system of=${loop_base}p${DOMA_SYSTEM_PARTITION_ID} bs=1M status=none
-		sudo dd if=$raw_vendor of=${loop_base}p${DOMA_VENDOR_PARTITION_ID} bs=1M status=none
-	fi
+	echo "DomA adding super partition"
+	sudo dd if=$raw_super of=${loop_base}p${DOMA_SUPER_PARTITION_ID} bs=1M status=progress
+	echo "DomA adding vbmeta partition"
+	sudo dd if=$vbmeta of=${loop_base}p${DOMA_VBMETA_A_PARTITION_ID} bs=1M status=progress
+	echo "DomA adding boot partition"
+	sudo dd if=$bootimage of=${loop_base}p${DOMA_BOOTIMAGE_A_PARTITION_ID} bs=1M status=progress
 
-	if [ ! -z ${vbmeta} ]; then
-		sudo dd if=$vbmeta of=${loop_base}p${DOMA_VBMETA_PARTITION_ID} bs=1M status=none
-	fi
+	echo "Wipe out DomA/misc"
+	sudo dd if=/dev/zero of=${loop_base}p${DOMA_MISC_PARTITION_ID} bs=1M count=1 || true
 
-	# Wipe out DomA/misc
-	sudo dd if=/dev/zero of=${loop_base}p${DOMA_MISC_PARTITION_ID} bs=1M count=1 status=none
-
-	rm -f $raw_system $raw_vendor
+	rm -f $raw_super
 }
 
 unpack_image()
