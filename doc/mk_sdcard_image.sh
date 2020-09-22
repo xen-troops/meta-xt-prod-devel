@@ -225,7 +225,7 @@ mkfs_one()
 	local part=$2
 	local label=$3
 
-	sudo mkfs.ext4 -O ^64bit -F ${loop_base}p${part} -L $label > /dev/null
+	sudo mkfs.ext4 -q -O ^64bit -F ${loop_base}p${part} -L $label
 }
 
 mkfs_boot()
