@@ -3,7 +3,7 @@ SRCREV = "${AUTOREV}"
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI_append = " \
-    repo://github.com/xen-troops/android_manifest;protocol=https;branch=android-10.0.0_r3-master;manifest=doma.xml;scmdata=keep "
+    repo://github.com/xen-troops/android_manifest;protocol=https;branch=android-11-master;manifest=doma.xml;scmdata=keep "
 
 # put it out of the source tree, so it can be reused after cleanup
 ANDROID_OUT_DIR_COMMON_BASE = "${SSTATE_DIR}/../${ANDROID_PRODUCT}-${SOC_FAMILY}"
