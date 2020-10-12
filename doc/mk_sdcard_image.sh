@@ -14,8 +14,9 @@ DOMA_VBMETA_A_PARTITION_ID=3
 DOMA_VBMETA_B_PARTITION_ID=4
 DOMA_MISC_PARTITION_ID=5
 DOMA_METADATA_PARTITION_ID=6
-DOMA_SUPER_PARTITION_ID=7
-DOMA_USERDATA_PARTITION_ID=8
+DOMA_RPMBEMUL_PARTITION_ID=7
+DOMA_SUPER_PARTITION_ID=8
+DOMA_USERDATA_PARTITION_ID=9
 
 usage()
 {
@@ -206,8 +207,9 @@ partition_image()
 		sudo parted $loop_dev_a -s mkpart vbmeta_b  ext4 65MiB  66MiB || true # 1 MiB
 		sudo parted $loop_dev_a -s mkpart misc      ext4 67MiB  68MiB || true # 1 MiB
 		sudo parted $loop_dev_a -s mkpart metadata  ext4 69MiB  80MiB || true # 11 MiB
-		sudo parted $loop_dev_a -s mkpart super     ext4 81MiB  4705MiB || true # 4624 MiB
-		sudo parted $loop_dev_a -s mkpart userdata  ext4 4706MiB  7706MiB || true # 3000 MiB
+		sudo parted $loop_dev_a -s mkpart rpmbemul  ext4 81MiB  82MiB || true # 1
+		sudo parted $loop_dev_a -s mkpart super     ext4 83MiB  4707MiB || true # 4624 MiB
+		sudo parted $loop_dev_a -s mkpart userdata  ext4 4708MiB  7708MiB || true # 3000 MiB
 		sudo parted $loop_dev_a -s print
 		sudo partprobe $loop_dev_a || true
 
@@ -429,6 +431,9 @@ unpack_doma()
 
 	echo "Wipe out DomA/misc"
 	sudo dd if=/dev/zero of=${loop_base}p${DOMA_MISC_PARTITION_ID} bs=1M count=1 || true
+
+    echo "Wipe out DomA/rpmbemul"
+	sudo dd if=/dev/zero of=${loop_base}p${DOMA_RPMBEMUL_PARTITION_ID} bs=1M count=1 || true
 
 	rm -f $raw_super
 }
