@@ -5,7 +5,7 @@ do_configure[depends] += "domd-image-weston:do_domd_install_machine_overrides"
 do_compile[depends] += "domd-image-weston:do_${BB_DEFAULT_TASK}"
 
 SRC_URI = " \
-    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/dom0.xml;scmdata=keep \
+    repo://github.com/xen-troops/manifests;protocol=https;branch=REL-v5.0;manifest=prod_devel/dom0.xml;scmdata=keep \
 "
 
 ###############################################################################
