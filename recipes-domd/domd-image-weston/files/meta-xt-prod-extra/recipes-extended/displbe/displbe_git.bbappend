@@ -3,7 +3,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 ################################################################################
 # Renesas R-Car
 ################################################################################
-SRCREV_rcar = "${AUTOREV}"
+SRCREV_rcar = "7117bde026f55ccf7a0a459496fc709a682f4c1e"
 
 SRC_URI_append_rcar = " \
     git://github.com/xen-troops/displ_be.git;protocol=https;branch=master \
