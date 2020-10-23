@@ -468,13 +468,16 @@ $ sudo losetup --find --partscan --show /dev/loop23p3
 
 $ lsblk /dev/loop24
 NAME       MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-loop24       7:24   0  4.3G  0 loop
-├─loop24p1 259:3    0  3.1G  0 loop                 ## system
-├─loop24p2 259:4    0  269M  0 loop                 ## vendor
-├─loop24p3 259:5    0    1M  0 loop                 ## misc
-├─loop24p4 259:6    0    1M  0 loop                 ## vbmeta
-├─loop24p5 259:7    0   11M  0 loop                 ## metadata
-└─loop24p6 259:8    0 1000M  0 loop                 ## userdata
+loop24       7:20   0  7,5G  0 loop 
+├─loop20p1 259:3    0   30M  0 loop                 ## bootimage A
+├─loop20p2 259:4    0   30M  0 loop                 ## bootimage B
+├─loop20p3 259:5    0    1M  0 loop                 ## vbmeta A
+├─loop20p4 259:6    0    1M  0 loop                 ## vbmeta B
+├─loop20p5 259:7    0    1M  0 loop                 ## misc
+├─loop20p6 259:8    0   11M  0 loop                 ## metadata
+├─loop20p7 259:9    0    1M  0 loop                 ## rpmbemul
+├─loop20p8 259:10   0  4,5G  0 loop                 ## super
+└─loop20p9 259:11   0    3G  0 loop                 ## userdata
 
 sudo losetup -d /dev/loop24
 sudo losetup -d /dev/loop23
