@@ -21,6 +21,7 @@ SRC_URI_append_rcar = " \
     file://salvator-generic-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://xen-chosen.dtsi;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://0001-HACK-Allow-DomD-enumerate-PCI-devices.patch \
+    file://0001-HACK-Make-rcar-gen3-PCI-work-through-ECAM.patch \
 "
 
 KERNEL_DEVICETREE_append_rcar = " \

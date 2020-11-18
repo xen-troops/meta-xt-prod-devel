@@ -1,0 +1,141 @@
+From afcc09c1db39cf686459e182c1ae3b9350635813 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Wed, 18 Nov 2020 11:19:59 +0200
+Subject: [PATCH] [HACK] Make rcar-gen3 PCI work through ECAM
+
+Xen cannot trap PCI configuration space access from R-Car Gen3 PCI
+host bridge as it is a non-ECAM one. Work this around by:
+
+1. Configure DomD with vpci="ecam" option which makes the toolstack
+inject a virtual ECAM host bridge into the domain.
+
+2. Disconnect R-Car PCIe driver from accessing configuration space by
+implementing corresponding stubs.
+
+3. Update virtual ECAM's host bridge MMIO addresses to match those used
+by R-Car Gen3 host controller, so PCI devices are assigned MMIO ranges
+normally handled by R-Car Gen3 controller.
+
+4. Under Xen when a virtual ECAM bridge is added the physical
+R-Car Gen3 host bridge is added first, so its segment/domain is set to 0
+and virtual ECAM bridge is then assigned domain 1.
+As we hack the kernel in a way that all PCI config cpace access is done
+on behalf of virtual ECAM bridge (R-Car Gen3 PCI config read/write is
+stubbed), so there is an inconsistency then: Xen expects domain 0,
+but we have 1 for the virtual host.
+To work this around we start from domain -2, so the R-Car Gen3 PCI host
+gets assigned domain 0xffff and the virtual ECAM becomes 0.
+N.B.: This has no influence on QEMU and other ECAM bridges which properly
+define "linux,pci-domain" DT property for that bridge.
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ drivers/pci/host/pci-host-common.c | 20 ++++++++++++++++++++
+ drivers/pci/host/pcie-rcar.c       | 15 +++++++++++++++
+ drivers/pci/pci.c                  | 18 +++++++++++++++++-
+ 3 files changed, 52 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/host/pci-host-common.c b/drivers/pci/host/pci-host-common.c
+index a613ea310e76..e1a03e229cc2 100644
+--- a/drivers/pci/host/pci-host-common.c
++++ b/drivers/pci/host/pci-host-common.c
+@@ -42,6 +42,26 @@ static struct pci_config_window *gen_pci_init(struct device *dev,
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
++	{
++		struct resource_entry *win, *tmp;
++		resource_list_for_each_entry_safe(win, tmp, resources) {
++			struct resource *res = win->res;
++
++			if (res->start == 0x4020000UL) {
++				printk("HACK: %s 0x4020000 -> 0xfe200000\n",
++				       __func__);
++				res->start = 0xfe200000UL;
++				res->end = res->start + 0x200000 - 1;
++			}
++			if (res->start == 0x4000000000UL) {
++				printk("HACK: %s 0x4000000000 -> 0x3800000\n",
++				       __func__);
++				res->start = 0x38000000UL;
++				res->end = res->start + 0x800000 - 1;
++			}
++		}
++	}
++
+ 	err = of_address_to_resource(dev->of_node, 0, &cfgres);
+ 	if (err) {
+ 		dev_err(dev, "missing \"reg\" property\n");
+diff --git a/drivers/pci/host/pcie-rcar.c b/drivers/pci/host/pcie-rcar.c
+index 3679e8e0650a..dc0a341820c3 100644
+--- a/drivers/pci/host/pcie-rcar.c
++++ b/drivers/pci/host/pcie-rcar.c
+@@ -190,6 +190,20 @@ static void rcar_rmw32(struct rcar_pcie *pcie, int where, u32 mask, u32 data)
+ 	rcar_pci_write_reg(pcie, val, where & ~3);
+ }
+ 
++#ifdef CONFIG_XEN
++static int rcar_pcie_read_conf(struct pci_bus *bus, unsigned int devfn,
++			       int where, int size, u32 *val)
++{
++	*val = 0xffffffff;
++	return PCIBIOS_SUCCESSFUL;
++}
++
++static int rcar_pcie_write_conf(struct pci_bus *bus, unsigned int devfn,
++				int where, int size, u32 val)
++{
++	return PCIBIOS_SUCCESSFUL;
++}
++#else
+ static u32 rcar_read_conf(struct rcar_pcie *pcie, int where)
+ {
+ 	int shift = 8 * (where & 3);
+@@ -361,6 +375,7 @@ static int rcar_pcie_write_conf(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	return ret;
+ }
++#endif
+ 
+ static struct pci_ops rcar_pcie_ops = {
+ 	.read	= rcar_pcie_read_conf,
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 22924629e64a..443022016b7f 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -5441,7 +5441,22 @@ static void pci_no_domains(void)
+ }
+ 
+ #ifdef CONFIG_PCI_DOMAINS
++#ifdef CONFIG_XEN
++/*
++ * N.B. Under Xen when a virtual ECAM bridge is added the physical
++ * R-Car Gen3 host bridge is added first, so its segment/domain is set to 0
++ * and virtual ECAM bridge is then assigned domain 1.
++ * As we hack the kernel in a way that all PCI config cpace access is done
++ * on behalf of virtual ECAM bridge (R-Car Gen3 PCI config read/write is
++ * stubbed), so there is an inconsistency then: Xen expects domain 0,
++ * but we have 1 for the virtual host.
++ * To work this around we start from domain -2, so the R-Car Gen3 PCI host
++ * gets assigned domain 0xffff and the virtual ECAM becomes 0.
++ */
++static atomic_t __domain_nr = ATOMIC_INIT(-2);
++#else
+ static atomic_t __domain_nr = ATOMIC_INIT(-1);
++#endif
+ 
+ int pci_get_new_domain_nr(void)
+ {
+@@ -5490,7 +5505,8 @@ static int of_pci_bus_find_domain_nr(struct device *parent)
+ 	} else {
+ 		dev_err(parent, "Node %pOF has inconsistent \"linux,pci-domain\" property in DT\n",
+ 			parent->of_node);
+-		domain = -1;
++		use_dt_domains = 0;
++		domain = pci_get_new_domain_nr();
+ 	}
+ 
+ 	return domain;
+-- 
+2.17.1
+
