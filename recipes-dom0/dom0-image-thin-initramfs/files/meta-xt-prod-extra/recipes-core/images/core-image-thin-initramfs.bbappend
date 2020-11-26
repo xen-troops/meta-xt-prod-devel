@@ -52,3 +52,4 @@ IMAGE_POSTPROCESS_COMMAND += " generate_uboot_image; populate_vmlinux; "
 
 IMAGE_ROOTFS_SIZE = "65535"
 
+IMAGE_FSTYPES += "${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'ext4', '', d)}"

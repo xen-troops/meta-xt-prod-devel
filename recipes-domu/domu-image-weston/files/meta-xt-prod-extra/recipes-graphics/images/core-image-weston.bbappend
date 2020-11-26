@@ -26,3 +26,5 @@ populate_vmlinux () {
 }
 
 IMAGE_POSTPROCESS_COMMAND += "populate_vmlinux; "
+
+IMAGE_FSTYPES += "${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'ext4', '', d)}"
