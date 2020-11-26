@@ -15,7 +15,7 @@ Prerequisites:
 
 About:
 ======
-Prod-devel product is based on Renesas BSP, Xen hypervisor and Android. It contains a set of features required to have
+Prod-devel product is based on Renesas BSP and Xen hypervisor. It contains a set of features required to have
 both Display and GPU support in several domains at the same time (device passthrough, PV Display, PV Sound, VGPU, etc).
 
 There are three domains which are running on top of Xen:
@@ -25,9 +25,9 @@ for managing VMs only (create/destroy/reboot guest domains). There is no HW assi
 As this domain is not 1:1 mapped, Xen controls IPMMU to do a proper address translations (IPA to PA) for DMA masters.
 It also contains different para-virtualized (PV) backends running inside it in order to provide guest domains
 (without HW assigned) with different services such as Audio, Display, Net, Block, etc.
-3. Either Android based domain named "DomA" or Linux based domain named "DomU".
-Both have different PV frontends running and don't have any HW assigned except GPU.
-The latter is shared between "DomD" and "DomA" ("DomU") in current setup.
+3. Linux based domain named "DomU".
+It has different PV frontends running and doesn't have any HW assigned except GPU.
+The latter is shared between "DomD" and "DomU" in the current setup.
 
 Build:
 ======
@@ -65,20 +65,13 @@ workspace_cache_base_dir = /home/workspace_cache
 3.3.1 The XT_GUESTS_INSTALL and XT_GUESTS_BUILD variables select the guest domain
 to be built and installed.
 
-For example (system with DomU),
-
 XT_GUESTS_INSTALL = "domu"
 XT_GUESTS_BUILD = "domu"
 
-For example (system with DomA),
-
-XT_GUESTS_INSTALL = "doma"
-XT_GUESTS_BUILD = "doma"
-
-3.3.2 The XT_RCAR_EVAPROPRIETARY_DIR (DomD and DomU), XT_ANDROID_PREBUILDS_DIR (DomA) variables
+3.3.2 The XT_RCAR_EVAPROPRIETARY_DIR (DomD and DomU) variables
 point to the place where prebuilt EVA proprietary "graphics" packages (hereafter "graphics" packages) will be copied in step #4.
 
-If you are going to build Graphics DDK from sources (and don't use "graphics" packages), please remove that variables.
+If you are going to build Graphics DDK from sources (and don't use "graphics" packages), please remove those variables.
 In that case step #4 can be omitted.
 
 3.3.3 The XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR (DomD) variable points to the place where proprietary "multimedia" packages
@@ -86,84 +79,11 @@ In that case step #4 can be omitted.
 
 If you are not going to use multimedia in DomD, please remove that variable. In that case step #5 can be omitted.
 
-3.3.4 Please note, the variables below are only applicable for system with DomA:
-AOS_VIS_PACKAGE_DIR should point to the directory with aos-vis package and symbolic link to
-corresponding *.ipk package.
-AOS_VIS_PLUGINS defines which VIS plugin to use as VIS data provider. This value can be set to
-"telemetryemulator", "renesassimulator".
-The "telemetryemulator" plugin uses prerecorded data which provided by telemetryemulator service launched in DomD.
-The "renesassimulator" plugin uses data provided by Renesas R-Car simulator.
-If the variable is not set, the "telemetryemulator" plugin will be built.
-
 4. Download and copy "graphics" packages to your local filesystem at some directory:
 
-4.1 DomA prebuilts:
+4.1 DomD and DomU prebuilts:
 
- - rcar-prebuilts-salvator-xs-h3-xt-doma.tar.gz
-
-Unpack it to some "..PREBUILTS_FOLDER_PATH.."
-I.e. you should have such directories structure:
-"..ANDROID_PREBUILTS_FOLDER_PATH.."
-├── pvr-km
-│   └── pvrsrvkm.ko
-└── pvr-um
-    ├── prebuilds.mk
-    └── vendor
-        ├── bin
-        │   ├── hwperfbin2jsont
-        │   ├── pvrhwperf
-        │   ├── pvrlogdump
-        │   ├── pvrlogsplit
-        │   ├── pvrsrvctl
-        │   └── rscompiler
-        ├── etc
-        │   ├── firmware
-        │   │   ├── rgx.fw.4.46.6.62
-        │   │   └── rgx.fw.4.46.6.62.vz
-        │   └── powervr.ini
-        ├── lib
-        │   ├── egl
-        │   │   ├── libEGL_POWERVR_ROGUE.so
-        │   │   ├── libGLESv1_CM_POWERVR_ROGUE.so
-        │   │   └── libGLESv2_POWERVR_ROGUE.so
-        │   ├── hw
-        │   │   ├── gralloc.r8a7795.so
-        │   │   ├── memtrack.r8a7795.so
-        │   │   └── vulkan.r8a7795.so
-        │   ├── libAppHintsIPC.so
-        │   ├── libglslcompiler.so
-        │   ├── libIMGegl.so
-        │   ├── libPVRRS.so
-        │   ├── libPVRScopeServices.so
-        │   ├── libsrv_um.so
-        │   ├── libufwriter.so
-        │   ├── libusc.so
-        │   └── vendor.imagination.gpu.apphints@1.0.so
-        └── lib64
-            ├── egl
-            │   ├── libEGL_POWERVR_ROGUE.so
-            │   ├── libGLESv1_CM_POWERVR_ROGUE.so
-            │   └── libGLESv2_POWERVR_ROGUE.so
-            ├── hw
-            │   ├── gralloc.r8a7795.so
-            │   ├── memtrack.r8a7795.so
-            │   └── vulkan.r8a7795.so
-            ├── libAppHintsIPC.so
-            ├── libglslcompiler.so
-            ├── libIMGegl.so
-            ├── libPVRRS.so
-            ├── libPVRScopeServices.so
-            ├── libsrv_um.so
-            ├── libufwriter.so
-            ├── libusc.so
-            └── vendor.imagination.gpu.apphints@1.0.so
-
-
-XT_ANDROID_PREBUILDS_DIR should point to "..ANDROID_PREBUILTS_FOLDER_PATH.." folder.
-
-4.2 DomD and DomU (if latter is used instead of DomA) prebuilts:
-
-For example (Salvator-X board with H3 ES3.0 SoC installed, 8GB RAM),
+For Salvator-X board with H3 ES3.0 SoC installed, 8GB RAM:
 
  - rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz
  - rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domu.tar.gz
@@ -171,23 +91,6 @@ For example (Salvator-X board with H3 ES3.0 SoC installed, 8GB RAM),
 Copy it to "..PROPRIETARY_FOLDER_PATH.." folder.
 
 XT_RCAR_EVAPROPRIETARY_DIR should point to "..PROPRIETARY_FOLDER_PATH.." folder.
-
-Due to the fact that the SoC is not actually changed for Salvator-XS 8GB and H3ULCB(-KF) 8GB boards (H3 ES3.0),
-you could reuse already provided binaries by making symlinks to corresponding archives.
-
-For example (Salvator-XS),
-
-ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz \
-rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domd.tar.gz
-ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domu.tar.gz \
-rcar-proprietary-graphic-salvator-xs-h3-4x2g-xt-domu.tar.gz
-
-For example (H3ULCB),
-
-ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domd.tar.gz \
-rcar-proprietary-graphic-h3ulcb-4x2g-xt-domd.tar.gz
-ln -s rcar-proprietary-graphic-salvator-x-h3-4x2g-xt-domu.tar.gz \
-rcar-proprietary-graphic-h3ulcb-4x2g-xt-domu.tar.gz
 
 5. Only for the multimedia usage.
 Follow the procedure described in "Preliminary steps #1" from https://elinux.org/R-Car/Boards/Yocto-Gen3
@@ -200,32 +103,12 @@ will be just skipped.
 
 6. Run the build script for current stable release:
 
-python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product PRODUCT_NAME \
---branch RELEASE_NAME --with-local-conf --config xt-prod-devel.cfg --with-do-build
+python ./build_prod.py --build-type dailybuild --machine salvator-x-h3-4x2g --product PRODUCT_NAME \
+--branch pci_phase1 --with-local-conf --config xt-prod-devel.cfg --with-do-build
 
 Where the PRODUCT_NAME depends on whether "graphics" packages are used or not:
 - devel (to use "graphics" packages)
 - devel-src (to build Graphics DDK from sources)
-
-Where the RELEASE_NAME name is the name of the release to be built.
-This is done in order to track product releases easily and have a possibility to build any release
-just by pointing a proper release name.
-Please note, if "branch" parameter is not set then the current product's snapshot will be built.
-
-Hereafter the supported MACHINE_NAMEs are:
-- salvator-x-h3  (Salvator-X board with H3 ES2.0 SoC installed, 4GB RAM)
-- salvator-x-h3-4x2g (Salvator-X board with H3 ES3.0 SoC installed, 8GB RAM)
-- salvator-x-m3  (Salvator-X board with M3 SoC installed, 4GB RAM)
-- salvator-xs-h3  (Salvator-XS board with H3 ES2.0 SoC installed, 4GB RAM)
-- salvator-xs-h3-4x2g (Salvator-XS board with H3 ES3.0 SoC installed, 8GB RAM)
-- salvator-xs-m3n (Salvator-XS board with M3N SoC installed, 2GB RAM)
-- h3ulcb (H3ULCB board with H3 ES2.0 SoC installed, 4GB RAM)
-- m3ulcb (M3ULCB board with M3 SoC installed, 2GB RAM)
-- h3ulcb-4x2g (H3ULCB board with H3 ES3.0 SoC installed, 8GB RAM)
-- h3ulcb-4x2g-kf (H3ULCB KF board with H3 ES3.0 SoC installed, 8GB RAM)
-
-Please note, you are not able to build and run DomA for the m3ulcb and salvator-xs-m3n
-machines due to limited memory resources (only 2GB RAM). The system with DomU is only an option for them.
 
 7. You are done. The artifacts of the build are located at workspace_base directory:
 
@@ -233,22 +116,10 @@ workspace_base/build/build/deploy/
 ├── dom0-image-thin-initramfs
 │   └── images
 │       └── generic-armv8-xt
-│  
+│
 ├── domd-image-weston
 │   └── images
 │       └──  MACHINE_NAME-xt
-│  
-├── domu-image-android
-│   └── images
-│       └── qemux86-64
-│           ├── boot.img
-│           ├── Image -> vmlinux
-│           ├── system.img
-│           ├── userdata.img
-│           ├── vendor.img
-│           └── vmlinux
-│
-│  - or -
 │
 ├── domu-image-weston
 │   └── images
@@ -274,15 +145,6 @@ Here we get a part of boot images, all bootloader images and rootfs image for Do
   - bootloader images in both binary and srec formats.
   - core-image-weston-MACHINE_NAME-xt.tar.bz2 - rootfs image for DomD
 
-- DomA:
-workspace_base/build/build/deploy/domu-image-android/images/qemux86-64
-Here we get a rootfs image for DomU:
-  - Image -> vmlinux - Kernel image for DomA
-  - boot.img - android boot image(won't be used further)
-  - system.img - android system image 
-  - vendor.img - android vendor image
-  - userdata.img - android vendor image
-
 - DomU:
 workspace_base/build/build/deploy/domu-image-weston/images/MACHINE-NAME-xt
 Here we get a rootfs image for DomU:
@@ -293,8 +155,6 @@ Build logs are located at:
 workspace_base/build/build/log/dom0-image-thin-initramfs/cooker/generic-armv8-xt
 - DomD:
 workspace_base/build/build/log/domd-image-weston/cooker/MACHINE-NAME-xt
-- DomA:
-workspace_base/build/build/log/domu-image-android/cooker/qemux86-64
 - DomU:
 workspace_base/build/build/log/domu-image-weston/cooker/MACHINE-NAME-xt
 
@@ -307,9 +167,6 @@ cd workspace_base/build/build/tmp/work/x86_64-xt-linux/dom0-image-thin-initramfs
 - For building DomD:
 cd workspace_base/build/build/tmp/work/x86_64-xt-linux/domd-image-weston/1.0-r0/repo/
 
-- For building DomA:
-cd workspace_base/build/build/tmp/work/x86_64-xt-linux/domu-image-android/1.0-r0/repo/
-
 - For building DomU:
 cd workspace_base/build/build/tmp/work/x86_64-xt-linux/domu-image-weston/1.0-r0/repo/
 
@@ -321,8 +178,36 @@ bitbake core-image-thin-initramfs
 - For building DomD or DomU:
 bitbake core-image-weston
 
-- For building DomA:
-bitbake android
+QEMU
+====
+If basic emulation level is needed it is possible to run a limited setup with QEMU. In this mode only two guests are built: Domain-0 and DomU, no DomD.
+In this setup Domain-0 has all required software to run without DomD.
+The limitations of such a system are at least the following:
+- Because QEMU and Xen have limited support for SMMUv3 it is not possible to fully emulate setup with PCI as it requires IOMMU to run.
+At the moment of this release ARM's SMMUv3 implementation for Xen only supports stage-2 mappings, but QEMU is stage-1.
+- DomU can be started, but without PCI devices, but with emulated ECAM host bridge only.
+- Still allows working on some of the use-cases, like testing hardware domains which are not DomD, toolstack etc.
+
+1. Building QEMU flavor of the release is the same process as above, but with a little addition.
+1.1. In the configuration file of the build in the "[local_conf]" section please add:
+XT_COMMON_DISTRO_FEATURES_APPEND = "qemu_xen"
+1.2. Build as described above in the Build section.
+
+2. Building QEMU.
+2.1. Clone QEMU: git clone https://github.com/xen-troops/qemu.git -b pci_phase1
+2.2. cd qemu/
+2.3. Configure with:
+./configure --target-list=aarch64-softmmu
+2.4. make
+
+3. Configuring and running QEMU + Xen setup.
+3.1. In order to run QEMU setup under Xen there are two files used, run-qemu-xen.sh and run-qemu-xen.cfg.
+3.2. Clone the prod-devel meta layer: git clone https://github.com/andr2000/meta-xt-prod-devel -b pci_phase1
+3.3. In the cloned product go to doc/qemu folder.
+3.4. Change run-qemu-xen.cfg to fit your Yocto build environment:
+- Set YOCTO_DEPLOY_DIR to the deploy directory of the Yocto build
+- Set QEMU_BIN to the QEMU's qemu-system-aarch64 binary in the QEMU build directory under aarch64-softmmu/ folder.
+3.5. Run run-qemu-xen.sh
 
 Usage:
 ======
@@ -360,10 +245,6 @@ For example,
 
 prepare an image blob:
 
-- For system with DomA:
-sudo ./mk_sdcard_image.sh -p /IMAGE_FOLDER -d /home/emmc.img -c devel
-
-- For system with DomU:
 sudo ./mk_sdcard_image.sh -p /IMAGE_FOLDER -d /home/emmc.img -c gen3
 
 and then run on target:
@@ -378,7 +259,7 @@ In case of TFTP booting we have to copy the following boot images into target-ac
 directory and extract guest domain rootfs images for being an NFS root directories for guest domains.
 See https://github.com/xen-troops/manifests/wiki on how to setup TFTP, NFS, etc.
 
-For example (for system with DomU),
+For example:
 
 copy boot images to TFTP boot directory:
 sudo mkdir /srv
@@ -442,43 +323,4 @@ For example, domain config files located at:
 
 pack it back:
 sudo ./uirfs.sh pack uInitramfs initramfs
-
-2. Product image structure (for system with DomA)
-The product image contains the following partitions: dom0, domd, domu/doma.
-DomA itself contains its partitions: system, vendor, misc, vbmeta, metadata, userdata.
-
-You can inspect partitions using losetup and lsblk.
-See example below for Ubuntu 18, assuming that the image was named 'prod-devel.img'.
-Pay attention that text after ## is a comment to console output.
-Sizes of partitions may vary.
-
-```
-$ sudo losetup --find --partscan --show ./prod-devel.img
-/dev/loop23
-
-$ lsblk /dev/loop23
-NAME       MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-loop23       7:23   0    7G  0 loop
-├─loop23p1 259:0    0  256M  0 loop                 ## dom0
-├─loop23p2 259:1    0    2G  0 loop                 ## domd
-└─loop23p3 259:2    0  4.3G  0 loop                 ## doma in this case
-
-$ sudo losetup --find --partscan --show /dev/loop23p3
-/dev/loop24
-
-$ lsblk /dev/loop24
-NAME       MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-loop24       7:20   0  7,5G  0 loop 
-├─loop20p1 259:3    0   30M  0 loop                 ## bootimage A
-├─loop20p2 259:4    0   30M  0 loop                 ## bootimage B
-├─loop20p3 259:5    0    1M  0 loop                 ## vbmeta A
-├─loop20p4 259:6    0    1M  0 loop                 ## vbmeta B
-├─loop20p5 259:7    0    1M  0 loop                 ## misc
-├─loop20p6 259:8    0   11M  0 loop                 ## metadata
-├─loop20p7 259:9    0    1M  0 loop                 ## rpmbemul
-├─loop20p8 259:10   0  4,5G  0 loop                 ## super
-└─loop20p9 259:11   0    3G  0 loop                 ## userdata
-
-sudo losetup -d /dev/loop24
-sudo losetup -d /dev/loop23
 ```
