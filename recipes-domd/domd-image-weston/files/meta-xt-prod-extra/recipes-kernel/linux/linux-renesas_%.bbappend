@@ -10,6 +10,7 @@ LINUX_VERSION = "4.14.75"
 SRC_URI_append = " \
     file://defconfig \
     file://r8169.cfg \
+    file://xen_pcidev_backend.cfg \
 "
 
 # Do not autoload r8169 driver
@@ -22,6 +23,7 @@ SRC_URI_append_rcar = " \
     file://xen-chosen.dtsi;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://0001-HACK-Allow-DomD-enumerate-PCI-devices.patch \
     file://0001-HACK-Make-rcar-gen3-PCI-work-through-ECAM.patch \
+    file://0001-arm-pci-Make-xen-pciback-driver-work-on-ARM.patch \
 "
 
 KERNEL_DEVICETREE_append_rcar = " \
