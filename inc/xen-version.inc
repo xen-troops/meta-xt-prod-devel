@@ -5,5 +5,5 @@
 ################################################################################
 require ../meta-xt-images-domx/recipes-extended/xen/xen-4.14-thud.inc
 
-SRC_URI = "git://github.com/xen-troops/xen.git;protocol=https;branch=pci_phase1"
+SRC_URI = "git://github.com/xen-troops/xen.git;protocol=https;branch=pci_phase2_pre"
 
