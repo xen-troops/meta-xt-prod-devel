@@ -24,6 +24,7 @@ SRC_URI_append_rcar = " \
     file://0001-HACK-Allow-DomD-enumerate-PCI-devices.patch \
     file://0001-HACK-Make-rcar-gen3-PCI-work-through-ECAM.patch \
     file://0001-arm-pci-Make-xen-pciback-driver-work-on-ARM.patch \
+    file://0001-HACK-Allow-pci-back-run-in-DomD.patch \
 "
 
 KERNEL_DEVICETREE_append_rcar = " \
