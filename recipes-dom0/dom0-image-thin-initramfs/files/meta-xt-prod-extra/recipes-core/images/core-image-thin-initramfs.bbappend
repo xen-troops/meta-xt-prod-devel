@@ -11,6 +11,9 @@ IMAGE_INSTALL_append = " \
     ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'xen-base', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'xen-devd', '', d)} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'pciutils', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'openssh-scp', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'openssh-sshd', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'haveged', '', d)} \
     dom0 \
     dom0-run-vcpu_pin \
     dom0-run-set_root_dev \
