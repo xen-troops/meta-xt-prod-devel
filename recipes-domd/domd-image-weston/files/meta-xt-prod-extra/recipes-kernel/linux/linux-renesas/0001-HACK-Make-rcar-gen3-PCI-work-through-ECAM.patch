@@ -1,4 +1,4 @@
-From afcc09c1db39cf686459e182c1ae3b9350635813 Mon Sep 17 00:00:00 2001
+From ba8c8846307cad23b19819d87d7d31b802b60981 Mon Sep 17 00:00:00 2001
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 Date: Wed, 18 Nov 2020 11:19:59 +0200
 Subject: [PATCH] [HACK] Make rcar-gen3 PCI work through ECAM
@@ -36,7 +36,7 @@ Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
  3 files changed, 52 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/pci/host/pci-host-common.c b/drivers/pci/host/pci-host-common.c
-index a613ea310e76..e1a03e229cc2 100644
+index a613ea310e76..f9d6cbf7b47a 100644
 --- a/drivers/pci/host/pci-host-common.c
 +++ b/drivers/pci/host/pci-host-common.c
 @@ -42,6 +42,26 @@ static struct pci_config_window *gen_pci_init(struct device *dev,
@@ -48,14 +48,14 @@ index a613ea310e76..e1a03e229cc2 100644
 +		resource_list_for_each_entry_safe(win, tmp, resources) {
 +			struct resource *res = win->res;
 +
-+			if (res->start == 0x4020000UL) {
-+				printk("HACK: %s 0x4020000 -> 0xfe200000\n",
++			if (res->start == 0x20000000UL) {
++				printk("HACK: %s 0x20000000 -> 0xfe200000\n",
 +				       __func__);
 +				res->start = 0xfe200000UL;
 +				res->end = res->start + 0x200000 - 1;
 +			}
-+			if (res->start == 0x4000000000UL) {
-+				printk("HACK: %s 0x4000000000 -> 0x3800000\n",
++			if (res->start == 0x900000000UL) {
++				printk("HACK: %s 0x900000000 -> 0x3800000\n",
 +				       __func__);
 +				res->start = 0x38000000UL;
 +				res->end = res->start + 0x800000 - 1;
