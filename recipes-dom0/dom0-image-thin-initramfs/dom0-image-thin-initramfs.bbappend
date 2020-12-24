@@ -26,6 +26,12 @@ python __anonymous () {
         d.appendVarFlag("do_compile", "depends", " domu-image-weston:do_${BB_DEFAULT_TASK} ")
 }
 
+python __anonymous () {
+    distro_features = (d.getVar("XT_COMMON_DISTRO_FEATURES_APPEND", True) or '').split()
+    if "qemu_xen" in distro_features:
+        d.appendVar("XT_QUIRK_PATCH_SRC_URI", " file://0001-kernel.bbclass-Fix-Module.symvers-support.patch;patchdir=poky ")
+}
+
 ################################################################################
 # Generic ARMv8
 ################################################################################
