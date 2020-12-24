@@ -44,3 +44,7 @@ XT_DIR_ABS_SHARED_BOOT_DOMF = "${XT_SHARED_ROOTFS_DIR}/${XT_DIR_REL_DOMF}/"
 XT_DIR_ABS_SHARED_BOOT_DOMR = "${XT_SHARED_ROOTFS_DIR}/${XT_DIR_REL_DOMR}/"
 XT_DIR_ABS_SHARED_BOOT_DOMU = "${XT_SHARED_ROOTFS_DIR}/${XT_DIR_REL_DOMU}/"
 
+###############################################################################
+# Emulation base deploy dir
+###############################################################################
+XT_EMU_DEPLOY_DIR = "${DEPLOY_DIR}/emu/"
