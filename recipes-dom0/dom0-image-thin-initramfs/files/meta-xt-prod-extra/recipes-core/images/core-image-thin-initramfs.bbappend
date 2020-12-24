@@ -8,12 +8,6 @@ IMAGE_INSTALL_append = " \
     xen-xenstat \
     xen-misc \
     xen-xenhypfs \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'xen-base', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'xen-devd', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'pciutils', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'openssh-scp', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'openssh-sshd', '', d)} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'haveged', '', d)} \
     dom0 \
     dom0-run-vcpu_pin \
     dom0-run-set_root_dev \
@@ -22,6 +16,18 @@ IMAGE_INSTALL_append = " \
     domd-install-artifacts \
     ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'u-boot', '', d)} \
 "
+
+IMAGE_INSTALL_append_qemu-xen = "\
+    xen-base \
+    xen-devd \
+    pciutils \
+    openssh-scp \
+    openssh-sshd \
+    haveged \
+"
+
+IMAGE_ROOTFS_EXTRA_SPACE_qemu-xen = "102400"
+IMAGE_FSTYPES_append_qemu-xen += "ext4"
 
 XT_GUESTS_INSTALL ?= "doma domf"
 
@@ -35,10 +41,6 @@ python __anonymous () {
         d.appendVar("IMAGE_INSTALL", " domr domr-run domr-install-artifacts")
     if "domu" in guests :
         d.appendVar("IMAGE_INSTALL", " domu domu-run domu-install-artifacts")
-    rootfs_extra_space = d.getVar("DISTRO_FEATURES", True).split()
-    # Check if extra rootfs space, KBytes, required
-    if "qemu_xen" in rootfs_extra_space :
-        d.setVar("IMAGE_ROOTFS_EXTRA_SPACE", "102400")
 }
 
 generate_uboot_image() {
@@ -54,5 +56,3 @@ populate_vmlinux () {
 IMAGE_POSTPROCESS_COMMAND += " generate_uboot_image; populate_vmlinux; "
 
 IMAGE_ROOTFS_SIZE = "65535"
-
-IMAGE_FSTYPES += "${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'ext4', '', d)}"
