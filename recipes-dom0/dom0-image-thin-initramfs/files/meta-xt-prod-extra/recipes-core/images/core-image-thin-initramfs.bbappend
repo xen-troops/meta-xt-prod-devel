@@ -26,6 +26,11 @@ IMAGE_INSTALL_append_qemu-xen = "\
     haveged \
 "
 
+IMAGE_INSTALL_remove_qemu-xen = "\
+    domd \
+    domd-run \
+"
+
 IMAGE_ROOTFS_EXTRA_SPACE_qemu-xen = "102400"
 IMAGE_FSTYPES_append_qemu-xen += "ext4"
 
