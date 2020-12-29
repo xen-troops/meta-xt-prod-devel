@@ -18,11 +18,15 @@ LIC_FILES_CHKSUM_qemu-xen = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46
 SRC_URI_qemu-xen = " \
     git://github.com/xen-troops/linux.git;branch=${BRANCH} \
     file://qemu-xen/defconfig;destsuffix=defconfig \
+    file://qemu-xen/8139cp.cfg \
 "
 
 KERNEL_DEVICETREE_qemu-xen = " \
     xilinx/zynqmp-zcu102-rev1.0.dtb \
 "
+
+KERNEL_MODULE_PROBECONF_qemu-xen += "8139cp"
+module_conf_8139cp_qemu-xen = "blacklist 8139cp"
 
 FILES_${KERNEL_PACKAGE_NAME}-base += " \
     ${nonarch_base_libdir}/modules/${KERNEL_VERSION}/modules.builtin.modinfo \
