@@ -24,6 +24,7 @@ IMAGE_INSTALL_append_qemu-xen = "\
     openssh-scp \
     openssh-sshd \
     haveged \
+    kernel-modules \
 "
 
 IMAGE_INSTALL_remove_qemu-xen = "\
