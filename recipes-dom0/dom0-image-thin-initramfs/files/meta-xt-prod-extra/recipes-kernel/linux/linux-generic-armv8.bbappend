@@ -19,6 +19,7 @@ SRC_URI_qemu-xen = " \
     git://github.com/xen-troops/linux.git;branch=${BRANCH} \
     file://qemu-xen/defconfig;destsuffix=defconfig \
     file://qemu-xen/8139cp.cfg \
+    file://qemu-xen/pciback.cfg \
 "
 
 KERNEL_DEVICETREE_qemu-xen = " \
