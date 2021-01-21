@@ -176,6 +176,10 @@ configure_versions_rcar() {
     fi
 
     base_update_conf_value ${local_conf} XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR "${XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR}"
+
+    if echo "${XT_COMMON_DISTRO_FEATURES_APPEND}" | grep -qi "domu_1to1";then
+        base_set_conf_value ${local_conf} MACHINEOVERRIDES_append ":domu-1to1"
+    fi
 }
 
 # In order to copy proprietary "multimedia" packages,

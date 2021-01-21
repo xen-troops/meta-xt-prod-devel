@@ -1,0 +1,63 @@
+From b7c517a7950812ada47cabc48a1b74ebc3cd963e Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Mon, 18 Jan 2021 09:30:07 +0200
+Subject: [PATCH 3/4] Bypass SMMU
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ xen/drivers/passthrough/arm/smmu.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/xen/drivers/passthrough/arm/smmu.c b/xen/drivers/passthrough/arm/smmu.c
+index 7f211c88f58e..5017addfb746 100644
+--- a/xen/drivers/passthrough/arm/smmu.c
++++ b/xen/drivers/passthrough/arm/smmu.c
+@@ -831,6 +831,9 @@ static int arm_smmu_dt_add_device_generic(u8 devfn, struct device *dev)
+ 	struct arm_smmu_device *smmu;
+ 	struct iommu_fwspec *fwspec;
+ 
++	if ( dev_is_pci(dev) )
++		return 0;
++
+ 	fwspec = dev_iommu_fwspec_get(dev);
+ 	if (fwspec == NULL)
+ 		return -ENXIO;
+@@ -855,6 +858,9 @@ static int arm_smmu_dt_xlate_generic(struct device *dev,
+ {
+ 	uint32_t mask, fwid = 0;
+ 
++	if ( dev_is_pci(dev) )
++		return 0;
++
+ 	if (spec->args_count > 0)
+ 		fwid |= (SMR_ID_MASK & spec->args[0]) << SMR_ID_SHIFT;
+ 
+@@ -2665,6 +2671,15 @@ static int arm_smmu_assign_dev(struct domain *d, u8 devfn,
+ 	struct arm_smmu_xen_domain *xen_domain;
+ 	int ret = 0;
+ 
++	if ( dev_is_pci(dev) ) {
++		struct pci_dev *pdev = dev_to_pci(dev);
++
++		list_move(&pdev->domain_list, &d->pdev_list);
++		pdev->domain = d;
++
++		return 0;
++	}
++
+ 	xen_domain = dom_iommu(d)->arch.priv;
+ 
+ 	if (!dev->archdata.iommu) {
+@@ -2751,6 +2766,9 @@ static int arm_smmu_deassign_dev(struct domain *d, u8 devfn, struct device *dev)
+ 	struct iommu_domain *domain = dev_iommu_domain(dev);
+ 	struct arm_smmu_xen_domain *xen_domain;
+ 
++	if ( dev_is_pci(dev) )
++		return 0;
++
+ #ifdef CONFIG_HAS_PCI
+     if ( dev_is_pci(dev) )
+     {
+-- 
+2.17.1
+

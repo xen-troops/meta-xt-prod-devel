@@ -1,0 +1,31 @@
+From 73950b86c5b76b92264589b5b2b37fb8fddfb876 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Mon, 18 Jan 2021 21:58:35 +0200
+Subject: [PATCH 1/5] Set ECAM for vPCI to true physical address
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ xen/include/public/arch-arm.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/xen/include/public/arch-arm.h b/xen/include/public/arch-arm.h
+index 64f520b0612d..9d2e5202cf1f 100644
+--- a/xen/include/public/arch-arm.h
++++ b/xen/include/public/arch-arm.h
+@@ -445,11 +445,11 @@ typedef uint64_t xen_callback_t;
+ 
+ /* Guest PCI-PCIe memory space where config space and BAR will be available.*/
+ #define GUEST_VPCI_PREFETCH_MEM_CPU_ADDR  xen_mk_ullong(0x900000000)
+-#define GUEST_VPCI_MEM_CPU_ADDR           xen_mk_ullong(0x20000000)
++#define GUEST_VPCI_MEM_CPU_ADDR           xen_mk_ullong(0xe0000000)
+ #define GUEST_VPCI_IO_CPU_ADDR            xen_mk_ullong(0x2f800000)
+ 
+ #define GUEST_VPCI_PREFETCH_MEM_PCI_ADDR  xen_mk_ullong(0x900000000)
+-#define GUEST_VPCI_MEM_PCI_ADDR           xen_mk_ullong(0x20000000)
++#define GUEST_VPCI_MEM_PCI_ADDR           xen_mk_ullong(0xe0000000)
+ #define GUEST_VPCI_IO_PCI_ADDR            xen_mk_ullong(0x00000000)
+ 
+ #define GUEST_VPCI_PREFETCH_MEM_SIZE      xen_mk_ullong(0x2000000000)
+-- 
+2.17.1
+

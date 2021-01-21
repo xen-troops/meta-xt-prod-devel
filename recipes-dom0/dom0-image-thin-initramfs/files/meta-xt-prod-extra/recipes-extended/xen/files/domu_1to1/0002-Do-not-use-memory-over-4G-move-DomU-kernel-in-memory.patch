@@ -1,0 +1,33 @@
+From 734aa8dc7e771c0db6ed0148fbe4f68828aa0c40 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Tue, 7 Mar 2017 14:28:25 +0200
+Subject: [PATCH 2/4] Do not use memory over 4G, move DomU kernel in memory
+
+1. Do not use memory over 4G - skip second memory range from DTB
+2. Move DomU kernel to 0x60000000
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ xen/include/public/arch-arm.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/xen/include/public/arch-arm.h b/xen/include/public/arch-arm.h
+index 9d2e5202cf1f..85ed099e5056 100644
+--- a/xen/include/public/arch-arm.h
++++ b/xen/include/public/arch-arm.h
+@@ -460,10 +460,10 @@ typedef uint64_t xen_callback_t;
+  * 16MB == 4096 pages reserved for guest to use as a region to map its
+  * grant table in.
+  */
+-#define GUEST_GNTTAB_BASE xen_mk_ullong(0x38000000)
++#define GUEST_GNTTAB_BASE xen_mk_ullong(0x58000000)
+ #define GUEST_GNTTAB_SIZE xen_mk_ullong(0x01000000)
+ 
+-#define GUEST_MAGIC_BASE  xen_mk_ullong(0x39000000)
++#define GUEST_MAGIC_BASE  xen_mk_ullong(0x59000000)
+ #define GUEST_MAGIC_SIZE  xen_mk_ullong(0x01000000)
+ 
+ #define GUEST_RAM_BANKS   2
+-- 
+2.17.1
+

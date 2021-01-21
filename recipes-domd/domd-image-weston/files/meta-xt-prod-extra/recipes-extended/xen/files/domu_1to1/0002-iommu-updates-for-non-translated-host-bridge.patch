@@ -1,0 +1,40 @@
+From ba0259e60c1e7d13d4af7ee122c8e93e3b0cc9f6 Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Mon, 18 Jan 2021 09:30:47 +0200
+Subject: [PATCH 4/4] iommu updates for non-translated host bridge
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ xen/drivers/passthrough/device_tree.c | 2 +-
+ xen/drivers/passthrough/pci.c         | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/xen/drivers/passthrough/device_tree.c b/xen/drivers/passthrough/device_tree.c
+index b465caeaec08..ea6010ae5b5a 100644
+--- a/xen/drivers/passthrough/device_tree.c
++++ b/xen/drivers/passthrough/device_tree.c
+@@ -237,7 +237,7 @@ static int dt_map_id(struct dt_device_node *np, u32 id,
+      * NOTE: Linux bypasses translation without returning an error here,
+      * but should we behave in the same way on Xen? Restrict for now.
+      */
+-    return -EFAULT;
++    return -ENODEV;
+ }
+ 
+ int iommu_add_pci_device(uint8_t devfn, struct pci_dev *pdev)
+diff --git a/xen/drivers/passthrough/pci.c b/xen/drivers/passthrough/pci.c
+index 11a953f50805..4c9b58bc46f2 100644
+--- a/xen/drivers/passthrough/pci.c
++++ b/xen/drivers/passthrough/pci.c
+@@ -1354,6 +1354,8 @@ static int iommu_add_device(struct pci_dev *pdev)
+ #ifdef CONFIG_ARM
+     pci_to_dev(pdev)->type = DEV_PCI;
+     rc = iommu_add_pci_device(pdev->devfn, pdev);
++    if (rc > 0)
++        return 0;
+ #else
+     rc = hd->platform_ops->add_device(pdev->devfn, pci_to_dev(pdev));
+ #endif
+-- 
+2.17.1
+
