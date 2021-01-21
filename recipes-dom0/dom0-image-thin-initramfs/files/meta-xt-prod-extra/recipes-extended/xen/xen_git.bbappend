@@ -5,6 +5,12 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 ################################################################################
 require xen-version.inc
 
+SRC_URI_append_domu-1to1 = " \
+    file://domu_1to1/0001-Set-ECAM-for-vPCI-to-true-physical-address.patch \
+    file://domu_1to1/0002-Do-not-use-memory-over-4G-move-DomU-kernel-in-memory.patch \
+    file://domu_1to1/0003-xen-arm-allow-to-allocate-1-128-256-512-Mb-memory-ch.patch \
+"
+
 ################################################################################
 # We only need Xen tools, so we can start domains
 ################################################################################

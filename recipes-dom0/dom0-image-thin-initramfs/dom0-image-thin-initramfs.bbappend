@@ -77,6 +77,9 @@ add_to_local_conf() {
     if echo "${XT_COMMON_DISTRO_FEATURES_APPEND}" | grep -qi "qemu";then
         base_set_conf_value ${local_conf} MACHINEOVERRIDES_append ":qemu-xen"
     fi
+    if echo "${XT_COMMON_DISTRO_FEATURES_APPEND}" | grep -qi "domu_1to1";then
+        base_set_conf_value ${local_conf} MACHINEOVERRIDES_append ":domu-1to1"
+    fi
 }
 
 python do_configure_append() {
