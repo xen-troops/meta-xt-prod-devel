@@ -92,7 +92,7 @@ configure_versions_rcar() {
     # set default timezone to Las Vegas
     base_update_conf_value ${local_conf} DEFAULT_TIMEZONE "US/Pacific"
 
-    if [ ! -z ${XT_COMMON_DISTRO_FEATURES_APPEND} ]; then
+    if [ ! -z "${XT_COMMON_DISTRO_FEATURES_APPEND}" ]; then
         base_set_conf_value ${local_conf} DISTRO_FEATURES_append " ${XT_COMMON_DISTRO_FEATURES_APPEND}"
     fi
 }
