@@ -43,6 +43,18 @@ NET_SOC="-nic user -nic user -nic user \
 
 RESET_APU="-device loader,addr=0xfd1a0104,data=0x8000000e,data-len=4"
 
+echo "################################################################################"
+echo "# QEMU binary:     $QEMU"
+echo "# Xen:             $XEN"
+echo "# Domian-0 Linux:  $KERNEL"
+echo "# Domain-0 rootfs: $QEMU_DOM0_ROOTFS"
+echo "# DomU rootfs:     $QEMU_DOMU_ROOTFS"
+echo "################################################################################"
+echo "# Use Ctrl-a x to terminate QEMU"
+echo "# Use Ctrl-a c to enter/exit QEMU's monitor"
+echo "# Use ssh root@localhost -p 2222 to connect to Domain-0"
+echo "################################################################################"
+
 ${QEMU} -M arm-generic-fdt,linux=on -m 2G -hw-dtb ${HW_DTB}	\
 	-dtb ${DTB}						\
 	-serial mon:stdio					\
