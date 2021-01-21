@@ -73,6 +73,8 @@ add_to_local_conf() {
 
     if [ ! -z ${XT_COMMON_DISTRO_FEATURES_APPEND} ]; then
         base_set_conf_value ${local_conf} DISTRO_FEATURES_append " ${XT_COMMON_DISTRO_FEATURES_APPEND}"
+    fi
+    if echo "${XT_COMMON_DISTRO_FEATURES_APPEND}" | grep -qi "qemu";then
         base_set_conf_value ${local_conf} MACHINEOVERRIDES_append ":qemu-xen"
     fi
 }
