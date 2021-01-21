@@ -18,6 +18,7 @@ RUN_SCRIPT_NAME="qemu-run-zynqmp-xilinx-xen.sh"
 SRC_URI = " \
     git://github.com/xen-troops/qemu.git;protocol=https;branch=xilinx-pcie-no-fw \
     file://${RUN_SCRIPT_NAME} \
+    file://trace_events.txt \
 "
 PROVIDES = "${PN}"
 
@@ -26,7 +27,7 @@ do_configure() {
     cd ${S}
     unset CC CFLAGS CXXFLAGS LDFLAGS
     unset PKG_CONFIG_LIBDIR PKG_CONFIG_PATH
-    ./configure --target-list=aarch64-softmmu
+    ./configure --target-list=aarch64-softmmu --enable-trace-backends=log
 }
 
 do_compile() {
@@ -42,6 +43,7 @@ do_install() {
 
     # Write environment setup file
     install -m 0744 ${S}/../${RUN_SCRIPT_NAME} ${XT_EMU_DEPLOY_DIR}/
+    install -m 0744 ${S}/../trace_events.txt ${XT_EMU_DEPLOY_DIR}/
 
     sed -i "s!=\"REPLACE_DEPLOY_DIR!"=\"${DEPLOY_DIR}"!g" ${XT_EMU_DEPLOY_DIR}/${RUN_SCRIPT_NAME}
 }

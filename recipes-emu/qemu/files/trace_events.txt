@@ -1,0 +1,4 @@
+pci_update_mappings_del
+pci_update_mappings_add
+pci_cfg_read
+pci_cfg_write
