@@ -54,6 +54,15 @@ echo "# Use Ctrl-a x to terminate QEMU"
 echo "# Use Ctrl-a c to enter/exit QEMU's monitor"
 echo "# Use ssh root@localhost -p 2222 to connect to Domain-0"
 echo "################################################################################"
+echo "# Pass \"trace\" as the very first command line argument to run with traces"
+echo "################################################################################"
+
+DBG=""
+
+if [ "$1" = "trace" ] ; then
+    shift 1
+    DBG="-D qemu_trace.log -d guest_errors -trace events=trace_events.txt"
+fi
 
 ${QEMU} -M arm-generic-fdt,linux=on -m 2G -hw-dtb ${HW_DTB}	\
 	-dtb ${DTB}						\
@@ -65,11 +74,12 @@ ${QEMU} -M arm-generic-fdt,linux=on -m 2G -hw-dtb ${HW_DTB}	\
 	-device ide-hd,drive=sata-drive-dom0,bus=ahci@0xFD0C0000.0 \
 	-drive file=${QEMU_DOMU_ROOTFS},format=raw,id=sata-drive-domu \
 	-device ide-hd,drive=sata-drive-domu,bus=ahci@0xFD0C0000.1 \
-	${PCIE_BASE}							\
-	${DEV0_PCIE}							\
-	${DEV0_NET}							\
+	${PCIE_BASE}						\
+	${DEV0_PCIE}						\
+	${DEV0_NET}						\
 	${GIC_SETUP}						\
 	${RESET_APU}						\
-	${NET_SOC}							\
+	${NET_SOC}						\
+	${DBG}							\
 	$*
 
