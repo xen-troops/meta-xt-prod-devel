@@ -15,6 +15,7 @@ IMAGE_INSTALL_append = " \
     domd-run \
     domd-install-artifacts \
     ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'u-boot', '', d)} \
+    devmem2 \
 "
 
 IMAGE_INSTALL_append_qemu-xen = "\
