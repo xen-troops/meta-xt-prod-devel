@@ -20,7 +20,6 @@ SRC_URI_append_r8a7796 = " \
 
 SRC_URI_append_domu-1to1 = " \
     file://domu_1to1/0001-Bypass-SMMU.patch \
-    file://domu_1to1/0002-iommu-updates-for-non-translated-host-bridge.patch \
 "
 
 ################################################################################
