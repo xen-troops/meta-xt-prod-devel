@@ -10,3 +10,14 @@ SRC_URI = "git://github.com/xen-troops/xen.git;protocol=https;branch=pci_phase2_
 FILES_${PN}-xl-examples += " \
     ${sysconfdir}/xen/xlexample.pvhlinux \
 "
+
+PACKAGES_append = " \
+    ${PN}-xen-access \
+    "
+FILES_${PN}-xen-access += " \
+    ${sbindir}/xen-access \
+"
+
+FILES_${PN}-misc_append = " \
+    ${sysconfdir}/bash_completion.d \
+"
