@@ -3,6 +3,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI += "\
     file://0001-rcar-Use-UART-instead-of-Secure-DRAM-area-for-loggin.patch \
     file://0002-tools-Produce-two-cert_header_sa6-images.patch \
+    file://0003-rcar-Add-BOARD_SALVATOR_X-case-in-ddr_rank_judge.patch \
 "
 
 do_deploy_append () {
