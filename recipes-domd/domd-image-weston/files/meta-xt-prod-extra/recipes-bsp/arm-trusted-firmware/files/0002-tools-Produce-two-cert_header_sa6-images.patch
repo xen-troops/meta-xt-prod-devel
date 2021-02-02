@@ -1,7 +1,7 @@
-From 857fe66ce21e4256ee13c524f8c9bc751b397372 Mon Sep 17 00:00:00 2001
+From 7c780f8a67d42056100b93440fc0a6f97b04eede Mon Sep 17 00:00:00 2001
 From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Date: Thu, 11 Jan 2018 21:40:23 +0200
-Subject: [PATCH 2/2] tools: Produce two cert_header_sa6 images
+Date: Tue, 2 Feb 2021 18:42:36 +0200
+Subject: [PATCH 2/3] tools: Produce two cert_header_sa6 images
 
 An already existed image is used to boot SoC from the Hyperflash,
 while the newly created image (cert_header_sa6_emmc) is needed to boot
@@ -10,16 +10,16 @@ For producing suitable for "eMMC boot" image we have to build sa6.c
 source file again, but with RCAR_SA6_TYPE flag being forced to 1.
 
 Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Reviewed-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
+Signed-off-by: Valerii Chubar <valerii_chubar@epam.com>
 ---
- tools/dummy_create/makefile | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ tools/renesas/rcar_layout_create/makefile | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/tools/dummy_create/makefile b/tools/dummy_create/makefile
-index 9093111..e7daaa2 100644
---- a/tools/dummy_create/makefile
-+++ b/tools/dummy_create/makefile
-@@ -11,13 +11,19 @@
+diff --git a/tools/renesas/rcar_layout_create/makefile b/tools/renesas/rcar_layout_create/makefile
+index 4bfea7dc6..0577e396a 100644
+--- a/tools/renesas/rcar_layout_create/makefile
++++ b/tools/renesas/rcar_layout_create/makefile
+@@ -11,18 +11,26 @@
  #output file name
  FILE_NAME_SA0   = bootparam_sa0
  FILE_NAME_SA6   = cert_header_sa6
@@ -33,23 +33,20 @@ index 9093111..e7daaa2 100644
  OBJ_FILE_SA0 =	sa0.o
  OBJ_FILE_SA6 =	sa6.o
 +OBJ_FILE_SA6_EMMC =	sa6_emmc.o
-+
+ 
+ #linker script name
+ MEMORY_DEF_SA0 = sa0.ld.S
+ MEMORY_DEF_SA6 = sa6.ld.S
+ 
 +# source file name
 +SOURCE_FILE_SA6 =	sa6.c
- 
- #linker script name 
- MEMORY_DEF_SA0 = sa0.ld.S
-@@ -62,6 +68,9 @@ CC = $(CROSS_COMPILE)gcc
- CFLAGS += ${DEFINES}
- CFLAGS += -I../../include/lib/stdlib
- 
 +# Explicitly set RCAR_SA6_TYPE flag
 +CFLAGS_SA6_EMMC = `echo "${CFLAGS}" | sed -e 's/-DRCAR_SA6_TYPE=0/-DRCAR_SA6_TYPE=1/'`
 +
- #Linker
- LD = $(CROSS_COMPILE)ld
- 
-@@ -78,7 +87,7 @@ CL = rm -f
+ ###################################################
+ # Convenience function for adding build definitions
+ # $(eval $(call add_define,FOO)) will have:
+@@ -89,7 +97,7 @@ CL = rm -f
  # command
  
  .PHONY: all
@@ -58,15 +55,15 @@ index 9093111..e7daaa2 100644
  ###################################################
  # Linker
  ###################################################
-@@ -100,10 +109,22 @@ $(OUTPUT_FILE_SA6) : $(MEMORY_DEF_SA6) $(OBJ_FILE_SA6)
- 	$(objcopy) -O srec --adjust-vma=0xE6320000 --srec-forceS3  $(OUTPUT_FILE_SA6) $(FILE_NAME_SA6).srec
- 	$(objcopy) -O binary --adjust-vma=0xE6320000 --srec-forceS3  $(OUTPUT_FILE_SA6) $(FILE_NAME_SA6).bin
+@@ -111,10 +119,22 @@ $(OUTPUT_FILE_SA6) : $(MEMORY_DEF_SA6) $(OBJ_FILE_SA6)
+ 	$(objcopy) -O srec --adjust-vma=$(RCAR_VMA_ADJUST_ADDR) --srec-forceS3  $(OUTPUT_FILE_SA6) $(FILE_NAME_SA6).srec
+ 	$(objcopy) -O binary --adjust-vma=$(RCAR_VMA_ADJUST_ADDR) --srec-forceS3  $(OUTPUT_FILE_SA6) $(FILE_NAME_SA6).bin
  
 +$(OUTPUT_FILE_SA6_EMMC) : $(MEMORY_DEF_SA6) $(OBJ_FILE_SA6_EMMC)
-+	$(LD) $(OBJ_FILE_SA6_EMMC)	 	\
-+	-T $(MEMORY_DEF_SA6)			\
-+	-o $(OUTPUT_FILE_SA6_EMMC)		\
-+	-Map $(FILE_NAME_SA6_EMMC).map 	\
++	$(LD) $(OBJ_FILE_SA6_EMMC)      \
++	-T $(MEMORY_DEF_SA6)            \
++	-o $(OUTPUT_FILE_SA6_EMMC)      \
++	-Map $(FILE_NAME_SA6_EMMC).map  \
 +
 +	$(objcopy) -O srec --adjust-vma=0xE6320000 --srec-forceS3  $(OUTPUT_FILE_SA6_EMMC) $(FILE_NAME_SA6_EMMC).srec
 +	$(objcopy) -O binary --adjust-vma=0xE6320000 --srec-forceS3  $(OUTPUT_FILE_SA6_EMMC) $(FILE_NAME_SA6_EMMC).bin
@@ -82,5 +79,5 @@ index 9093111..e7daaa2 100644
  	$(CC) -c -I $< -o $@
  
 -- 
-2.7.4
+2.17.1
 
