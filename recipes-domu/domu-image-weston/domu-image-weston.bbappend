@@ -11,7 +11,7 @@ python __anonymous () {
 }
 
 SRC_URI = " \
-    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=${XT_MANIFEST_FOLDER}/domu.xml;scmdata=keep \
+    repo://github.com/otyshchenko1/manifests;protocol=https;branch=yocto-v4.7.0;manifest=${XT_MANIFEST_FOLDER}/domu.xml;scmdata=keep \
 "
 
 XT_QUIRK_UNPACK_SRC_URI += " \
