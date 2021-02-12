@@ -1,11 +1,11 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-BRANCH = "v4.14.75-ltsi/rcar-3.9.6-xt0.1"
+BRANCH = "v5.4.72/rcar-4.1.0.rc2-xt0.1"
 SRCREV = "${AUTOREV}"
-LINUX_VERSION = "4.14.75"
+LINUX_VERSION = "5.4.72"
 
 SRC_URI = " \
-    git://github.com/xen-troops/linux.git;branch=${BRANCH} \
+    git://github.com/otyshchenko1/linux.git;branch=${BRANCH} \
     file://defconfig \
   "
 do_deploy_append () {
