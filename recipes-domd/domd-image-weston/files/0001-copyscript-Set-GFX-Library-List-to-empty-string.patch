@@ -11,25 +11,38 @@ to just skip copying them.
 
 Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
 ---
- .../docs/sample/copyscript/copy_evaproprietary_softwares.sh          | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ .../copyscript/copy_proprietary_softwares.sh   | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/meta-rcar-gen3/docs/sample/copyscript/copy_evaproprietary_softwares.sh b/meta-rcar-gen3/docs/sample/copyscript/copy_evaproprietary_softwares.sh
-index fd867b3..d4e2408 100755
---- a/meta-rcar-gen3/docs/sample/copyscript/copy_evaproprietary_softwares.sh
-+++ b/meta-rcar-gen3/docs/sample/copyscript/copy_evaproprietary_softwares.sh
-@@ -69,8 +69,9 @@ _audio_common_list="audio_common,EVARTM0AC0000XACMND30SL41C,RTM0AC0000XACMND30SL
+diff --git a/meta-rcar-gen3/docs/sample/copyscript/copy_proprietary_softwares.sh b/meta-rcar-gen3/docs/sample/copyscript/copy_proprietary_softwares.sh
+index b9a8fdc..96118e3 100755
+--- a/meta-rcar-gen3/docs/sample/copyscript/copy_proprietary_softwares.sh
++++ b/meta-rcar-gen3/docs/sample/copyscript/copy_proprietary_softwares.sh
+@@ -129,14 +129,16 @@ _adsp_km_list="adsp_driver,RCG3AHPDL4101ZDO,RCG3AHPDL4101ZDO.tar.gz"
  # gfx_list="<package_name(user)>,<copy_file_name(user)>,<package_name(kernel)>,<copy_file_name(kernel)> \
  #           <package_name(user)>,<copy_file_name(user)>,<package_name(kernel)>,<copy_file_name(kernel)> \
  #           <package_name(user)>,<copy_file_name(user)>,<package_name(kernel)>,<copy_file_name(kernel)>"
--_gfx_list="EVARTM0RC7795GLPG0001SL41C,EVA_r8a77951_linux_gsx_binaries_gles.tar.bz2,RCH3G001L4101ZDO,GSX_KM_H3.tar.bz2 \
--           EVARTM0RC7796GLPG0001SL41C,EVA_r8a77960_linux_gsx_binaries_gles.tar.bz2,RCM3G001L4101ZDO,GSX_KM_M3.tar.bz2"
-+#_gfx_list="EVARTM0RC7795GLPG0001SL41C,EVA_r8a77951_linux_gsx_binaries_gles.tar.bz2,RCH3G001L4101ZDO,GSX_KM_H3.tar.bz2 \
-+#           EVARTM0RC7796GLPG0001SL41C,EVA_r8a77960_linux_gsx_binaries_gles.tar.bz2,RCM3G001L4101ZDO,GSX_KM_M3.tar.bz2"
+-_gfx_list="RTM8RC7795ZG300Q10JPL2E,r8a77951_linux_gsx_binaries_gles.tar.bz2,RCH3G001L5001ZDO,GSX_KM_H3.tar.bz2 \
+-           RTM8RC7796ZG300Q10JPL2E,r8a77960_linux_gsx_binaries_gles.tar.bz2,RCM3G001L5001ZDO,GSX_KM_M3.tar.bz2 \
+-           RTM8RC7796ZG300Q50JPL2E,r8a77965_linux_gsx_binaries_gles.tar.bz2,RCN3G001L5001ZDO,GSX_KM_M3N.tar.bz2 \
+-           RTM8RC7799ZG300Q00JPL2E,r8a77990_linux_gsx_binaries_gles.tar.bz2,RCE3G001L5001ZDO,GSX_KM_E3.tar.bz2 \
+-           INFRTM8RC7795ZG300Q10JPL2E,INF_r8a77951_linux_gsx_binaries_gles.tar.bz2,RCH3G001L5001ZDO,GSX_KM_H3.tar.bz2 \
+-           INFRTM8RC7796ZG300Q10JPL2E,INF_r8a77960_linux_gsx_binaries_gles.tar.bz2,RCM3G001L5001ZDO,GSX_KM_M3.tar.bz2 \
+-           INFRTM8RC7796ZG300Q50JPL2E,INF_r8a77965_linux_gsx_binaries_gles.tar.bz2,RCN3G001L5001ZDO,GSX_KM_M3N.tar.bz2 \
+-           INFRTM8RC7799ZG300Q00JPL2E,INF_r8a77990_linux_gsx_binaries_gles.tar.bz2,RCE3G001L5001ZDO,GSX_KM_E3.tar.bz2"
++#_gfx_list="RTM8RC7795ZG300Q10JPL2E,r8a77951_linux_gsx_binaries_gles.tar.bz2,RCH3G001L5001ZDO,GSX_KM_H3.tar.bz2 \
++#           RTM8RC7796ZG300Q10JPL2E,r8a77960_linux_gsx_binaries_gles.tar.bz2,RCM3G001L5001ZDO,GSX_KM_M3.tar.bz2 \
++#           RTM8RC7796ZG300Q50JPL2E,r8a77965_linux_gsx_binaries_gles.tar.bz2,RCN3G001L5001ZDO,GSX_KM_M3N.tar.bz2 \
++#           RTM8RC7799ZG300Q00JPL2E,r8a77990_linux_gsx_binaries_gles.tar.bz2,RCE3G001L5001ZDO,GSX_KM_E3.tar.bz2 \
++#           INFRTM8RC7795ZG300Q10JPL2E,INF_r8a77951_linux_gsx_binaries_gles.tar.bz2,RCH3G001L5001ZDO,GSX_KM_H3.tar.bz2 \
++#           INFRTM8RC7796ZG300Q10JPL2E,INF_r8a77960_linux_gsx_binaries_gles.tar.bz2,RCM3G001L5001ZDO,GSX_KM_M3.tar.bz2 \
++#           INFRTM8RC7796ZG300Q50JPL2E,INF_r8a77965_linux_gsx_binaries_gles.tar.bz2,RCN3G001L5001ZDO,GSX_KM_M3N.tar.bz2 \
++#           INFRTM8RC7799ZG300Q00JPL2E,INF_r8a77990_linux_gsx_binaries_gles.tar.bz2,RCE3G001L5001ZDO,GSX_KM_E3.tar.bz2"
 +_gfx_list=""
++
  
- ##### static value
- _MODE_ZIP=1
+ # ICCOM
+ # Please add ICCOM to "_iccom_list"
 -- 
-2.7.4
+2.17.1
 
