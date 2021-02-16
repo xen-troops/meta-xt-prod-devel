@@ -29,10 +29,6 @@ XT_BB_IMAGE_TARGET = "core-image-weston"
 # Renesas R-Car
 ################################################################################
 
-XT_QUIRK_PATCH_SRC_URI_rcar = "\
-    file://${S}/meta-renesas/meta-rcar-gen3/docs/sample/patch/patch-for-linaro-gcc/0001-rcar-gen3-add-readme-for-building-with-Linaro-Gcc.patch;patchdir=meta-renesas \
-"
-
 XT_BB_LOCAL_CONF_FILE_rcar = "meta-xt-prod-extra/doc/local.conf.rcar-domu-image-weston"
 XT_BB_LAYERS_FILE_rcar = "meta-xt-prod-extra/doc/bblayers.conf.rcar-domu-image-weston"
 
