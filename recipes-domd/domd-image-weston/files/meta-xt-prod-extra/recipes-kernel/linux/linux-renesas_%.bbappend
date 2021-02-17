@@ -11,6 +11,8 @@ SRC_URI_append = " \
     file://defconfig \
 "
 
+KERNEL_FEATURES_remove = "cfg/virtio.scc"
+
 SRC_URI_append_rcar = " \
     file://salvator-generic-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://salvator-generic-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
