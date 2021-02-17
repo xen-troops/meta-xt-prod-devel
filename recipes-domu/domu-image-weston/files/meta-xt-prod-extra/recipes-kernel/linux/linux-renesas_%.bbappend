@@ -11,6 +11,8 @@ SRC_URI_append = " \
     file://defconfig \
 "
 
+KERNEL_FEATURES_remove = "cfg/virtio.scc"
+
 DEPLOYDIR="${XT_DIR_ABS_SHARED_BOOT_DOMU}"
 
 do_deploy_append() {
