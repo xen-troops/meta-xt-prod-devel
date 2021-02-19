@@ -169,11 +169,6 @@ configure_versions_rcar() {
         base_add_conf_value ${local_conf} DISTRO_FEATURES_remove "wifi bluetooth"
     fi
 
-    # we enable vsp2-renderer only for H3 ES3 based machines
-    if echo "${MACHINEOVERRIDES}" | grep -qiv "r8a7795-es3"; then
-        base_set_conf_value ${local_conf} DISTRO_FEATURES_remove "v4l2-renderer"
-    fi
-
     base_update_conf_value ${local_conf} XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR "${XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR}"
 }
 
