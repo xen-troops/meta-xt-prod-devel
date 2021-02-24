@@ -15,4 +15,5 @@ BBLAYERS ?= " \
   ${TOPDIR}/../meta-openembedded/meta-python \
   ${TOPDIR}/../meta-openembedded/meta-filesystems \
   ${TOPDIR}/../meta-virtualization \
+  ${TOPDIR}/../meta-python2 \
 "
