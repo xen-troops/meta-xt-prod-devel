@@ -1,12 +1,9 @@
+// SPDX-License-Identifier: GPL-2.0
 /*
  * Device Tree Source for the Salvator-X board with R-Car H3 ES3.0
  * running XEN hypervisor
  *
  * Copyright (C) 2018 Renesas Electronics Corp.
- *
- * This file is licensed under the terms of the GNU General Public License
- * version 2.  This program is licensed "as is" without any warranty of any
- * kind, whether express or implied.
  */
 
 #include "r8a7795-salvator-x.dts"
@@ -89,6 +86,11 @@
 };
 
 &ipmmu_vp0 {
+	/*
+	 * The "renesas,ipmmu-mmu-r8a7795" string is known for mmngr, but is not
+	 * known for the Xen's IPMMU driver. Overwrite compatible string as these
+	 * IPMMU devices need to be picked up by Xen.
+	 */
 	compatible = "renesas,ipmmu-r8a7795";
 	status = "okay";
 };
@@ -137,6 +139,10 @@
 };
 
 &ipmmu_ds1 {
+	status = "okay";
+};
+
+&ipmmu_ir {
 	status = "okay";
 };
 
@@ -273,6 +279,14 @@
 	iommus = <&ipmmu_vp1 9>;
 };
 
+&pciec0 {
+	iommus = <&ipmmu_hc 0>;
+};
+
+&pciec1 {
+	iommus = <&ipmmu_hc 1>;
+};
+
 &ehci0 {
 	iommus = <&ipmmu_hc 4>;
 };
@@ -338,6 +352,8 @@
 };
 
 /* ============================ Xen pass through section =====================*/
+/*&adsp			{ xen,passthrough; };*/
+&arm_cc630p		{ xen,passthrough; };
 &csi20			{ xen,passthrough; };
 &csi40			{ xen,passthrough; };
 &du			{ xen,passthrough; };
@@ -441,6 +457,24 @@
 					 <&ipmmu_vc1 12>;
 		};
 
+		impdm0 {
+			xen,passthrough;
+			iommus = <&ipmmu_ir 0>,
+					 <&ipmmu_ir 1>;
+		};
+
+		imp0 {
+			xen,passthrough;
+		};
+
+		impdes0 {
+			xen,passthrough;
+		};
+
+		imprtt {
+			xen,passthrough;
+		};
+
 		lossy_shmem {
 			reg = <0 0x47fd7000 0 0x1000>;
 		};
@@ -451,6 +485,8 @@
 &mfis_as		{ xen,passthrough; };
 &pciec1			{ xen,passthrough; };
 &pciec0			{ xen,passthrough; };
+&rpc0			{ xen,passthrough; };
+&hscif1			{ xen,passthrough; };
 &sdhi0			{ xen,passthrough; };
 &sdhi2			{ xen,passthrough; };
 &sdhi3			{ xen,passthrough; };
