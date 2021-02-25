@@ -1,12 +1,9 @@
+// SPDX-License-Identifier: GPL-2.0
 /*
  * Device Tree Source for the Salvator-X 2nd version board with R-Car H3 ES3.0
  * running XEN hypervisor
  *
  * Copyright (C) 2018 Renesas Electronics Corp.
- *
- * This file is licensed under the terms of the GNU General Public License
- * version 2.  This program is licensed "as is" without any warranty of any
- * kind, whether express or implied.
  */
 
 #include "r8a7795-salvator-xs-4x2g.dts"
@@ -51,10 +48,6 @@
 };
 
 /delete-node/&adsp;
-
-&sdhi2 {
-	/delete-property/iommus;
-};
 
 /* Xen will provide its own GIC, mask ours */
 &gic {
