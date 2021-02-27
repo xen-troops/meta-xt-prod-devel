@@ -1,0 +1,4 @@
+DEPENDS += " \
+    libgbm \
+    wayland-kms \
+"
