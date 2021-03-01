@@ -6,5 +6,4 @@ inherit packagegroup
 
 RDEPENDS_packagegroup-xt-core-xen = "\
     xen \
-    xen-tools \
 "
