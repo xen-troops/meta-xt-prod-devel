@@ -98,7 +98,7 @@ configure_versions_rcar() {
 
     cd ${S}
     base_update_conf_value ${local_conf} PREFERRED_VERSION_xen "4.14.0+git\%"
-    base_update_conf_value ${local_conf} PREFERRED_VERSION_u-boot_rcar "v2018.09\%"
+    base_update_conf_value ${local_conf} PREFERRED_VERSION_u-boot_rcar "v2020.01\%"
     if [ -z ${XT_RCAR_EVAPROPRIETARY_DIR} ];then
         base_update_conf_value ${local_conf} PREFERRED_PROVIDER_gles-user-module "gles-user-module"
         base_update_conf_value ${local_conf} PREFERRED_VERSION_gles-user-module ${GLES_VERSION}
