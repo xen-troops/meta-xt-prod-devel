@@ -4,6 +4,11 @@ inherit deploy
 
 #Add Xen and additional packages to build
 IMAGE_INSTALL_append = " \
+    kernel-module-xen-blkback \
+    kernel-module-xen-gntalloc \
+    kernel-module-xen-gntdev \
+    kernel-module-xen-netback \
+    kernel-module-xen-wdt \
     xen-tools \
     dom0 \
     dom0-run-vcpu_pin \
