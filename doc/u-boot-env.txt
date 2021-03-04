@@ -21,6 +21,7 @@ setenv ethact ravb
 setenv ipaddr 192.168.1.10
 setenv serverip 192.168.1.100
 setenv ethaddr 2E:09:0A:00:A0:41
+setenv initrd_high 0xffffffffffffffff
 
 N.B. Either do not set MAC address (should be shipped with u-boot environment already) or put any other MAC address
 which will not make conflicts on your network. See sticker on your board.
