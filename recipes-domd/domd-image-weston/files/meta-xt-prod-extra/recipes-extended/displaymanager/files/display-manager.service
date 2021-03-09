@@ -1,7 +1,7 @@
 [Unit]
 Description=EPAM Display Manager
-Requires=dbus.service weston.service
-After=dbus.service weston.service
+Requires=dbus.service weston@root.service
+After=dbus.service weston@root.service
 
 [Service]
 Environment="XDG_RUNTIME_DIR=/run/user/0"
