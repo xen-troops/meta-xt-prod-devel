@@ -2,6 +2,12 @@
 
 #include <dt-bindings/interrupt-controller/arm-gic.h>
 
+/*
+ * The device tree compiler (DTC) is allocating the phandle from 1 to
+ * onwards. Reserve a high value for the GIC phandle.
+ */
+#define PHANDLE_GIC (65000)
+
 / {
 	#address-cells = <2>;
 	#size-cells = <2>;
@@ -16,6 +22,7 @@
 		gsx: gsx@fd000000 {
 			compatible = "renesas,gsx";
 			reg = <0 0xfd000000 0 0x3ffff>;
+            interrupt-parent = <PHANDLE_GIC>;
 			interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
 		};
 	};
