@@ -15,6 +15,12 @@
 #define PHANDLE_GIC (65000)
 
 / {
+    aliases {
+        mmc0 = &sdhi2;
+        mmc1 = &sdhi0;
+        mmc2 = &sdhi3;
+    };
+
 	soc {
 		//this must point to Xen interrupt-parent
 		interrupt-parent = <PHANDLE_GIC>;
