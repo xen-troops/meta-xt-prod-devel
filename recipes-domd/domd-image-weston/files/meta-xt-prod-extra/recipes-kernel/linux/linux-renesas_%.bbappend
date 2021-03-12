@@ -19,6 +19,7 @@ SRC_URI_append_rcar = " \
     file://salvator-generic-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://salvator-generic-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://xen-chosen.dtsi;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://0001-mmc-add-feature-of-setting-slot-index-via-devicetree.patch \
 "
 
 KERNEL_DEVICETREE_append_rcar = " \
