@@ -1,11 +1,11 @@
 [Unit]
 Description=Display backend
-Requires=proc-xen.mount weston@root.service
-After=proc-xen.mount weston@root.service
+Requires=proc-xen.mount weston@%u.service
+After=proc-xen.mount weston@%u.service
 
 [Service]
 Type=simple
-Environment="XDG_RUNTIME_DIR=/run/user/0"
+Environment="XDG_RUNTIME_DIR=/run/user/%U"
 ExecStartPre=/usr/bin/weston-info
 ExecStart=/usr/bin/displ_be
 ExecStartPost=/usr/bin/xenstore-write drivers/displbe/status ready
