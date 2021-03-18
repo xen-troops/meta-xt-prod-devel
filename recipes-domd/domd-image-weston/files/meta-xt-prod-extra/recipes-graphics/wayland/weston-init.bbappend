@@ -3,7 +3,10 @@ require include/multimedia-control.inc
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 do_install_append() {
-    sed -i "s/multi-user.target/rc.pvr.service\nRequires=rc.pvr.service/" \
+    sed -i "s/multi-user.target/rc.pvr.service getty.target\nRequires=rc.pvr.service/" \
+        ${D}/${systemd_system_unitdir}/weston@.service
+
+    sed -i "s/Conflicts=plymouth-quit.service/Conflicts=plymouth-quit.service getty@tty1.service/" \
         ${D}/${systemd_system_unitdir}/weston@.service
 
     if echo "${DISTRO_FEATURES}" | grep -qi "ivi-shell"; then
