@@ -5,7 +5,7 @@ require inc/xt_shared_env.inc
 SRCREV = "${AUTOREV}"
 
 SRC_URI_append = " \
-    git://github.com/xen-troops/DisplayManager.git;protocol=https;branch=master \
+    git://github.com/xen-troops/DisplayManager.git;protocol=https;branch=yocto-v4.7.0-xt0.1 \
     file://display_manager.conf \
     file://display-manager.service \
     file://dm-salvator-x-m3.cfg \
