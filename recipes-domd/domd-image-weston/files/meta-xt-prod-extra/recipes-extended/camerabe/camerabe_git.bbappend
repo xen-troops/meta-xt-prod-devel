@@ -8,7 +8,7 @@ require inc/xt_shared_env.inc
 SRCREV_rcar = "${AUTOREV}"
 
 SRC_URI_append_rcar = " \
-    git://github.com/xen-troops/camera_be.git;protocol=https;branch=master \
+    git://github.com/xen-troops/camera_be.git;protocol=https;branch=yocto-v4.7.0-xt0.1 \
     file://camerabe.service \
     file://camera_be.cfg \
 "
