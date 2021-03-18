@@ -1,0 +1,33 @@
+From 688a7bfe44a3ca9029fccdb1f7bfdd405927dade Mon Sep 17 00:00:00 2001
+From: Grigory Kletsko <grigory.kletsko@cogentembedded.com>
+Date: Thu, 5 May 2016 15:55:55 +0300
+Subject: [PATCH] install wayland.h header
+
+---
+ gst-libs/gst/wayland/Makefile.am | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/gst-libs/gst/wayland/Makefile.am b/gst-libs/gst/wayland/Makefile.am
+index a9f3f7b..7281a6e 100644
+--- a/gst-libs/gst/wayland/Makefile.am
++++ b/gst-libs/gst/wayland/Makefile.am
+@@ -5,6 +5,8 @@ libgstwayland_@GST_API_VERSION@_la_SOURCES = wayland.c
+ libgstwayland_@GST_API_VERSION@includedir = \
+ 	$(includedir)/gstreamer-@GST_API_VERSION@/gst/wayland
+ 
++libgstwayland_@GST_API_VERSION@include_HEADERS = wayland.h
++
+ libgstwayland_@GST_API_VERSION@_la_CFLAGS = \
+ 	$(GST_PLUGINS_BAD_CFLAGS) \
+ 	$(GST_PLUGINS_BASE_CFLAGS) \
+@@ -22,7 +24,3 @@ libgstwayland_@GST_API_VERSION@_la_LDFLAGS = \
+ 	$(GST_LIB_LDFLAGS) \
+ 	$(GST_ALL_LDFLAGS) \
+ 	$(GST_LT_LDFLAGS)
+-
+-noinst_HEADERS = \
+-	wayland.h
+-
+-- 
+2.5.0
+
