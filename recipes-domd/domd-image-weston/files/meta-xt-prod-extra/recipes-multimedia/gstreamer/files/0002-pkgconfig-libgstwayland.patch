@@ -1,0 +1,32 @@
+From 96044f1d3773ba2783e3956729cd9c85b04733da Mon Sep 17 00:00:00 2001
+From: Grigory Kletsko <grigory.kletsko@cogentembedded.com>
+Date: Thu, 12 May 2016 21:24:38 +0300
+Subject: [PATCH] fix
+
+---
+ pkgconfig/Makefile.am | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/pkgconfig/Makefile.am b/pkgconfig/Makefile.am
+index 8e74a8e..f641285 100644
+--- a/pkgconfig/Makefile.am
++++ b/pkgconfig/Makefile.am
+@@ -1,6 +1,7 @@
+ 
+ ### all of the standard pc files we need to generate
+ pcverfiles =  \
++	gstreamer-wayland-@GST_API_VERSION@.pc \
+ 	gstreamer-plugins-bad-@GST_API_VERSION@.pc \
+ 	gstreamer-codecparsers-@GST_API_VERSION@.pc \
+ 	gstreamer-insertbin-@GST_API_VERSION@.pc \
+@@ -11,6 +12,7 @@ pcverfiles =  \
+ 	gstreamer-bad-audio-@GST_API_VERSION@.pc
+ 
+ pcverfiles_uninstalled = \
++	gstreamer-wayland-@GST_API_VERSION@-uninstalled.pc \
+ 	gstreamer-plugins-bad-@GST_API_VERSION@-uninstalled.pc \
+ 	gstreamer-codecparsers-@GST_API_VERSION@-uninstalled.pc \
+ 	gstreamer-insertbin-@GST_API_VERSION@-uninstalled.pc \
+-- 
+2.5.0
+
