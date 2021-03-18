@@ -1,16 +1,7 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 ################################################################################
 # Following inc file defines XEN version for the product and its SRC_URI
 ################################################################################
 require xen-version.inc
-
-################################################################################
-# We only need Xen tools, so we can start domains
-################################################################################
-SRC_URI_append = " \
-    file://0001-libxl-Add-DTB-compatible-list-to-config-file.patch \
-    file://0002-libxl-Add-DTB-passthrough-nodes-list.patch \
-"
 
 DEPENDS_remove = "systemd"
 
