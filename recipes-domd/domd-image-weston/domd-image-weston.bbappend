@@ -141,7 +141,8 @@ configure_versions_rcar() {
 
     # override console specified by default by the meta-rcar-gen3
     # to be hypervisor's one
-    base_update_conf_value ${local_conf} SERIAL_CONSOLE "115200 hvc0"
+    base_update_conf_value ${local_conf} SERIAL_CONSOLES "115200;hvc0"
+
 
     # set default timezone to Las Vegas
     base_update_conf_value ${local_conf} DEFAULT_TIMEZONE "US/Pacific"
