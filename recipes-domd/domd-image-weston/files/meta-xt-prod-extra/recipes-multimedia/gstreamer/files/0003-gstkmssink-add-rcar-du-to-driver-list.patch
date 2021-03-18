@@ -1,0 +1,25 @@
+From 300a679bd033d9b3fcf6873b1cd0385f0e0435ae Mon Sep 17 00:00:00 2001
+From: Sergey Nazaryev <sergey.nazaryev@cogentembedded.com>
+Date: Tue, 26 Feb 2019 17:55:54 +0300
+Subject: [PATCH] gstkmssink: add rcar-du to driver list
+
+---
+ sys/kms/gstkmssink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sys/kms/gstkmssink.c b/sys/kms/gstkmssink.c
+index cdecbf6..0b11233 100644
+--- a/sys/kms/gstkmssink.c
++++ b/sys/kms/gstkmssink.c
+@@ -177,7 +177,7 @@ kms_open (gchar ** driver)
+ {
+   static const char *drivers[] = { "i915", "radeon", "nouveau", "vmwgfx",
+     "exynos", "amdgpu", "imx-drm", "rockchip", "atmel-hlcdc", "msm",
+-    "xlnx", "vc4", "meson", "sun4i-drm", "mxsfb-drm",
++    "xlnx", "vc4", "meson", "sun4i-drm", "mxsfb-drm", "rcar-du",
+     "xilinx_drm",               /* DEPRECATED. Replaced by xlnx */
+   };
+   int i, fd = -1;
+-- 
+2.7.4
+
