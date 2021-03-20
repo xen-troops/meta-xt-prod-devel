@@ -176,6 +176,19 @@ KERNEL_DEVICETREE_h3ulcb-4x2g-kf-xt = " \
     renesas/r8a7795-h3ulcb-4x2g-kf-dom0.dtb \
     renesas/r8a7795-h3ulcb-4x2g-kf-domd.dtb \
 "
+##############################################################################
+# Salvator-XS M3 ES3.0 2x4GB
+###############################################################################
+SRC_URI_append_salvator-xs-m3-2x4g-xt = " \
+    file://r8a7796-salvator-xs-2x4g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7796-salvator-xs-2x4g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://0001-Update-gntdev-drm_front-DMA-tweaks.patch \
+"
+
+KERNEL_DEVICETREE_salvator-xs-m3-2x4g-xt = " \
+    renesas/r8a7796-salvator-xs-2x4g-dom0.dtb \
+    renesas/r8a7796-salvator-xs-2x4g-domd.dtb \
+"
 
 do_deploy_append() {
     for DTB in ${KERNEL_DEVICETREE}
