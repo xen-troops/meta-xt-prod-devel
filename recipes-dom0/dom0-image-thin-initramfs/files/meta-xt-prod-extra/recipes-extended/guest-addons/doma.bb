@@ -10,6 +10,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 SRC_URI = "\
     file://doma-generic-h3.cfg \
     file://doma-generic-h3-4x2g.cfg \
+    file://doma-generic-m3-2x4g.cfg \
     file://doma-vdevices.cfg \
     file://guest_doma \
     file://domx-pvcamera.cfg \
@@ -22,6 +23,7 @@ DOMA_CONFIG_salvator-x-h3-4x2g-xt  = "doma-generic-h3-4x2g.cfg"
 DOMA_CONFIG_salvator-xs-h3-4x2g-xt = "doma-generic-h3-4x2g.cfg"
 DOMA_CONFIG_h3ulcb-4x2g-xt         = "doma-generic-h3-4x2g.cfg"
 DOMA_CONFIG_h3ulcb-4x2g-kf-xt      = "doma-generic-h3-4x2g.cfg"
+DOMA_CONFIG_salvator-xs-m3-2x4g-xt = "doma-generic-m3-2x4g.cfg"
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg \
