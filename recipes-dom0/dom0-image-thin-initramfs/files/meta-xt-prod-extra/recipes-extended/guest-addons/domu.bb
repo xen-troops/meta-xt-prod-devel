@@ -13,6 +13,7 @@ SRC_URI = "\
     file://domu-salvator-x-m3.cfg \
     file://domu-salvator-xs-m3n.cfg \
     file://domu-generic-h3-4x2g.cfg \
+    file://domu-generic-m3-2x4g.cfg \
     file://domu-vdevices.cfg \
     file://guest_domu \
     file://domx-pvcamera.cfg \
@@ -30,6 +31,7 @@ DOMU_CONFIG_m3ulcb-xt              = "domu-m3ulcb.cfg"
 DOMU_CONFIG_h3ulcb-xt              = "domu-generic-h3.cfg"
 DOMU_CONFIG_h3ulcb-4x2g-xt         = "domu-generic-h3-4x2g.cfg"
 DOMU_CONFIG_h3ulcb-4x2g-kf-xt      = "domu-generic-h3-4x2g.cfg"
+DOMU_CONFIG_salvator-xs-m3-2x4g-xt = "domu-generic-m3-2x4g.cfg"
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg \
