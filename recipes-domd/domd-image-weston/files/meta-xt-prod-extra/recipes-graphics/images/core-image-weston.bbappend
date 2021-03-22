@@ -1,4 +1,5 @@
 IMAGE_INSTALL_append = " \
+    glmark2 \
     pulseaudio \
     alsa-utils \
     wayland-ivi-extension \
