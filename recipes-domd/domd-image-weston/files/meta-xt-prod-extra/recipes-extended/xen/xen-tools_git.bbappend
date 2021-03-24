@@ -19,6 +19,10 @@ do_install_append() {
     # ... pygrub maximum shebang size exceeded, the maximum size is 128. [shebang-size]
     rm -f ${D}/${bindir}/pygrub
     rm -f ${D}/${libdir}/xen/bin/pygrub
+
+    rm -f ${D}/${systemd_unitdir}/system/xen-qemu-dom0-disk-backend.service
+    rm -f ${D}/${systemd_unitdir}/system/xen-init-dom0.service
+    rm -f ${D}/${libdir}/xen/bin/xen-init-dom0
 }
 
 do_deploy_append_rcar () {
@@ -26,3 +30,17 @@ do_deploy_append_rcar () {
         ln -sfr ${DEPLOYDIR}/${FLASK_POLICY_FILE} ${DEPLOYDIR}/xenpolicy
     fi
 }
+
+FILES_${PN}-xencommons_remove = "\
+    ${systemd_unitdir}/system/xen-qemu-dom0-disk-backend.service \
+    ${systemd_unitdir}/system/xen-init-dom0.service \
+"
+
+SYSTEMD_SERVICE_${PN}-xencommons_remove = " \
+    xen-qemu-dom0-disk-backend.service \
+    xen-init-dom0.service \
+"
+
+FILES_${PN}-xl_remove = "\
+    ${libdir}/xen/bin/xen-init-dom0 \
+"
