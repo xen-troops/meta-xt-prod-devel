@@ -78,4 +78,4 @@ do_install_append() {
 }
 
 addtask configure_adapters after do_install before do_populate_sysroot
-addtask prepare_adapters after do_unpuck before do_compile
+addtask prepare_adapters after do_unpack before do_compile
