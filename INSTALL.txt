@@ -213,14 +213,8 @@ just by pointing a proper release name.
 Please note, if "branch" parameter is not set then the current product's snapshot will be built.
 
 Hereafter the supported MACHINE_NAMEs are:
-- salvator-x-h3  (Salvator-X board with H3 ES2.0 SoC installed, 4GB RAM)
 - salvator-x-h3-4x2g (Salvator-X board with H3 ES3.0 SoC installed, 8GB RAM)
-- salvator-x-m3  (Salvator-X board with M3 SoC installed, 4GB RAM)
-- salvator-xs-h3  (Salvator-XS board with H3 ES2.0 SoC installed, 4GB RAM)
 - salvator-xs-h3-4x2g (Salvator-XS board with H3 ES3.0 SoC installed, 8GB RAM)
-- salvator-xs-m3n (Salvator-XS board with M3N SoC installed, 2GB RAM)
-- h3ulcb (H3ULCB board with H3 ES2.0 SoC installed, 4GB RAM)
-- m3ulcb (M3ULCB board with M3 SoC installed, 2GB RAM)
 - h3ulcb-4x2g (H3ULCB board with H3 ES3.0 SoC installed, 8GB RAM)
 - h3ulcb-4x2g-kf (H3ULCB KF board with H3 ES3.0 SoC installed, 8GB RAM)
 
