@@ -70,6 +70,11 @@ configure_versions_rcar() {
         xt_unpack_proprietary
     fi
 
+    # Use base recipes for optee tools only from meta-arm layer
+    base_add_conf_value ${local_conf} BBMASK "meta-renesas/meta-rcar-gen3/recipes-bsp/optee/optee-client"
+    base_set_conf_value ${local_conf} PREFERRED_PROVIDER_optee-test "meta-arm"
+    base_set_conf_value ${local_conf} PREFERRED_PROVIDER_optee-client "meta-arm"
+
     # HACK: force ipk instead of rpm b/c it makes troubles to PVR UM build otherwise
     base_update_conf_value ${local_conf} PACKAGE_CLASSES "package_ipk"
 
