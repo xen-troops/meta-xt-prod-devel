@@ -1,0 +1,26 @@
+From fabcc32692e3f2f06a4f1498b10f7a07cccf2d6c Mon Sep 17 00:00:00 2001
+From: Valerii Chubar <valerii_chubar@epam.com>
+Date: Thu, 25 Mar 2021 22:24:23 +0200
+Subject: [PATCH 1/7] Revert "tee: optee: remove calling
+ optee_enumerate_devices"
+
+This reverts commit 8cf1737ff24112496267896fd94c7e8f8f176692.
+---
+ drivers/tee/optee/core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+index 6de9829f5077..68cfdaded1c1 100644
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -737,6 +737,7 @@ static int __init optee_driver_init(void)
+ 	if (IS_ERR(optee))
+ 		return PTR_ERR(optee);
+ 
++	rc = optee_enumerate_devices();
+ 	if (rc) {
+ 		optee_remove(optee);
+ 		return rc;
+-- 
+2.17.1
+
