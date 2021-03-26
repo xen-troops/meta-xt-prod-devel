@@ -1,0 +1,213 @@
+From 4748f5471701c3041d59a2babee57707d9b36f98 Mon Sep 17 00:00:00 2001
+From: Valerii Chubar <valerii_chubar@epam.com>
+Date: Thu, 25 Mar 2021 22:24:46 +0200
+Subject: [PATCH 5/7] Revert "tee: optee: Change workqueue to kthread in debug
+ log function"
+
+This reverts commit 0a6760846abcf8536d05591e93cd93967c605224.
+---
+ drivers/tee/optee/rcar.c         | 100 ++++++-------------------------
+ drivers/tee/optee/rcar_version.h |   4 +-
+ 2 files changed, 19 insertions(+), 85 deletions(-)
+
+diff --git a/drivers/tee/optee/rcar.c b/drivers/tee/optee/rcar.c
+index 61c142f968d3..37ebca1991a9 100644
+--- a/drivers/tee/optee/rcar.c
++++ b/drivers/tee/optee/rcar.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * Copyright (c) 2015-2018, Renesas Electronics Corporation
++ * Copyright (c) 2015-2017, Renesas Electronics Corporation
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License Version 2 as
+@@ -28,67 +28,37 @@
+ #include "optee_smc.h"
+ 
+ #include <linux/suspend.h>
+-#include <linux/kthread.h>
+ #include "optee_rcar.h"
+ 
+ static char *remaped_log_buffer;
+-static struct optee *rcar_optee;
+-static struct rcar_debug_log_info dlog_info;
++struct optee *rcar_optee;
+ 
+ #define TEE_LOG_NS_BASE		(0x0407FEC000U)
+ #define TEE_LOG_NS_SIZE		(81920U)
+ #define LOG_NS_CPU_AREA_SIZE	(1024U)
+ #define TEE_CORE_NB_CORE	(8U)
+ 
+-static int debug_log_kthread(void *arg);
++static void debug_log_work_handler(struct work_struct *work);
+ static int tz_rcar_suspend(void);
+ static int tz_rcar_power_event(struct notifier_block *this,
+ 			       unsigned long event, void *ptr);
+ static int rcar_optee_add_suspend_callback(void);
+ static void rcar_optee_del_suspend_callback(void);
+ static int rcar_optee_init_debug_log(void);
+-static void rcar_optee_final_debug_log(void);
+ 
+-static int debug_log_kthread(void *arg)
++static void debug_log_work_handler(struct work_struct *work)
+ {
+-	struct rcar_debug_log_info *dlog;
+-	struct rcar_debug_log_node *node;
+-	struct rcar_debug_log_node *ntmp;
+-	bool thread_exit = false;
+-
+-	dlog = (struct rcar_debug_log_info *)arg;
+-
+-	while (1) {
+-		list_for_each_entry_safe(node, ntmp, &dlog->queue, list) {
+-			if (node->logmsg)
+-				pr_alert("%s", node->logmsg);
+-			else
+-				thread_exit = true;
+-
+-			spin_lock(&dlog->q_lock);
+-			list_del(&node->list);
+-		       spin_unlock(&dlog->q_lock);
+-			kfree(node);
+-		}
+-		if (thread_exit)
+-			break;
+-		wait_event(dlog->waitq, !list_empty(&dlog->queue));
+-	}
+-
+-	pr_info("%s Exit\n", __func__);
+-	return 0;
++	pr_alert("%s", (int8_t *)(&work[1]));
++	kfree(work);
+ }
+ 
+ void handle_rpc_func_cmd_debug_log(struct optee_msg_arg *arg)
+ {
+-	struct rcar_debug_log_info *dlog;
+ 	struct optee_msg_param *params;
+ 	u32 cpu_id;
+ 	char *p;
+-	struct rcar_debug_log_node *node = NULL;
+-	size_t alloc_size;
+-
+-	dlog = (struct rcar_debug_log_info *)&dlog_info;
++	struct work_struct *work = NULL;
++	size_t logmsg_size;
+ 
+ 	if (arg->num_params == 1) {
+ 		params = arg->params;
+@@ -96,20 +66,16 @@ void handle_rpc_func_cmd_debug_log(struct optee_msg_arg *arg)
+ 
+ 		if (cpu_id < TEE_CORE_NB_CORE) {
+ 			p = &remaped_log_buffer[cpu_id * LOG_NS_CPU_AREA_SIZE];
+-			alloc_size = sizeof(*node) + strlen(p) + 1;
+-			node = kmalloc(alloc_size, GFP_KERNEL);
+-			if (node) {
+-				node->logmsg = (char *)&node[1];
+-				INIT_LIST_HEAD(&node->list);
+-				strcpy(node->logmsg, p);
+-				spin_lock(&dlog->q_lock);
+-				list_add_tail(&node->list, &dlog->queue);
+-				spin_unlock(&dlog->q_lock);
+-				wake_up_interruptible(&dlog->waitq);
+-				arg->ret = TEEC_SUCCESS;
++			logmsg_size = strlen(p) + 1;
++			work = kmalloc(sizeof(*work) + logmsg_size, GFP_KERNEL);
++			if (work) {
++				strcpy((int8_t *)(&work[1]), p);
++				INIT_WORK(work, debug_log_work_handler);
++				schedule_work(work);
+ 			} else {
+-				arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
++				pr_alert("%s", p);
+ 			}
++			arg->ret = TEEC_SUCCESS;
+ 		} else {
+ 			arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+ 		}
+@@ -184,7 +150,6 @@ static void rcar_optee_del_suspend_callback(void)
+ static int rcar_optee_init_debug_log(void)
+ {
+ 	int ret = 0;
+-	struct task_struct *thread;
+ 
+ 	remaped_log_buffer = ioremap_nocache(TEE_LOG_NS_BASE, TEE_LOG_NS_SIZE);
+ 	if (!remaped_log_buffer) {
+@@ -192,46 +157,16 @@ static int rcar_optee_init_debug_log(void)
+ 		ret = -ENOMEM;
+ 	}
+ 
+-	if (ret == 0) {
+-		init_waitqueue_head(&dlog_info.waitq);
+-		INIT_LIST_HEAD(&dlog_info.queue);
+-		spin_lock_init(&dlog_info.q_lock);
+-
+-		thread = kthread_run(debug_log_kthread, &dlog_info,
+-				     "optee_debug_log");
+-		if (IS_ERR(thread)) {
+-			pr_err("failed to kthread_run\n");
+-			ret = -ENOMEM;
+-		}
+-	}
+-
+ 	return ret;
+ }
+ 
+-static void rcar_optee_final_debug_log(void)
+-{
+-	struct rcar_debug_log_node *node;
+-
+-	node = kmalloc(sizeof(*node), GFP_KERNEL);
+-	if (node) {
+-		INIT_LIST_HEAD(&node->list);
+-		node->logmsg = NULL; /* exit kthread */
+-		spin_lock(&dlog_info.q_lock);
+-		list_add_tail(&node->list, &dlog_info.queue);
+-		spin_unlock(&dlog_info.q_lock);
+-		wake_up(&dlog_info.waitq);
+-	} else {
+-		pr_err("failed to kmalloc(rcar_debug_log_node)\n");
+-	}
+-}
+-
+ int optee_rcar_probe(struct optee *optee)
+ {
+ 	int ret;
+ 
+ 	rcar_optee = optee;
+ 
+-	pr_info("optee driver R-Car Rev.%s\n", VERSION_OF_RENESAS);
++	pr_info("R-Car Rev.%s\n", VERSION_OF_RENESAS);
+ 
+ 	ret = rcar_optee_add_suspend_callback();
+ 	if (ret == 0) {
+@@ -245,6 +180,5 @@ int optee_rcar_probe(struct optee *optee)
+ 
+ void optee_rcar_remove(void)
+ {
+-	rcar_optee_final_debug_log();
+ 	rcar_optee_del_suspend_callback();
+ }
+diff --git a/drivers/tee/optee/rcar_version.h b/drivers/tee/optee/rcar_version.h
+index e8537a1c4842..d65131b8b2a6 100644
+--- a/drivers/tee/optee/rcar_version.h
++++ b/drivers/tee/optee/rcar_version.h
+@@ -1,12 +1,12 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- * Copyright (c) 2015-2018, Renesas Electronics Corporation
++ * Copyright (c) 2015-2017, Renesas Electronics Corporation
+  * All rights reserved.
+  */
+ 
+ #ifndef RCAR_VERSION_H
+ #define RCAR_VERSION_H
+ 
+-#define VERSION_OF_RENESAS	"1.0.9"
++#define VERSION_OF_RENESAS	"1.0.8"
+ 
+ #endif /* RCAR_VERSION_H */
+-- 
+2.17.1
+
