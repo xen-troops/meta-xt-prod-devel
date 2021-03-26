@@ -1,0 +1,62 @@
+From d91cbda10ebbceceddd0767340cdefa379235fdf Mon Sep 17 00:00:00 2001
+From: Valerii Chubar <valerii_chubar@epam.com>
+Date: Thu, 25 Mar 2021 22:24:35 +0200
+Subject: [PATCH 3/7] Revert "tee: optee: Modify duration of spinlock for list"
+
+This reverts commit e045bef2ca89911f9846e0dd5b3699ba8e4691da.
+---
+ drivers/tee/optee/rcar.c         | 11 +++--------
+ drivers/tee/optee/rcar_version.h |  2 +-
+ 2 files changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/tee/optee/rcar.c b/drivers/tee/optee/rcar.c
+index 24d1b6fb5a29..e1a1a8d4805f 100644
+--- a/drivers/tee/optee/rcar.c
++++ b/drivers/tee/optee/rcar.c
+@@ -53,18 +53,13 @@ static int debug_log_kthread(void *arg)
+ {
+ 	struct rcar_debug_log_info *dlog;
+ 	struct rcar_debug_log_node *node;
++	struct rcar_debug_log_node *ntmp;
+ 	bool thread_exit = false;
+ 
+ 	dlog = (struct rcar_debug_log_info *)arg;
+ 
+ 	while (1) {
+-		spin_lock(&dlog->q_lock);
+-		while (!list_empty(&dlog->queue)) {
+-			node = list_first_entry(&dlog->queue,
+-						struct rcar_debug_log_node,
+-						list);
+-			spin_unlock(&dlog->q_lock);
+-
++		list_for_each_entry_safe(node, ntmp, &dlog->queue, list) {
+ 			if (node->logmsg)
+ 				pr_alert("%s", node->logmsg);
+ 			else
+@@ -72,9 +67,9 @@ static int debug_log_kthread(void *arg)
+ 
+ 			spin_lock(&dlog->q_lock);
+ 			list_del(&node->list);
++		       spin_unlock(&dlog->q_lock);
+ 			kfree(node);
+ 		}
+-		spin_unlock(&dlog->q_lock);
+ 		if (thread_exit)
+ 			break;
+ 		wait_event_interruptible(dlog->waitq,
+diff --git a/drivers/tee/optee/rcar_version.h b/drivers/tee/optee/rcar_version.h
+index 2d97587da87b..e8537a1c4842 100644
+--- a/drivers/tee/optee/rcar_version.h
++++ b/drivers/tee/optee/rcar_version.h
+@@ -7,6 +7,6 @@
+ #ifndef RCAR_VERSION_H
+ #define RCAR_VERSION_H
+ 
+-#define VERSION_OF_RENESAS	"1.0.10"
++#define VERSION_OF_RENESAS	"1.0.9"
+ 
+ #endif /* RCAR_VERSION_H */
+-- 
+2.17.1
+
