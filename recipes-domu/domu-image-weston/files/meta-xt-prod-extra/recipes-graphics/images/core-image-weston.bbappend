@@ -4,6 +4,8 @@ IMAGE_INSTALL_append = " \
     alsa-utils \
     kernel-modules \
     kmscube \
+    optee-client \
+    optee-test \
 "
 
 IMAGE_INSTALL_remove = " \
