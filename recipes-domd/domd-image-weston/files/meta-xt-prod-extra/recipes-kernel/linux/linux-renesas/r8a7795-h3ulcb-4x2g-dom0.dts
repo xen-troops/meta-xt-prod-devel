@@ -1,20 +1,16 @@
+// SPDX-License-Identifier: GPL-2.0
 /*
  * Device Tree Source for the H3ULCB (R-Car Starter Kit Premier) board
  * running XEN hypervisor
  *
- * Copyright (C) 2016-2018 Renesas Electronics Corp.
- * Copyright (C) 2016 Cogent Embedded, Inc.
- *
- * This file is licensed under the terms of the GNU General Public License
- * version 2.  This program is licensed "as is" without any warranty of any
- * kind, whether express or implied.
+ * Copyright (C) 2018 Renesas Electronics Corp.
  */
 
 #include "r8a7795-h3ulcb-4x2g.dts"
 #include "xen-chosen.dtsi"
 
 / {
-	model = "Renesas H3ULCB board based on r8a7795 ES3.0+ with 8GiB (4 x 2 GiB), running XEN hypervisor";
+	model = "Renesas H3ULCB board based on H3ULCB + with 8GiB (4 x 2 GiB), running XEN hypervisor";
 	compatible = "renesas,h3ulcb", "renesas,r8a7795";
 
 	memory@48000000 {
@@ -79,6 +75,11 @@
 };
 
 &ipmmu_vp0 {
+	/*
+	 * The "renesas,ipmmu-mmu-r8a7795" string is known for mmngr, but is not
+	 * known for the Xen's IPMMU driver. Overwrite compatible string as these
+	 * IPMMU devices need to be picked up by Xen.
+	 */
 	compatible = "renesas,ipmmu-r8a7795";
 	status = "okay";
 };
@@ -127,6 +128,10 @@
 };
 
 &ipmmu_ds1 {
+	status = "okay";
+};
+
+&ipmmu_ir {
 	status = "okay";
 };
 
@@ -227,6 +232,72 @@
 	iommus = <&ipmmu_vp1 9>;
 };
 
+&ehci1 {
+	iommus = <&ipmmu_hc 5>;
+};
+
+&ohci1 {
+	iommus = <&ipmmu_hc 5>;
+};
+
+&usb_dmac0 {
+	iommus = <&ipmmu_hc 9>;
+};
+
+&usb_dmac1 {
+	iommus = <&ipmmu_hc 10>;
+};
+
+&usb_dmac2 {
+	iommus = <&ipmmu_hc 14>;
+};
+
+&usb_dmac3 {
+	iommus = <&ipmmu_hc 15>;
+};
+
+&avb {
+	iommus = <&ipmmu_ds0 16>;
+};
+
+&sdhi0 {
+	iommus = <&ipmmu_ds1 32>;
+};
+
+&sdhi2 {
+	iommus = <&ipmmu_ds1 34>;
+};
+
+/* ============================ Xen pass through section =====================*/
+
+/*&adsp			{ xen,passthrough; };*/
+&arm_cc630p		{ xen,passthrough; };
+&du			{ xen,passthrough; };
+&usb_dmac2		{ xen,passthrough; };
+&usb_dmac3		{ xen,passthrough; };
+&usb_dmac0		{ xen,passthrough; };
+&usb_dmac1		{ xen,passthrough; };
+&dmac0			{ xen,passthrough; };
+&dmac1			{ xen,passthrough; };
+&dmac2			{ xen,passthrough; };
+&audma0			{ xen,passthrough; };
+&audma1			{ xen,passthrough; };
+&avb			{ xen,passthrough; };
+&fdp0			{ xen,passthrough; };
+&fdp1			{ xen,passthrough; };
+&gpio0			{ xen,passthrough; };
+&gpio1			{ xen,passthrough; };
+&gpio2			{ xen,passthrough; };
+&gpio3			{ xen,passthrough; };
+&gpio4			{ xen,passthrough; };
+&gpio5			{ xen,passthrough; };
+&gpio6			{ xen,passthrough; };
+&gpio7			{ xen,passthrough; };
+&gsx			{ xen,passthrough; };
+&hdmi0			{ xen,passthrough; };
+&i2c2			{ xen,passthrough; };
+&i2c4			{ xen,passthrough; };
+
 / {
 	soc {
 		imr-lx4@fe860000 {
@@ -301,78 +372,33 @@
 					 <&ipmmu_vc1 12>;
 		};
 
+		impdm0 {
+			xen,passthrough;
+			iommus = <&ipmmu_ir 0>,
+					 <&ipmmu_ir 1>;
+		};
+
+		imp0 {
+			xen,passthrough;
+		};
+
+		impdes0 {
+			xen,passthrough;
+		};
+
+		imprtt {
+			xen,passthrough;
+		};
+
 		lossy_shmem {
 			reg = <0 0x47fd7000 0 0x1000>;
 		};
 	};
 };
 
-&ehci1 {
-	iommus = <&ipmmu_hc 5>;
-};
-
-&ohci1 {
-	iommus = <&ipmmu_hc 5>;
-};
-
-&usb_dmac0 {
-	iommus = <&ipmmu_hc 9>;
-};
-
-&usb_dmac1 {
-	iommus = <&ipmmu_hc 10>;
-};
-
-&usb_dmac2 {
-	iommus = <&ipmmu_hc 14>;
-};
-
-&usb_dmac3 {
-	iommus = <&ipmmu_hc 15>;
-};
-
-&avb {
-	iommus = <&ipmmu_ds0 16>;
-};
-
-&sdhi0 {
-	iommus = <&ipmmu_ds1 32>;
-};
-
-&sdhi2 {
-	iommus = <&ipmmu_ds1 34>;
-};
-
-/* ============================ Xen pass through section =====================*/
-
-&du				{ xen,passthrough; };
-&usb_dmac2		{ xen,passthrough; };
-&usb_dmac3		{ xen,passthrough; };
-&usb_dmac0		{ xen,passthrough; };
-&usb_dmac1		{ xen,passthrough; };
-&dmac0			{ xen,passthrough; };
-&dmac1			{ xen,passthrough; };
-&dmac2			{ xen,passthrough; };
-&audma0			{ xen,passthrough; };
-&audma1			{ xen,passthrough; };
-&avb			{ xen,passthrough; };
-&fdp0			{ xen,passthrough; };
-&fdp1			{ xen,passthrough; };
-&gpio0			{ xen,passthrough; };
-&gpio1			{ xen,passthrough; };
-&gpio2			{ xen,passthrough; };
-&gpio3			{ xen,passthrough; };
-&gpio4			{ xen,passthrough; };
-&gpio5			{ xen,passthrough; };
-&gpio6			{ xen,passthrough; };
-&gpio7			{ xen,passthrough; };
-&gsx			{ xen,passthrough; };
-&hdmi0			{ xen,passthrough; };
-&i2c2			{ xen,passthrough; };
-&i2c4			{ xen,passthrough; };
-&i2c_dvfs		{ xen,passthrough; };
 &intc_ex		{ xen,passthrough; };
 &mfis_as		{ xen,passthrough; };
+&rpc0			{ xen,passthrough; };
 &sdhi0			{ xen,passthrough; };
 &sdhi2			{ xen,passthrough; };
 &src0			{ xen,passthrough; };
@@ -395,10 +421,8 @@
 &ssi7			{ xen,passthrough; };
 &ssi8			{ xen,passthrough; };
 &ssi9			{ xen,passthrough; };
-&tsc			{ xen,passthrough; };
 &ohci1			{ xen,passthrough; };
 &ehci1			{ xen,passthrough; };
-&pmic			{ xen,passthrough; };
 &ivdp1c			{ xen,passthrough; };
 &vdpb			{ xen,passthrough; };
 &vcplf			{ xen,passthrough; };
@@ -409,6 +433,11 @@
 &vspbd			{ xen,passthrough; };
 &vspi0			{ xen,passthrough; };
 &vspi1			{ xen,passthrough; };
+
 &fcpvd0			{ xen,passthrough; };
 &fcpvd1			{ xen,passthrough; };
 &fcpvd2			{ xen,passthrough; };
+&tsc			{ xen,passthrough; };
+&i2c_dvfs		{ xen,passthrough; };
+&pmic			{ xen,passthrough; };
+
