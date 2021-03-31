@@ -8,6 +8,11 @@ python __anonymous () {
     product_name = d.getVar('XT_PRODUCT_NAME', True)
     folder_name = product_name.replace("-", "_")
     d.setVar('XT_MANIFEST_FOLDER', folder_name)
+
+    if product_name == "prod-devel-src": 
+        if d.getVar('XT_RCAR_EVAPROPRIETARY_DIR'):
+            bb.warn("Ingore XT_RCAR_EVAPROPRIETARY_DIR={} for {}".format(d.getVar('XT_RCAR_EVAPROPRIETARY_DIR'), d.getVar('XT_PRODUCT_NAME')))
+            d.delVar("XT_RCAR_EVAPROPRIETARY_DIR")
 }
 
 SRC_URI = " \

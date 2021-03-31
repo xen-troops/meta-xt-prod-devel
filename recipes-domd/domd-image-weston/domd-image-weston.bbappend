@@ -8,6 +8,11 @@ python __anonymous () {
     d.setVar('XT_MANIFEST_FOLDER', folder_name)
     if product_name == "prod-devel-src" and not "domu" in d.getVar('XT_GUESTS_BUILD', True).split():
         d.appendVar("XT_QUIRK_BB_ADD_LAYER", "meta-aos")
+
+    if product_name == "prod-devel-src": 
+        if d.getVar('XT_RCAR_EVAPROPRIETARY_DIR'):
+            bb.warn("Ingore XT_RCAR_EVAPROPRIETARY_DIR={} for {}".format(d.getVar('XT_RCAR_EVAPROPRIETARY_DIR'), d.getVar('XT_PRODUCT_NAME')))
+            d.delVar("XT_RCAR_EVAPROPRIETARY_DIR")
 }
 
 SRC_URI = " \
