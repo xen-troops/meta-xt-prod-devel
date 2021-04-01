@@ -61,8 +61,6 @@ add_to_local_conf() {
     # direct call to getty with hvc0 is installed into inittab by meta-viltualization.
     base_update_conf_value ${local_conf} SERIAL_CONSOLE ""
 
-    base_update_conf_value ${local_conf} PREFERRED_VERSION_xen "4.14.0+git\%"
-
     base_update_conf_value ${local_conf} XT_GUESTS_INSTALL "${XT_GUESTS_INSTALL}"
 
     # we enable VirtIO feature only for H3 ES3 based machines
