@@ -8,6 +8,11 @@ SRC_URI = " \
     git://github.com/xen-troops/linux.git;branch=${BRANCH} \
     file://defconfig \
   "
+
+SRC_URI_append = " \
+    file://0001-xen-privcmd-add-IOCTL_PRIVCMD_MMAP_RESOURCE.patch \
+"
+
 do_deploy_append () {
     find ${D}/boot -iname "vmlinux*" -exec tar -cJvf ${STAGING_KERNEL_BUILDDIR}/vmlinux.tar.xz {} \;
 }

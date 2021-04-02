@@ -1,4 +1,4 @@
-From 11126b1e1d46ea629283eb55e077e94bf6ef6215 Mon Sep 17 00:00:00 2001
+From f0c6d5d6599f3429e459659804b83599b9151413 Mon Sep 17 00:00:00 2001
 From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 Date: Wed, 4 Apr 2018 20:22:27 +0300
 Subject: [PATCH 2/2] libxl: Add DTB passthrough nodes list
@@ -14,16 +14,16 @@ comas.
 Signed-off-by: Iurii Konovalenko <iurii.konovalenko@globallogic.com>
 Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 ---
- tools/libxl/libxl_arm.c     | 20 ++++++++++++++++----
- tools/libxl/libxl_types.idl |  1 +
- tools/xl/xl_parse.c         |  7 +++++++
+ tools/libs/light/libxl_arm.c     | 20 ++++++++++++++++----
+ tools/libs/light/libxl_types.idl |  1 +
+ tools/xl/xl_parse.c              |  7 +++++++
  3 files changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/tools/libxl/libxl_arm.c b/tools/libxl/libxl_arm.c
-index 4225cf6..1e9f04c 100644
---- a/tools/libxl/libxl_arm.c
-+++ b/tools/libxl/libxl_arm.c
-@@ -843,9 +843,10 @@ static int copy_node_by_path(libxl__gc *gc, const char *path,
+diff --git a/tools/libs/light/libxl_arm.c b/tools/libs/light/libxl_arm.c
+index 13a8cae..a8a215c 100644
+--- a/tools/libs/light/libxl_arm.c
++++ b/tools/libs/light/libxl_arm.c
+@@ -917,9 +917,10 @@ static int copy_node_by_path(libxl__gc *gc, const char *path,
   *  - /passthrough node
   *  - /aliases node
   */
@@ -36,7 +36,7 @@ index 4225cf6..1e9f04c 100644
  
      r = copy_node_by_path(gc, "/passthrough", fdt, pfdt);
      if (r < 0) {
-@@ -859,6 +860,16 @@ static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt)
+@@ -933,6 +934,16 @@ static int copy_partial_fdt(libxl__gc *gc, void *fdt, void *pfdt)
          return r;
      }
  
@@ -53,7 +53,7 @@ index 4225cf6..1e9f04c 100644
      return 0;
  }
  
-@@ -871,7 +882,8 @@ static int check_partial_fdt(libxl__gc *gc, void *fdt, size_t size)
+@@ -945,7 +956,8 @@ static int check_partial_fdt(libxl__gc *gc, void *fdt, size_t size)
      return ERROR_FAIL;
  }
  
@@ -63,8 +63,8 @@ index 4225cf6..1e9f04c 100644
  {
      /*
       * We should never be here when the partial device tree is not
-@@ -997,7 +1009,7 @@ next_resize:
-             FDT( make_optee_node(gc, fdt) );
+@@ -1085,7 +1097,7 @@ next_resize:
+         }
  
          if (pfdt)
 -            FDT( copy_partial_fdt(gc, fdt, pfdt) );
@@ -72,10 +72,10 @@ index 4225cf6..1e9f04c 100644
  
          FDT( fdt_end_node(fdt) );
  
-diff --git a/tools/libxl/libxl_types.idl b/tools/libxl/libxl_types.idl
-index 2505220..90425f1 100644
---- a/tools/libxl/libxl_types.idl
-+++ b/tools/libxl/libxl_types.idl
+diff --git a/tools/libs/light/libxl_types.idl b/tools/libs/light/libxl_types.idl
+index f99ca7f..b6a9b2b 100644
+--- a/tools/libs/light/libxl_types.idl
++++ b/tools/libs/light/libxl_types.idl
 @@ -551,6 +551,7 @@ libxl_domain_build_info = Struct("domain_build_info",[
      # 65000 which is reserved by the toolstack.
      ("device_tree",      string),
@@ -85,10 +85,10 @@ index 2505220..90425f1 100644
      ("bootloader",       string),
      ("bootloader_args",  libxl_string_list),
 diff --git a/tools/xl/xl_parse.c b/tools/xl/xl_parse.c
-index 863c6ee..6c00d16 100644
+index 780b778..df675ac 100644
 --- a/tools/xl/xl_parse.c
 +++ b/tools/xl/xl_parse.c
-@@ -2670,6 +2670,13 @@ skip_vfb:
+@@ -2786,6 +2786,13 @@ skip_vfb:
              exit(-ERROR_FAIL);
      }
  

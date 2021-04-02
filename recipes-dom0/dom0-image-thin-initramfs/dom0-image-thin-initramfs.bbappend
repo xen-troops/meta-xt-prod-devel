@@ -64,6 +64,11 @@ add_to_local_conf() {
     base_update_conf_value ${local_conf} PREFERRED_VERSION_xen "4.14.0+git\%"
 
     base_update_conf_value ${local_conf} XT_GUESTS_INSTALL "${XT_GUESTS_INSTALL}"
+
+    # we enable VirtIO feature only for H3 ES3 based machines
+    if echo "${MACHINEOVERRIDES}" | grep -qiv "r8a7795-es3"; then
+        base_set_conf_value ${local_conf} DISTRO_FEATURES_remove "virtio"
+    fi
 }
 
 python do_configure_append() {

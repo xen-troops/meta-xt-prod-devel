@@ -64,4 +64,21 @@ do_install() {
         # Update GUEST_DEPENDENCIES by adding camerabe after sndbe
         sed -i 's/\<sndbe\>/& camerabe/' ${D}${sysconfdir}/init.d/guest_domu
     fi
+
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'virtio', 'true', 'false', d)}; then
+        # Comment disk and uncomment vdisk + virtio properties
+        sed -i 's/\bdisk =/#disk =/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
+        sed -i 's/#vdisk =/vdisk =/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
+        sed -i 's/#virtio =/virtio =/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
+
+        # Update root by changing xvda1 to vda
+        sed -i 's/root=\/dev\/xvda1/root=\/dev\/vda/' \
+        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
+
+        # Update GUEST_DEPENDENCIES by adding virtio-disk after sndbe
+        sed -i 's/\<sndbe\>/& virtio-disk/' ${D}${sysconfdir}/init.d/guest_domu
+    fi
 }

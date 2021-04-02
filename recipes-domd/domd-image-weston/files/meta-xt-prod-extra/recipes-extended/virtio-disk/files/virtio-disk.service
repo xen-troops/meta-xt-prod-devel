@@ -1,0 +1,18 @@
+[Unit]
+Description=virtio-disk backend
+Requires=proc-xen.mount
+After=proc-xen.mount
+
+[Service]
+Type=simple
+Environment="XDG_RUNTIME_DIR=/run/user/0"
+ExecStartPre=
+ExecStart=/usr/bin/virtio-disk
+ExecStartPost=/usr/bin/xenstore-write drivers/virtio-disk/status ready
+ExecStop=/usr/bin/xenstore-write drivers/virtio-disk/status dead
+ExecStopPost=/usr/bin/xenstore-write drivers/virtio-disk/status dead
+Restart=always
+RestartSec=4
+
+[Install]
+WantedBy=multi-user.target
