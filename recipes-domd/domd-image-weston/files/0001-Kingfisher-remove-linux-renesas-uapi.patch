@@ -1,0 +1,25 @@
+From aba57499251f68f46aa60c3fee753f4b7a4340ae Mon Sep 17 00:00:00 2001
+From: Valerii Chubar <valerii_chubar@epam.com>
+Date: Fri, 2 Apr 2021 22:28:02 +0300
+Subject: [PATCH] Kingfisher: remove linux-renesas-uapi
+
+Signed-off-by: Valerii Chubar <valerii_chubar@epam.com>
+---
+ .../recipes-core/packagegroups/packagegroup-bsp.bb               | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/meta-rcar-gen3-adas/recipes-core/packagegroups/packagegroup-bsp.bb b/meta-rcar-gen3-adas/recipes-core/packagegroups/packagegroup-bsp.bb
+index 26e0197..03a8b4c 100644
+--- a/meta-rcar-gen3-adas/recipes-core/packagegroups/packagegroup-bsp.bb
++++ b/meta-rcar-gen3-adas/recipes-core/packagegroups/packagegroup-bsp.bb
+@@ -120,7 +120,6 @@ RDEPENDS_packagegroup-bsp-utest = " \
+     libgstapp-1.0 \
+     libinput \
+     libyaml \
+-    linux-renesas-uapi \
+     mmngr-user-module \
+     netevent \
+     utest-cam-imr-drm \
+-- 
+2.17.1
+
