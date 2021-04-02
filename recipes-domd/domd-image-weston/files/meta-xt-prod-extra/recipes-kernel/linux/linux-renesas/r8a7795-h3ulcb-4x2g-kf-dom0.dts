@@ -63,8 +63,6 @@
 	/delete-node/pmu_a53;
 };
 
-/delete-node/&adsp;
-
 /* ============================ Enabled IPMMUs ===============================*/
 
 &ipmmu_mm {
@@ -80,6 +78,11 @@
 };
 
 &ipmmu_vp0 {
+	/*
+	 * The "renesas,ipmmu-mmu-r8a7795" string is known for mmngr, but is not
+	 * known for the Xen's IPMMU driver. Overwrite compatible string as these
+	 * IPMMU devices need to be picked up by Xen.
+	 */
 	compatible = "renesas,ipmmu-r8a7795";
 	status = "okay";
 };
@@ -240,10 +243,6 @@
 	iommus = <&ipmmu_hc 12>;
 };
 
-&mlp {
-	iommus = <&ipmmu_mp0 35>;
-};
-
 &fcpvd0 {
 	iommus = <&ipmmu_vi0 8>;
 };
@@ -284,24 +283,28 @@
 	iommus = <&ipmmu_vp1 9>;
 };
 
-&imrlx4_ch0 {
-	iommus = <&ipmmu_vc1 0>;
-};
-
-&imrlx4_ch1 {
-	iommus = <&ipmmu_vc1 0>;
-};
-
-&imrlx4_ch2 {
-	iommus = <&ipmmu_vc0 1>;
-};
-
-&imrlx4_ch3 {
-	iommus = <&ipmmu_vc0 1>;
-};
-
 / {
 	soc {
+		imr-lx4@fe860000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc1 0>;
+		};
+
+		imr-lx4@fe870000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc1 0>;
+		};
+
+		imr-lx4@fe880000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 1>;
+		};
+
+		imr-lx4@fe890000 {
+			xen,passthrough;
+			iommus = <&ipmmu_vc0 1>;
+		};
+
 		gsx_pv0_domd {
 			xen,passthrough;
 			iommus = <&ipmmu_pv0 0>;
@@ -354,15 +357,27 @@
 					 <&ipmmu_vc1 12>;
 		};
 
+		impdm0 {
+			xen,passthrough;
+			iommus = <&ipmmu_ir 0>,
+					 <&ipmmu_ir 1>;
+		};
+
+		imp0 {
+			xen,passthrough;
+		};
+
+		impdes0 {
+			xen,passthrough;
+		};
+
+		imprtt {
+			xen,passthrough;
+		};
+
 		lossy_shmem {
 			reg = <0 0x47fd7000 0 0x1000>;
 		};
-	};
-
-	impdm0 {
-		xen,passthrough;
-		iommus = <&ipmmu_ir 0>,
-				 <&ipmmu_ir 1>;
 	};
 };
 
@@ -406,7 +421,7 @@
 
 &can0			{ xen,passthrough; };
 &can1			{ xen,passthrough; };
-&canfd			{ xen,passthrough; };
+&arm_cc630p		{ xen,passthrough; };
 &csi20			{ xen,passthrough; };
 &csi40			{ xen,passthrough; };
 &du				{ xen,passthrough; };
@@ -438,29 +453,18 @@
 &i2c2			{ xen,passthrough; };
 &i2c4			{ xen,passthrough; };
 &i2c_dvfs		{ xen,passthrough; };
-
-/ {
-	impdes0		{
-		interrupt-parent = <&gic>;
-		xen,passthrough;
-	};
-	imprtt		{
-		interrupt-parent = <&gic>;
-		xen,passthrough;
-	};
-};
-
 &intc_ex		{ xen,passthrough; };
 &mfis_as		{ xen,passthrough; };
 &pciec1			{ xen,passthrough; };
 &pciec0			{ xen,passthrough; };
-&mlp			{ xen,passthrough; };
 &pmic			{ xen,passthrough; };
+&rpc0			{ xen,passthrough; };
 &sdhi0			{ xen,passthrough; };
 &sdhi2			{ xen,passthrough; };
 &sdhi3			{ xen,passthrough; };
 &hscif0			{ xen,passthrough; };
 &hscif1			{ xen,passthrough; };
+&scif1			{ xen,passthrough; };
 &src0			{ xen,passthrough; };
 &src1			{ xen,passthrough; };
 &src2			{ xen,passthrough; };
@@ -505,7 +509,3 @@
 &vspbd			{ xen,passthrough; };
 &vspi0			{ xen,passthrough; };
 &vspi1			{ xen,passthrough; };
-&imrlx4_ch0		{ xen,passthrough; };
-&imrlx4_ch1		{ xen,passthrough; };
-&imrlx4_ch2		{ xen,passthrough; };
-&imrlx4_ch3		{ xen,passthrough; };
