@@ -1,0 +1,36 @@
+From c84f62b14a449bd2dcf7f7e1410af049f73a56d7 Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Fri, 2 Apr 2021 23:32:38 +0300
+Subject: [PATCH] armtf: Add missing ${ADDITIONAL_ATFW_OPT} in
+ do_ipl_opt_compile()
+
+The corresponding "bb" from meta-renesas layer was updated to pass
+an additional options to oe_runmake in do_ipl_opt_compile().
+We set that option in external "bbappend" located at:
+meta-xt-images/machine/meta-xt-images-rcar-gen3/recipes-bsp/arm-trusted-firmware/
+to configure CPU to run in EL2 mode (RCAR_BL33_EXECUTION_EL=1).
+
+So overwriting do_ipl_opt_compile() here we need to take care of
+retaining that option.
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+---
+ .../recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bbappend  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta-rcar-gen3-adas/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bbappend b/meta-rcar-gen3-adas/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bbappend
+index 2065193..6497ab0 100644
+--- a/meta-rcar-gen3-adas/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bbappend
++++ b/meta-rcar-gen3-adas/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bbappend
+@@ -24,7 +24,7 @@ SRC_URI_append = " \
+ # Override the do_ipl_opt_compile function to add the ${ATFW_OPT_RPC} option
+ do_ipl_opt_compile () {
+     oe_runmake distclean
+-    oe_runmake bl2 bl31 rcar_layout_tool rcar_srecord PLAT=${PLATFORM} SPD=opteed MBEDTLS_COMMON_MK=1 ${EXTRA_ATFW_OPT} ${ATFW_OPT_LOSSY} ${ATFW_OPT_RPC}
++    oe_runmake bl2 bl31 rcar_layout_tool rcar_srecord PLAT=${PLATFORM} SPD=opteed MBEDTLS_COMMON_MK=1 ${EXTRA_ATFW_OPT} ${ATFW_OPT_LOSSY} ${ATFW_OPT_RPC} ${ADDITIONAL_ATFW_OPT}
+ }
+ 
+ do_ipl_opt_deploy_append () {
+-- 
+2.7.4
+
