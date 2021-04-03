@@ -38,16 +38,16 @@ index 0000000..f0c4723
 --- /dev/null
 +++ b/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugin-vspfilter-config/gstvspfilter-h3ulcb-4x2g-kf_r8a7795.conf
 @@ -0,0 +1,2 @@
-+input-device-name=/dev/video16
-+output-device-name=/dev/video17
++input-device-name=/dev/video_output
++output-device-name=/dev/video_output
 diff --git a/meta-rcar-gen3/gstreamer1.0-plugin-vspfilter-configgstreamer1.0-plugin-vspfilter/gstvspfilter-h3ulcb-4x2g_r8a7795.conf b/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugin-vspfilter-config/gstvspfilter-h3ulcb-4x2g_r8a7795.conf
 new file mode 100644
 index 0000000..4807dc3
 --- /dev/null
 +++ b/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugin-vspfilter-config/gstvspfilter-h3ulcb-4x2g_r8a7795.conf
 @@ -0,0 +1,2 @@
-+input-device-name=/dev/video12
-+output-device-name=/dev/video13
++input-device-name=/dev/video_output
++output-device-name=/dev/video_output
 diff --git a/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugin-vspfilter-config/gstvspfilter-salvator-x-4x2g_r8a7795.conf b/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugin-vspfilter-config/gstvspfilter-salvator-x-4x2g_r8a7795.conf
 new file mode 100644
 index 0000000..586b13b
