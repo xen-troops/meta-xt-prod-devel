@@ -212,14 +212,19 @@ This is done in order to track product releases easily and have a possibility to
 just by pointing a proper release name.
 Please note, if "branch" parameter is not set then the current product's snapshot will be built.
 
-Hereafter the supported MACHINE_NAMEs are:
-- salvator-x-h3-4x2g (Salvator-X board with H3 ES3.0 SoC installed, 8GB RAM)
-- salvator-xs-h3-4x2g (Salvator-XS board with H3 ES3.0 SoC installed, 8GB RAM)
-- h3ulcb-4x2g (H3ULCB board with H3 ES3.0 SoC installed, 8GB RAM)
-- h3ulcb-4x2g-kf (H3ULCB KF board with H3 ES3.0 SoC installed, 8GB RAM)
-
-Please note, you are not able to build and run DomA for the m3ulcb and salvator-xs-m3n
-machines due to limited memory resources (only 2GB RAM). The system with DomU is only an option for them.
+List of supported MACHINE_NAMEs:
+MACHINE_NAME         Board name         SoC       RAM  prod-devel-unsafe only?  DomA supported?
+------------------------------------------------------------------------------------------------------
+salvator-x-h3        Salvator-X         H3 ES2.0  4GB  prod-devel-unsafe only
+salvator-x-h3-4x2g   Salvator-X         H3 ES3.0  8GB
+salvator-x-m3        Salvator-X         M3        4GB  prod-devel-unsafe only   Not supported for DomA
+salvator-xs-h3       Salvator-XS        H3 ES2.0  4GB  prod-devel-unsafe only
+salvator-xs-h3-4x2g  Salvator-XS        H3 ES3.0  8GB
+salvator-xs-m3n      Salvator-XS        M3N       2GB                           Not supported for DomA
+h3ulcb               H3ULCB             H3 ES2.0  4GB  prod-devel-unsafe only
+m3ulcb               M3ULCB             M3        2GB  prod-devel-unsafe only   Not supported for DomA
+h3ulcb-4x2g          H3ULCB             H3 ES3.0  8GB
+h3ulcb-4x2g-kf       H3ULCB KingFisher  H3 ES3.0  8GB
 
 7. You are done. The artifacts of the build are located at workspace_base directory:
 
