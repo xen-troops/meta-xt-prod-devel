@@ -3,7 +3,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 ################################################################################
 # Following inc file defines XEN version for the product and its SRC_URI
 ################################################################################
-require xen-version.inc
+require inc/xen-version.inc
 
 ################################################################################
 # Renesas R-Car
