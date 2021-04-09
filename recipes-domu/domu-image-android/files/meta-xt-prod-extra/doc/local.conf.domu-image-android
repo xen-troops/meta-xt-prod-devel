@@ -209,6 +209,8 @@ CONF_VERSION = "1"
 BB_DANGLINGAPPENDS_WARNONLY = "yes"
 DISTRO_FEATURES = ""
 
+ASSUME_PROVIDED += "python-native"
+HOSTTOOLS += "python"
 ASSUME_PROVIDED += "repo-native"
 HOSTTOOLS += "repo"
 
