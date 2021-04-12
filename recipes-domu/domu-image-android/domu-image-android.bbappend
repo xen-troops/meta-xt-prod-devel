@@ -26,3 +26,15 @@ XT_QUIRK_BB_ADD_LAYER += "meta-xt-prod-extra"
 
 XT_BB_IMAGE_TARGET = "android"
 
+add_to_local_conf() {
+    local local_conf="${S}/build/conf/local.conf"
+
+    cd ${S}
+
+    base_update_conf_value ${local_conf} PREFERRED_VERSION_linux-libc-headers "4.10"
+}
+
+python do_configure_append() {
+    bb.build.exec_func("add_to_local_conf", d)
+}
+
