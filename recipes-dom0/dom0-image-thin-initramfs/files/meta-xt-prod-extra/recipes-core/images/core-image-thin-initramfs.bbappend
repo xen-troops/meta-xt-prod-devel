@@ -21,6 +21,7 @@ IMAGE_INSTALL_append = " \
 IMAGE_INSTALL_append_qemu-xen = "\
     xen-base \
     xen-devd \
+    xen-pcid \
     pciutils \
     openssh-scp \
     openssh-sshd \
