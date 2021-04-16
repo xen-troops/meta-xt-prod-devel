@@ -1,4 +1,5 @@
 IMAGE_INSTALL_append = " \
+    xen-pcid \
     pciutils \
     pulseaudio \
     alsa-utils \
