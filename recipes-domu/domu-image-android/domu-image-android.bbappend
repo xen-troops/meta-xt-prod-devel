@@ -1,30 +1,34 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-FILESEXTRAPATHS_prepend := "${THISDIR}/../../recipes-domx:"
+# Most functionality and settings are defiend in xt-images.
+# Only some minimal tuning is required by environment variables.
 
-# we need MACHINEOVERRIDES from DomD build
-do_configure[depends] += "domd-image-weston:do_domd_install_machine_overrides"
+# We use SRC_URI provided by meta-xt-images
 
-SRC_URI = " \
-    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/domu_android_host_tools.xml;scmdata=keep \
-"
+# Android itself doesn't care about hardware, but graphics does.
+# That's why we need to check that we are building for supported hardware.
+python () {
+    hw_supported_by_gfx = ["r8a7795-es3"]
+    hw_is_supported = False
+    machines = d.getVar("MACHINEOVERRIDES", expand=True).lower().split(":")
+    for hw in hw_supported_by_gfx:
+        if (hw.lower() in machines):
+            hw_is_supported = True
+            break
 
-XT_BB_LAYERS_FILE = "meta-xt-prod-extra/doc/bblayers.conf.domu-image-android"
-XT_BB_LOCAL_CONF_FILE = "meta-xt-prod-extra/doc/local.conf.domu-image-android"
+    if not hw_is_supported:
+        bb.warn("Build may be not working. DomA tested on %s. Your MACHINEOVERRIDES: '%s'."
+            % (hw_supported_by_gfx, d.getVar("MACHINEOVERRIDES", expand=True)))
+}
 
-###############################################################################
-# extra layers and files to be put after Yocto's do_unpack into inner builder
-###############################################################################
-# these will be populated into the inner build system on do_unpack_xt_extras
-XT_QUIRK_UNPACK_SRC_URI += "\
-    file://meta-xt-prod-extra;subdir=repo \
-    file://meta-xt-prod-domx;subdir=repo \
-"
+# For proper build of graphics we need to set proper SOC.
+# If hardware is not in following list, we will get SOC_FAMILY
+# with intentionaly incorrect value set in recipe.
+SOC_FAMILY_r8a7795 = "r8a7795"
+SOC_FAMILY_r8a7795-es3 = "r8a7795"
+SOC_FAMILY_r8a7796 = "r8a7796"
+SOC_FAMILY_r8a77965 = "r8a77965"
 
-# these layers will be added to bblayers.conf on do_configure
-XT_QUIRK_BB_ADD_LAYER += " \
-    meta-xt-prod-extra \
-    meta-xt-prod-domx \
-"
-
-XT_BB_IMAGE_TARGET = "android"
-
+# SOC_REVISION is taking into account for H3 because we have two options ES2 and ES3.
+# ES3 is default option and is used if SOC_REVISION is not set.
+# So we need to set SOC_REVISION only for H3 ES2.
+SOC_REVISION = ""
+SOC_REVISION_r8a7795-es2 = "es2"
