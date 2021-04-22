@@ -111,6 +111,19 @@ NOTICE:  BL2: Boot device is HyperFlash
 or
 NOTICE:  BL2: Boot device is eMMC
 
+NOTE 4
+To activate the possibility of booting SoC from the eMMC, the content of the next EXT_CSD registers should be changed.
+This procedure should be done only once.
+[179:179]  PARTITION_CONFIG                           0x08
+[177:177]  BOOT_BUS_CONDITIONS                        0x0A
+Boot flash writer https://elinux.org/R-Car/Boards/H3SK#Tips
+Use EM_SECSD command to change 177(0xB1) and 179(0xB3) registers. E.g.:
+>EM_SECSD
+  Please Input EXT_CSD Index(H'00 - H'1FF) :B3
+  EXT_CSD[B3] = 0x00
+  Please Input Value(H'00 - H'FF) :8
+  EXT_CSD[B3] = 0x08
+
 To flash loaders to eMMC:
 setenv flash_bl2 'tftp 0x48000000 bl2.bin; mmc dev 1 1; mmc write 0x48000000 0x1E 0x162;'
 setenv flash_bl31 'tftp 0x48000000 bl31.bin; mmc dev 1 1; mmc write 0x48000000 0x200 0xE00;'
