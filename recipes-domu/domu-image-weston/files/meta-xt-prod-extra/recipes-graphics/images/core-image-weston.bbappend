@@ -1,4 +1,5 @@
 IMAGE_INSTALL_append = " \
+    perf \
     glmark2 \
     pulseaudio \
     alsa-utils \
