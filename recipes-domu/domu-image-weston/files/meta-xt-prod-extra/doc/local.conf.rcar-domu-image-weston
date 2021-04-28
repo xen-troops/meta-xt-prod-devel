@@ -403,9 +403,5 @@ LICENSE_FLAGS_WHITELIST = "commercial"
 #MACHINE_FEATURES_append = " cas"
 
 DISTRO_FEATURES_remove = " x11 gtk gobject-introspection-data wifi nfc bluetooth irda zeroconf 3g"
-ASSUME_PROVIDED += "sync-native"
-HOSTTOOLS += "sync"
-ASSUME_PROVIDED += "bison-native"
-HOSTTOOLS += "bison"
 
 include ${@d.getVar('XT_SHARED_ROOTFS_DIR', True) or ''}/local.conf.domd_machine.inc
