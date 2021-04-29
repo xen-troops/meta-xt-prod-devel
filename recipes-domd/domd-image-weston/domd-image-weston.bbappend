@@ -176,11 +176,6 @@ configure_versions_rcar() {
         base_add_conf_value ${local_conf} DISTRO_FEATURES_remove "wifi bluetooth"
     fi
 
-    # we enable VirtIO feature only for H3 ES3 based machines
-    if echo "${MACHINEOVERRIDES}" | grep -qiv "r8a7795-es3"; then
-        base_set_conf_value ${local_conf} DISTRO_FEATURES_remove "virtio"
-    fi
-
     if [ ! -z "${XT_COMMON_DISTRO_FEATURES_APPEND}" ]; then
         base_set_conf_value ${local_conf} DISTRO_FEATURES_append " ${XT_COMMON_DISTRO_FEATURES_APPEND}"
     fi
