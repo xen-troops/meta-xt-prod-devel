@@ -419,7 +419,3 @@ DISTRO_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_
 DISTRO_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR','','','aaclcdec_mdw', d)}"
 DISTRO_FEATURES_remove = " ${@bb.utils.contains('XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR','','','use_eva_pkg', d)}"
 
-ASSUME_PROVIDED += "sync-native"
-HOSTTOOLS += "sync"
-ASSUME_PROVIDED += "bison-native"
-HOSTTOOLS += "bison"
