@@ -1,28 +1,24 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 
-# we need MACHINEOVERRIDES from DomD build
-do_configure[depends] += "domd-image-weston:do_domd_install_machine_overrides"
+# Most functionality and settings are defiend in xt-images.
+# Only some minimal tuning is required by environment variables.
 
-SRC_URI = " \
-    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/domu_android_host_tools.xml;scmdata=keep \
-"
+# In most cases we can use default source of android's repo, provided in xt-images
+#SRC_URI = " \
+#    repo://... \
+#"
 
-XT_BB_LAYERS_FILE = "meta-xt-prod-extra/doc/bblayers.conf.domu-image-android"
-XT_BB_LOCAL_CONF_FILE = "meta-xt-prod-extra/doc/local.conf.domu-image-android"
+# For proper build of graphics we need to set proper SOC. This info is available
+# for us from local.conf and we do not need to run do_domd_install_machine_overrides.
+# H3 ES3
+SOC_FAMILY_r8a7795 = "r8a7795"
+SOC_FAMILY_r8a7795-es3 = "r8a7795"
+# M3
+#SOC_FAMILY_r8a7796 = "r8a7796"
+# M3N
+#SOC_FAMILY_r8a77965 = "r8a77965"
 
-###############################################################################
-# extra layers and files to be put after Yocto's do_unpack into inner builder
-###############################################################################
-# these will be populated into the inner build system on do_unpack_xt_extras
-# N.B. xt_shared_env.inc MUST be listed AFTER meta-xt-prod-extra
-XT_QUIRK_UNPACK_SRC_URI += "\
-    file://meta-xt-prod-extra;subdir=repo \
-    file://xt_shared_env.inc;subdir=repo/meta-xt-prod-extra/inc \
-"
-
-# these layers will be added to bblayers.conf on do_configure
-XT_QUIRK_BB_ADD_LAYER += "meta-xt-prod-extra"
-
-XT_BB_IMAGE_TARGET = "android"
+# If SOC_REVISION is not set, then ES3 is used as default.
+# Pay atention that ES2 is not supported anymore.
+SOC_REVISION_r8a7795-es3 = ""
+#SOC_REVISION_r8a7795-es2 = "es2"
 
