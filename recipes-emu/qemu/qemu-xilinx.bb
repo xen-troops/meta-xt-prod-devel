@@ -19,6 +19,8 @@ SRC_URI = " \
     git://github.com/xen-troops/qemu.git;protocol=https;branch=xilinx-pcie-no-fw \
     file://${RUN_SCRIPT_NAME} \
     file://trace_events.txt \
+    file://rtl8139_dual.cfg \
+    file://rtl8139_single.cfg \
 "
 PROVIDES = "${PN}"
 
@@ -46,4 +48,7 @@ do_install() {
     install -m 0744 ${S}/../trace_events.txt ${XT_EMU_DEPLOY_DIR}/
 
     sed -i "s!=\"REPLACE_DEPLOY_DIR!"=\"${DEPLOY_DIR}"!g" ${XT_EMU_DEPLOY_DIR}/${RUN_SCRIPT_NAME}
+
+    install -m 0744 ${S}/../rtl8139_dual.cfg ${XT_EMU_DEPLOY_DIR}/
+    install -m 0744 ${S}/../rtl8139_single.cfg ${XT_EMU_DEPLOY_DIR}/
 }
