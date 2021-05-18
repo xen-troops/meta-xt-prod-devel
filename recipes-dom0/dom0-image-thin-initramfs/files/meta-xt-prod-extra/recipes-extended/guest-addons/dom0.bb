@@ -11,6 +11,7 @@ SRC_URI = "\
     file://start_guest.sh \
     file://dom0_vcpu_pin.sh \
     file://xt_set_root_dev_cfg.sh \
+    file://rtl8139_align_mmio.sh \
 "
 
 S = "${WORKDIR}"
@@ -29,6 +30,7 @@ DOM0_ALLOWED_PCPUS_h3ulcb-4x2g-kf-xt = "4-7"
 
 FILES_${PN} = " \
     ${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/start_guest.sh \
+    ${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/rtl8139_align_mmio.sh \
 "
 
 inherit update-rc.d
@@ -61,6 +63,9 @@ do_install() {
     install -m 0744 ${WORKDIR}/start_guest.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/
     install -m 0744 ${WORKDIR}/dom0_vcpu_pin.sh ${D}${sysconfdir}/init.d/
     install -m 0744 ${WORKDIR}/xt_set_root_dev_cfg.sh ${D}${sysconfdir}/init.d/
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'qemu_xen', 'true', 'false', d)}; then
+        install -m 0744 ${WORKDIR}/rtl8139_align_mmio.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/
+    fi
 
     # Fixup a number of PCPUs the VCPUs of Dom0 must run on
     sed -i "s/DOM0_ALLOWED_PCPUS/${DOM0_ALLOWED_PCPUS}/g" ${D}${sysconfdir}/init.d/dom0_vcpu_pin.sh
