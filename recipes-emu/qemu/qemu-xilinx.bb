@@ -22,6 +22,12 @@ SRC_URI = " \
     file://rtl8139_dual.cfg \
     file://rtl8139_single.cfg \
 "
+
+SRC_URI_append-dbg-rtl8139 = " \
+    file://0001-Enable-RTL8139-logs.patch \
+    file://0001-SMMU-Log-translations.patch \
+"
+
 PROVIDES = "${PN}"
 
 

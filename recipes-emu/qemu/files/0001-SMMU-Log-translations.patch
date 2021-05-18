@@ -1,0 +1,40 @@
+From cf619b017259eb1bfe92e32a033380604a54ef46 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Fri, 14 May 2021 07:54:06 +0300
+Subject: [PATCH] SMMU: Log translations
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ hw/misc/arm-smmu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/hw/misc/arm-smmu.c b/hw/misc/arm-smmu.c
+index 5c18e1f9fc3c..f884f5de69b7 100644
+--- a/hw/misc/arm-smmu.c
++++ b/hw/misc/arm-smmu.c
+@@ -1277,7 +1277,7 @@ static void smmu_ptw64(SMMU *s, unsigned int cb, TransReq *req)
+     if (FIELD_EX32(sctlr, SMMU_CB0_SCTLR, M) == 0) {
+         req->pa = req->va;
+         req->prot = IOMMU_RW;
+-        D("SMMU disabled for context %d sctlr=%x\n", cb, sctlr);
++        qemu_log("SMMU disabled for context %d sctlr=%x\n", cb, sctlr);
+         return;
+     }
+ 
+@@ -1534,11 +1534,11 @@ static void smmu_ptw64(SMMU *s, unsigned int cb, TransReq *req)
+     }
+ 
+     req->pa = ttbr;
+-    D("SMMU: 0x%"PRIx64" -> 0x%"PRIx64"\n", req->va, req->pa);
++    qemu_log("SMMU: 0x%"PRIx64" -> 0x%"PRIx64"\n", req->va, req->pa);
+     return;
+ 
+ do_fault:
+-    D("smmu fault\n");
++    qemu_log("smmu fault\n");
+     smmu_fault(s, cb, req, level);
+ }
+ 
+-- 
+2.31.1
+

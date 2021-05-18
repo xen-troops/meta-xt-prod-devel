@@ -1,0 +1,28 @@
+From 2520d321ee5252f0a1b76f9ff357bae5d1d47ff3 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Fri, 15 Jan 2021 13:11:15 +0200
+Subject: [PATCH] Enable RTL8139 logs
+
+This will enable logging for RTL8139.
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+---
+ hw/net/rtl8139.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/hw/net/rtl8139.c b/hw/net/rtl8139.c
+index ab93d78ab3c2..2c04e8d2bf1b 100644
+--- a/hw/net/rtl8139.c
++++ b/hw/net/rtl8139.c
+@@ -81,6 +81,8 @@
+ #define VLAN_TCI_LEN 2
+ #define VLAN_HLEN (ETHER_TYPE_LEN + VLAN_TCI_LEN)
+ 
++#define DEBUG_RTL8139 1
++
+ #if defined (DEBUG_RTL8139)
+ #  define DPRINTF(fmt, ...) \
+     do { fprintf(stderr, "RTL8139: " fmt, ## __VA_ARGS__); } while (0)
+-- 
+2.31.0
+
