@@ -21,6 +21,7 @@ SRC_URI = " \
     file://trace_events.txt \
     file://rtl8139_dual.cfg \
     file://rtl8139_single.cfg \
+    file://igb_single.cfg \
     file://0001-PCI-passthrough-Remove-single-master-ID-limitation.patch \
 "
 
@@ -58,4 +59,5 @@ do_install() {
 
     install -m 0744 ${S}/../rtl8139_dual.cfg ${XT_EMU_DEPLOY_DIR}/
     install -m 0744 ${S}/../rtl8139_single.cfg ${XT_EMU_DEPLOY_DIR}/
+    install -m 0744 ${S}/../igb_single.cfg ${XT_EMU_DEPLOY_DIR}/
 }

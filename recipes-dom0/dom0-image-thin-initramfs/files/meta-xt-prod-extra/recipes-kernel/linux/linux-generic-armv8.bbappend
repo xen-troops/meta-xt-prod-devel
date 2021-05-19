@@ -20,6 +20,7 @@ SRC_URI_qemu-xen = " \
     file://qemu-xen/defconfig;destsuffix=defconfig \
     file://qemu-xen/8139cp.cfg \
     file://qemu-xen/pciback.cfg \
+    file://qemu-xen/igb.cfg \
 "
 
 KERNEL_DEVICETREE_qemu-xen = " \
@@ -28,6 +29,11 @@ KERNEL_DEVICETREE_qemu-xen = " \
 
 KERNEL_MODULE_PROBECONF_qemu-xen += "8139cp"
 module_conf_8139cp_qemu-xen = "blacklist 8139cp"
+
+KERNEL_MODULE_PROBECONF_qemu-xen += "igb"
+module_conf_igb_qemu-xen = "blacklist igb"
+KERNEL_MODULE_PROBECONF_qemu-xen += "igbvf"
+module_conf_igbvf_qemu-xen = "blacklist igbvf"
 
 FILES_${KERNEL_PACKAGE_NAME}-base += " \
     ${nonarch_base_libdir}/modules/${KERNEL_VERSION}/modules.builtin.modinfo \
