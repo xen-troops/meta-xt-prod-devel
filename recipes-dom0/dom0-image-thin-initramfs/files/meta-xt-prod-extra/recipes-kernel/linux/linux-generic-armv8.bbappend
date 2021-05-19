@@ -21,6 +21,7 @@ SRC_URI_qemu-xen = " \
     file://qemu-xen/8139cp.cfg \
     file://qemu-xen/pciback.cfg \
     file://qemu-xen/igb.cfg \
+    file://0001-HACK-Make-MSI-X-work-for-Xilinx-NWL-driver.patch \
 "
 
 KERNEL_DEVICETREE_qemu-xen = " \
