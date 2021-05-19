@@ -29,9 +29,6 @@ QEMU_DOMU_ROOTFS=${DEPLOY_DIR}/domu-image-weston/images/salvator-x-h3-4x2g-xt/co
 # Pending a fix in QEMU.
 GIC_SETUP="-device loader,addr=0xf902f000,data=0x000001e9,data-len=4,attrs-secure=on"
 
-PCIE_BASE="-device xlnx-pcie-rp,bus=pcie.0,id=pcie.1,port=1,chassis=1 \
-           -device pci-bridge,addr=00.0,bus=pcie.1,id=pcie.2,chassis_nr=2"
-
 # eth0 is for the built-in Ethernet: macb ff0e0000.ethernet
 NET_SOC="-nic user -nic user -nic user \
 	-nic user,hostfwd=tcp:127.0.0.1:2222-:22"
@@ -71,6 +68,13 @@ if [ -z "${PCI_CFG_FILE}" ] || [ ! -f ${PCI_CFG_FILE} ] ; then
 else
     source ${PCI_CFG_FILE}
 fi
+
+if [ -z "${PCI_BRIDGE_ADDRESS}" ] ; then
+    PCI_BRIDGE_ADDRESS="00.0"
+fi
+
+PCIE_BASE="-device xlnx-pcie-rp,bus=pcie.0,id=pcie.1,port=1,chassis=1 \
+           -device pci-bridge,addr=${PCI_BRIDGE_ADDRESS},bus=pcie.1,id=pcie.2,chassis_nr=2"
 
 echo "################################################################################"
 echo "# PCI config:      $PCIE_BASE"
