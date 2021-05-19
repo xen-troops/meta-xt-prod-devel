@@ -1,0 +1,32 @@
+From a4d6ddc8e6f1ba44f3b612ef94ea277a1c7b2040 Mon Sep 17 00:00:00 2001
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Date: Wed, 19 May 2021 11:00:01 +0300
+Subject: [PATCH] PCI passthrough: Remove single master ID limitation
+
+ZU+ hardware has a limitation in that the PCIe RC
+marks all transactions with Master-ID 0x4d0. So it's impossible to
+differentiate between end-point DMA's. This is the behaviour that
+QEMU models by default. For the purpose of testing PCIe passthrough,
+we can modify QEMU to remove the limitation of the single master-id.
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Suggested-by: Edgar E. Iglesias <edgar.iglesias@xilinx.com>
+---
+ zynqmp-iou.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/zynqmp-iou.dtsi b/zynqmp-iou.dtsi
+index 732dda908c4c..61b8be81ccfd 100644
+--- a/zynqmp-iou.dtsi
++++ b/zynqmp-iou.dtsi
+@@ -688,7 +688,6 @@ glue(ocm_mem_ctrl_, n): glue(ocm_mem_ctrl_, n)@n {						\
+ 					>;
+ 			interrupts = < PCIE_Legacy_IRQ_0 PCIE_MSI_IRQ_0 PCIE_MSI_IRQ_1 >;
+ 			dma = <&pcie_ingress>;
+-			memattr = <&pcie_ns_memattr>;
+ 		};
+ 
+ 		zynqmp_boot: zynqmp_boot@0 {
+-- 
+2.31.1
+

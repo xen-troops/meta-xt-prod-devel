@@ -21,6 +21,7 @@ SRC_URI = " \
     file://trace_events.txt \
     file://rtl8139_dual.cfg \
     file://rtl8139_single.cfg \
+    file://0001-PCI-passthrough-Remove-single-master-ID-limitation.patch \
 "
 
 SRC_URI_append-dbg-rtl8139 = " \

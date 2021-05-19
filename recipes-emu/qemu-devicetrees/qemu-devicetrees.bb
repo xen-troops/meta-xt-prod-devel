@@ -7,6 +7,8 @@ inherit native
 
 require inc/xt_shared_env.inc
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+
 PR = "r0"
 
 S = "${WORKDIR}/git"
@@ -16,6 +18,7 @@ SRCREV = "${AUTOREV}"
 # Fetch recursively
 SRC_URI = " \
     git://github.com/xen-troops/qemu-devicetrees.git;protocol=https;branch=xilinx-pcie-no-fw \
+    file://0001-PCI-passthrough-Remove-single-master-ID-limitation.patch \
 "
 PROVIDES = "${PN}"
 
