@@ -1,5 +1,4 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-FILESEXTRAPATHS_prepend := "${THISDIR}/../../inc:"
 FILESEXTRAPATHS_prepend := "${THISDIR}/../../recipes-domx:"
 
 python __anonymous () {
@@ -21,12 +20,12 @@ SRC_URI = " \
 
 XT_QUIRK_UNPACK_SRC_URI += " \
     file://meta-xt-prod-extra;subdir=repo \
-    file://xt_shared_env.inc;subdir=repo/meta-xt-prod-extra/inc \
-    file://xen-version.inc;subdir=repo/meta-xt-prod-extra/recipes-extended/xen \
+    file://meta-xt-prod-domx;subdir=repo \
 "
 
 XT_QUIRK_BB_ADD_LAYER += " \
     meta-xt-prod-extra \
+    meta-xt-prod-domx \
 "
 
 ################################################################################
