@@ -58,10 +58,7 @@ do_install() {
     fi
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'virtio', 'true', 'false', d)}; then
-        # Uncomment vdisk + virtio properties
-        sed -i 's/#vdisk =/vdisk =/' \
-        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
-        sed -i 's/#virtio =/virtio =/' \
+        sed -i 's/doma, xvda/doma, xvda, virtio/' \
         ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/doma.cfg
 
         # Update boot_devices by changing 51712 to 2000000
