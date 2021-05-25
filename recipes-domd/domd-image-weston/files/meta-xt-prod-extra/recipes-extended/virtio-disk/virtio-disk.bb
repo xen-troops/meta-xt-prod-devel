@@ -16,7 +16,7 @@ DEPENDS = "xen-tools"
 SRCREV = "${AUTOREV}"
 
 SRC_URI_append = " \
-    git://github.com/xen-troops/virtio-disk.git;protocol=https;branch=ioreq_ml2 \
+    git://github.com/xen-troops/virtio-disk.git;protocol=https;branch=ioreq_ml3 \
     file://virtio-disk.service \
 "
 
