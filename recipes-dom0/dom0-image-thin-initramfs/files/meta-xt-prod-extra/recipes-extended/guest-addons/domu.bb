@@ -66,12 +66,7 @@ do_install() {
     fi
 
     if ${@bb.utils.contains('DISTRO_FEATURES', 'virtio', 'true', 'false', d)}; then
-        # Comment disk and uncomment vdisk + virtio properties
-        sed -i 's/\bdisk =/#disk =/' \
-        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
-        sed -i 's/#vdisk =/vdisk =/' \
-        ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
-        sed -i 's/#virtio =/virtio =/' \
+        sed -i 's/3, xvda1/3, xvda1, virtio/' \
         ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_DOM_CFG}/domu.cfg
 
         # Update root by changing xvda1 to vda
