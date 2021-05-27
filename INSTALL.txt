@@ -104,7 +104,7 @@ will be just skipped.
 6. Run the build script for current stable release:
 
 python ./build_prod.py --build-type dailybuild --machine salvator-x-h3-4x2g --product PRODUCT_NAME \
---branch pci_phase1 --with-local-conf --config xt-prod-devel.cfg --with-do-build
+--branch pci_phase2 --with-local-conf --config xt-prod-devel.cfg --with-do-build
 
 Where the PRODUCT_NAME depends on whether "graphics" packages are used or not:
 - devel (to use "graphics" packages)
@@ -183,31 +183,124 @@ QEMU
 If basic emulation level is needed it is possible to run a limited setup with QEMU. In this mode only two guests are built: Domain-0 and DomU, no DomD.
 In this setup Domain-0 has all required software to run without DomD.
 The limitations of such a system are at least the following:
-- Because QEMU and Xen have limited support for SMMUv3 it is not possible to fully emulate setup with PCI as it requires IOMMU to run.
-At the moment of this release ARM's SMMUv3 implementation for Xen only supports stage-2 mappings, but QEMU is stage-1.
-- DomU can be started, but without PCI devices, but with emulated ECAM host bridge only.
-- Still allows working on some of the use-cases, like testing hardware domains which are not DomD, toolstack etc.
+- Because QEMU doesn't support ITS it is not possible to provide MSI/MSI-X functionality to DomU.
+- QEMU has a very limited support for Intel Corporation 82576 Gigabit Network Connection adapter with SR-IOV capability, so it is not possible to fully use it even without Xen and PCI passthrough.
+
+In case of QEMU is built the deploy directory will contain an additional folder with the QEMU run script and its configurations.
+
+workspace_base/build/build/deploy/
+├── emu
+│   ├── e1000e_single.cfg
+│   ├── igb_single.cfg
+│   ├── qemu-run-zynqmp-xilinx-xen.sh
+│   ├── rtl8139_dual.cfg
+│   ├── rtl8139_single.cfg
 
 1. Building QEMU flavor of the release is the same process as above, but with a little addition.
 1.1. In the configuration file of the build in the "[local_conf]" section please add:
 XT_COMMON_DISTRO_FEATURES_APPEND = "qemu_xen"
 1.2. Build as described above in the Build section.
 
-2. Building QEMU.
-2.1. Clone QEMU: git clone https://github.com/xen-troops/qemu.git -b pci_phase1
-2.2. cd qemu/
-2.3. Configure with:
-./configure --target-list=aarch64-softmmu
-2.4. make
+2. Configuring and running QEMU + Xen setup.
+2.1. In order to run QEMU there is a shell script and number of its configuration files provided.
 
-3. Configuring and running QEMU + Xen setup.
-3.1. In order to run QEMU setup under Xen there are two files used, run-qemu-xen.sh and run-qemu-xen.cfg.
-3.2. Clone the prod-devel meta layer: git clone https://github.com/andr2000/meta-xt-prod-devel -b pci_phase1
-3.3. In the cloned product go to doc/qemu folder.
-3.4. Change run-qemu-xen.cfg to fit your Yocto build environment:
-- Set YOCTO_DEPLOY_DIR to the deploy directory of the Yocto build
-- Set QEMU_BIN to the QEMU's qemu-system-aarch64 binary in the QEMU build directory under aarch64-softmmu/ folder.
-3.5. Run run-qemu-xen.sh
+2.2. Emulating SR-IOV with Intel Corporation 82576 Gigabit Network Connection
+
+2.2.1. Current implementation contains a limited pre-view of SR-IOV support in Xen.
+In order to run the demo use igb_single.cfg:
+cd workspace_base/build/build/deploy/
+./qemu-run-zynqmp-xilinx-xen.sh --config igb_single.cfg
+
+2.2.2. After Domain-0 is up insert a Linux kernel module for the 82576 card:
+modprobe igb max_vfs=4
+
+You should see 4 virtual functions added:
+
+root@generic-armv8-xt-dom0:~# lspci
+00:00.0 PCI bridge: Xilinx Corporation Device d022 (rev 01)
+01:00.0 Ethernet controller: Intel Corporation 82576 Gigabit Network Connection (rev 01)
+01:10.0 Ethernet controller: Intel Corporation 82576 Virtual Function (rev 01)
+01:10.2 Ethernet controller: Intel Corporation 82576 Virtual Function (rev 01)
+01:10.4 Ethernet controller: Intel Corporation 82576 Virtual Function (rev 01)
+01:10.6 Ethernet controller: Intel Corporation 82576 Virtual Function (rev 01)
+
+2.2.3. Edit DomU configuration file and select proper PCI devices to be passed through:
+
+root@generic-armv8-xt-dom0:~# vi /xt/dom.cfg/domu.cfg
+
+and comment all the lines starting with "pci=" and enable Intel 82576 only:
+
+# Intel Corporation 82576 Gigabit Network Connection
+pci=["01:10.0,seize=1", "01:10.4,seize=1"]
+
+Save the file.
+
+2.2.4. Run DomU as usually:
+root@generic-armv8-xt-dom0:~# xl create -c /xt/dom.cfg/domu.cfg
+
+2.2.5. During the domain boot you should see something like
+[    9.367877] igbvf: Intel(R) Gigabit Virtual Function Network Driver - version 2.4.0-k
+[    9.378262] igbvf: Copyright (c) 2009 - 2012 Intel Corporation.
+[    9.423144] igbvf 0000:01:00.0: enabling device (0000 -> 0002)
+[    9.457897] igbvf 0000:01:00.0: Failed to initialize MSI-X interrupts.
+[   12.328589] igbvf 0000:01:00.0: PF still in reset state. Is the PF interface up?
+[   12.335281] igbvf 0000:01:00.0: Assigning random MAC address.
+[   13.789139] igbvf 0000:01:00.0: PF still resetting
+[   13.826405] igbvf 0000:01:00.0: Intel(R) 82576 Virtual Function
+[   13.832294] igbvf 0000:01:00.0: Address: a2:8c:a2:90:77:ad
+[   53.710012] igbvf 0000:01:01.0 enp1s1: renamed from eth1
+
+2.2.6. List PCI devices passed through to the guest:
+root@salvator-x-h3-4x2g-xt-domu:~# lspci
+00:00.0 PCI bridge: XenSource, Inc. Device c300
+01:00.0 Ethernet controller: Intel Corporation 82576 Virtual Function (rev 01)
+01:01.0 Ethernet controller: Intel Corporation 82576 Virtual Function (rev 01)
+
+2.2.7. As QEMU has limited support for Intel 82576 and there is no currently
+MSI/MSI-X support for Xen you won't be able to use the passed through device
+in full though.
+
+2.3. Emulating dual RTL8139 PCI Fast Ethernet Adapters (limited, no MSI)
+
+This setup demonstrates the use of PCI functions with non-page-aligned memory spaces:
+for PCI passthrough to work there is a requirement that those are always page aligned.
+
+2.3.1. In order to run the demo use rtl8139_dual.cfg:
+cd workspace_base/build/build/deploy/
+./qemu-run-zynqmp-xilinx-xen.sh --config rtl8139_dual.cfg
+
+2.3.2. Edit DomU configuration file
+vi /xt/dom.cfg/domu.cfg
+and comment all "pci=" entries and uncomment the one below "Dual RTL8139 setup":
+pci=["02:02.0,seize=1", "02:03.0,seize=1"]
+
+Comment all "extra=" entries and uncomment the one below "Align MMIO for dual RTL8139 setup":
+extra = "root=/dev/xvda1 rw rootwait console=hvc0 pci=resource_alignment=01:00.0;01:01.0"
+
+2.3.3. Re-scan PCI devices in Domain-0 and force Linux to re-allign RTL devices:
+root@generic-armv8-xt-dom0:~# /xt/scripts/rtl8139_align_mmio.sh
+
+Check that RTL adapters now have their MMIOs page aligned:
+
+root@generic-armv8-xt-dom0:~# lspci -v
+...
+02:02.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL-8100/8101L/8139 PCI Fast Ethernet Adapter (rev 20)
+...
+	Memory at e0000000 (32-bit, non-prefetchable) [disabled] [size=4K]
+...
+
+02:03.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL-8100/8101L/8139 PCI Fast Ethernet Adapter (rev 20)
+...
+	Memory at e0001000 (32-bit, non-prefetchable) [disabled] [size=4K]
+...
+
+2.3.4. Run DomU as usual.
+
+2.3.5. Insert RTL Linux kernel module:
+root@salvator-x-h3-4x2g-xt-domu:~# modprobe 8139cp
+
+2.3.6. Check the list of PCI devices with lspci.
+
 
 Usage:
 ======
