@@ -172,7 +172,7 @@ Copy it to "..PROPRIETARY_FOLDER_PATH.." folder.
 
 XT_RCAR_EVAPROPRIETARY_DIR should point to "..PROPRIETARY_FOLDER_PATH.." folder.
 
-Due to the fact that the SoC is not actually changed for Salvator-XS 8GB and H3ULCB(-KF) 8GB boards (H3 ES3.0),
+Due to the fact that the SoC is not actually changed for Salvator-XS 8GB and H3ULCB(-KF|-AB) 8GB boards (H3 ES3.0),
 you could reuse already provided binaries by making symlinks to corresponding archives.
 
 For example (Salvator-XS),
@@ -216,6 +216,7 @@ Hereafter the supported MACHINE_NAMEs are:
 - salvator-x-h3-4x2g (Salvator-X board with H3 ES3.0 SoC installed, 8GB RAM)
 - salvator-xs-h3-4x2g (Salvator-XS board with H3 ES3.0 SoC installed, 8GB RAM)
 - h3ulcb-4x2g (H3ULCB board with H3 ES3.0 SoC installed, 8GB RAM)
+- h3ulcb-4x2g-ab (H3ULCB AB board with H3 ES3.0 SoC installed, 8GB RAM)
 - h3ulcb-4x2g-kf (H3ULCB KF board with H3 ES3.0 SoC installed, 8GB RAM)
 
 Please note, you are not able to build and run DomA for the m3ulcb and salvator-xs-m3n
