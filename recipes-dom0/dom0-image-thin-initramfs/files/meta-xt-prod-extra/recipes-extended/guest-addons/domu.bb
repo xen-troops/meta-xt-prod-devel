@@ -29,6 +29,7 @@ DOMU_CONFIG_salvator-xs-h3-4x2g-xt = "domu-generic-h3-4x2g.cfg"
 DOMU_CONFIG_m3ulcb-xt              = "domu-m3ulcb.cfg"
 DOMU_CONFIG_h3ulcb-xt              = "domu-generic-h3.cfg"
 DOMU_CONFIG_h3ulcb-4x2g-xt         = "domu-generic-h3-4x2g.cfg"
+DOMU_CONFIG_h3ulcb-4x2g-ab-xt      = "domu-generic-h3-4x2g.cfg"
 DOMU_CONFIG_h3ulcb-4x2g-kf-xt      = "domu-generic-h3-4x2g.cfg"
 
 FILES_${PN} = " \

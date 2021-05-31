@@ -21,6 +21,7 @@ DOMA_CONFIG                        = "doma-generic-h3.cfg"
 DOMA_CONFIG_salvator-x-h3-4x2g-xt  = "doma-generic-h3-4x2g.cfg"
 DOMA_CONFIG_salvator-xs-h3-4x2g-xt = "doma-generic-h3-4x2g.cfg"
 DOMA_CONFIG_h3ulcb-4x2g-xt         = "doma-generic-h3-4x2g.cfg"
+DOMA_CONFIG_h3ulcb-4x2g-ab-xt      = "doma-generic-h3-4x2g.cfg"
 DOMA_CONFIG_h3ulcb-4x2g-kf-xt      = "doma-generic-h3-4x2g.cfg"
 
 FILES_${PN} = " \
