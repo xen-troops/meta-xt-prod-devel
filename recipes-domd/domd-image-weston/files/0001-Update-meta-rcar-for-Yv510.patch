@@ -1,0 +1,775 @@
+From 19f3fb326c7a1d5b856cb4d0d92bd065fb47749f Mon Sep 17 00:00:00 2001
+From: Marek Vasut <marek.vasut+renesas@gmail.com>
+Date: Fri, 4 Jun 2021 16:55:01 +0300
+Subject: [PATCH] Update meta-rcar for Yv510
+
+Signed-off-by: Marek Vasut <marek.vasut+renesas@gmail.com>
+[regenerated, made applicable]
+Signed-off-by: Valerii Chubar <valerii_chubar@epam.com>
+---
+ ..._gen3-plat-Delete-FDT-function-calls.patch | 141 ++++++++++++++++++
+ ...ix-DRAM-size-judgment-by-PRR-registe.patch |  49 ++++++
+ ...Factor-out-DT-memory-node-generation.patch | 105 +++++++++++++
+ ...enerate-two-memory-nodes-for-larger-.patch |  83 +++++++++++
+ .../arm-trusted-firmware_git.bb               |   7 +
+ ...b-duplicate-memory-nodes-from-DT-on-.patch | 125 ++++++++++++++++
+ .../recipes-bsp/u-boot/u-boot_2020.10.bb      |   4 +
+ ...a77961-Fix-video-codec-relation-node.patch |  68 +++++++++
+ .../add-intc_ex-for-r8a77961.patch            |  23 +++
+ .../cpufreq-boost-for-rcar-5.0.0.rc4.patch    |  53 +++++++
+ .../linux/linux-renesas_5.10.bb               |   3 +
+ 11 files changed, 661 insertions(+)
+ create mode 100644 meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0001-Revert-rcar_gen3-plat-Delete-FDT-function-calls.patch
+ create mode 100644 meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0002-rcar_gen3-plat-Fix-DRAM-size-judgment-by-PRR-registe.patch
+ create mode 100644 meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0003-rcar_gen3-plat-Factor-out-DT-memory-node-generation.patch
+ create mode 100644 meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0004-rcar_gen3-plat-Generate-two-memory-nodes-for-larger-.patch
+ create mode 100755 meta-rcar-gen3/recipes-bsp/u-boot/u-boot/0001-ARM-renesas-Scrub-duplicate-memory-nodes-from-DT-on-.patch
+ create mode 100755 meta-rcar-gen3/recipes-kernel/linux/linux-renesas/0001-arm64-dts-r8a77961-Fix-video-codec-relation-node.patch
+ create mode 100644 meta-rcar-gen3/recipes-kernel/linux/linux-renesas/add-intc_ex-for-r8a77961.patch
+ create mode 100755 meta-rcar-gen3/recipes-kernel/linux/linux-renesas/cpufreq-boost-for-rcar-5.0.0.rc4.patch
+
+diff --git a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0001-Revert-rcar_gen3-plat-Delete-FDT-function-calls.patch b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0001-Revert-rcar_gen3-plat-Delete-FDT-function-calls.patch
+new file mode 100644
+index 0000000..8c3c977
+--- /dev/null
++++ b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0001-Revert-rcar_gen3-plat-Delete-FDT-function-calls.patch
+@@ -0,0 +1,141 @@
++From b1f4fea9fbb08401892524963a2cb7d08fe57d07 Mon Sep 17 00:00:00 2001
++From: Marek Vasut <marek.vasut+renesas@gmail.com>
++Date: Sat, 17 Apr 2021 04:18:54 +0200
++Subject: [PATCH 1/4] Revert "rcar_gen3: plat: Delete FDT function calls"
++
++This reverts commit 3ebd371fa1b1137ddee85b1825d1c1ce31c719d1.
++---
++ plat/renesas/rcar/bl2_plat_setup.c | 27 ++++++++-------------------
++ 1 file changed, 8 insertions(+), 19 deletions(-)
++
++diff --git a/plat/renesas/rcar/bl2_plat_setup.c b/plat/renesas/rcar/bl2_plat_setup.c
++index 34337832c..fc657a44d 100644
++--- a/plat/renesas/rcar/bl2_plat_setup.c
+++++ b/plat/renesas/rcar/bl2_plat_setup.c
++@@ -114,7 +114,6 @@ static meminfo_t bl2_tzram_layout __aligned(CACHE_WRITEBACK_GRANULE);
++ 
++ /* FDT with DRAM configuration */
++ uint64_t fdt_blob[PAGE_SIZE_4KB / sizeof(uint64_t)];
++-#if 0
++ static void *fdt = (void *)fdt_blob;
++ 
++ static void unsigned_num_print(unsigned long long int unum, unsigned int radix,
++@@ -138,7 +137,7 @@ static void unsigned_num_print(unsigned long long int unum, unsigned int radix,
++ 	while (--i >= 0)
++ 		*string++ = num_buf[i];
++ }
++-#endif
+++
++ #if (RCAR_LOSSY_ENABLE == 1)
++ typedef struct bl2_lossy_info {
++ 	uint32_t magic;
++@@ -150,7 +149,6 @@ static void bl2_lossy_gen_fdt(uint32_t no, uint64_t start_addr,
++ 			      uint64_t end_addr, uint32_t format,
++ 			      uint32_t enable, int fcnlnode)
++ {
++-#if 0
++ 	const uint64_t fcnlsize = cpu_to_fdt64(end_addr - start_addr);
++ 	char nodename[40] = { 0 };
++ 	int ret, node;
++@@ -205,7 +203,6 @@ static void bl2_lossy_gen_fdt(uint32_t no, uint64_t start_addr,
++ 		NOTICE("BL2: Cannot add FCNL formats prop (ret=%i)\n", ret);
++ 		panic();
++ 	}
++-#endif
++ }
++ 
++ static void bl2_lossy_setting(uint32_t no, uint64_t start_addr,
++@@ -480,7 +477,6 @@ struct meminfo *bl2_plat_sec_mem_layout(void)
++ 	return &bl2_tzram_layout;
++ }
++ 
++-#if 0
++ static void bl2_populate_compatible_string(void *dt)
++ {
++ 	uint32_t board_type;
++@@ -569,17 +565,13 @@ static void bl2_populate_compatible_string(void *dt)
++ 		panic();
++ 	}
++ }
++-#endif
++ 
++ static void bl2_advertise_dram_entries(uint64_t dram_config[8])
++ {
++-#if 0
++ 	char nodename[32] = { 0 };
++-	uint64_t fdtsize;
++-	int ret, node;
++-#endif
++ 	uint64_t start, size;
++-	int chan;
+++	uint64_t fdtsize;
+++	int ret, node, chan;
++ 
++ 	for (chan = 0; chan < 4; chan++) {
++ 		start = dram_config[2 * chan];
++@@ -592,7 +584,7 @@ static void bl2_advertise_dram_entries(uint64_t dram_config[8])
++ 			(size >> 30) ? : size >> 20,
++ 			(size >> 30) ? "G" : "M");
++ 	}
++-#if 0
+++
++ 	/*
++ 	 * We add the DT nodes in reverse order here. The fdt_add_subnode()
++ 	 * adds the DT node before the first existing DT node, so we have
++@@ -640,7 +632,6 @@ static void bl2_advertise_dram_entries(uint64_t dram_config[8])
++ err:
++ 	NOTICE("BL2: Cannot add memory node to FDT (ret=%i)\n", ret);
++ 	panic();
++-#endif
++ }
++ 
++ static void bl2_advertise_dram_size(uint32_t product)
++@@ -983,7 +974,7 @@ lcm_state:
++ 		}
++ 		rcar_qos_init();
++ 	}
++-#if 0
+++
++ 	/* Set up FDT */
++ 	ret = fdt_create_empty_tree(fdt, sizeof(fdt_blob));
++ 	if (ret) {
++@@ -993,7 +984,7 @@ lcm_state:
++ 
++ 	/* Add platform compatible string */
++ 	bl2_populate_compatible_string(fdt);
++-#endif
+++
++ 	/* Print DRAM layout */
++ 	bl2_advertise_dram_size(product);
++ 
++@@ -1045,14 +1036,14 @@ lcm_state:
++ 	}
++ #if (RCAR_LOSSY_ENABLE == 1)
++ 	NOTICE("BL2: Lossy Decomp areas\n");
++-#if 0
+++
++ 	fcnlnode = fdt_add_subnode(fdt, 0, "reserved-memory");
++ 	if (fcnlnode < 0) {
++ 		NOTICE("BL2: Cannot create reserved mem node (ret=%i)\n",
++ 			fcnlnode);
++ 		panic();
++ 	}
++-#endif
+++
++ 	bl2_lossy_setting(0, LOSSY_ST_ADDR0, LOSSY_END_ADDR0,
++ 			  LOSSY_FMT0, LOSSY_ENA_DIS0, fcnlnode);
++ 	bl2_lossy_setting(1, LOSSY_ST_ADDR1, LOSSY_END_ADDR1,
++@@ -1061,10 +1052,8 @@ lcm_state:
++ 			  LOSSY_FMT2, LOSSY_ENA_DIS2, fcnlnode);
++ #endif
++ 
++-#if 0
++ 	fdt_pack(fdt);
++ 	NOTICE("BL2: FDT at %p\n", fdt);
++-#endif
++ 
++ 	if (boot_dev == MODEMR_BOOT_DEV_EMMC_25X1 ||
++ 	    boot_dev == MODEMR_BOOT_DEV_EMMC_50X8)
++-- 
++2.30.2
++
+diff --git a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0002-rcar_gen3-plat-Fix-DRAM-size-judgment-by-PRR-registe.patch b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0002-rcar_gen3-plat-Fix-DRAM-size-judgment-by-PRR-registe.patch
+new file mode 100644
+index 0000000..538d3f3
+--- /dev/null
++++ b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0002-rcar_gen3-plat-Fix-DRAM-size-judgment-by-PRR-registe.patch
+@@ -0,0 +1,49 @@
++From 44d8a2f1a0c42b7525c0280b01a73996c2fbabe6 Mon Sep 17 00:00:00 2001
++From: Marek Vasut <marek.vasut+renesas@gmail.com>
++Date: Thu, 22 Apr 2021 00:55:36 +0200
++Subject: [PATCH 2/4] rcar_gen3: plat: Fix DRAM size judgment by PRR register
++
++The even dram_config[] array fields contain DRAM bank base addresses,
++while odd dram_config[] array fields contain DRAM bank size. Fix the
++assignment for M3W.
++
++2 GiB M3W has 1 GiB DRAM at bank 0x4_0000_0000 and 1 GiB at 0x6_0000_0000,
++4 GiB M3W has 2 GiB DRAM at bank 0x4_0000_0000 and 2 GiB at 0x6_0000_0000.
++
++Fixes: 65755155e ("rcar_gen3: plat: Add DRAM size judgment by PRR register")
++Signed-off-by: Marek Vasut <marek.vasut+renesas@gmail.com>
++Change-Id: Id2938d1d8ee4a81d6bca7a977eae3d6174c3fdb4
++---
++ plat/renesas/rcar/bl2_plat_setup.c | 9 +++------
++ 1 file changed, 3 insertions(+), 6 deletions(-)
++
++diff --git a/plat/renesas/rcar/bl2_plat_setup.c b/plat/renesas/rcar/bl2_plat_setup.c
++index fc657a44d..038601188 100644
++--- a/plat/renesas/rcar/bl2_plat_setup.c
+++++ b/plat/renesas/rcar/bl2_plat_setup.c
++@@ -672,19 +672,16 @@ static void bl2_advertise_dram_size(uint32_t product)
++ #if (RCAR_GEN3_ULCB == 1)
++ 			/* 2GB(1GBx2 2ch split) */
++ 			dram_config[1] = 0x40000000ULL;
++-			dram_config[2] = 0x600000000ULL;
++-			dram_config[3] = 0x40000000ULL;
+++			dram_config[5] = 0x40000000ULL;
++ #else
++ 			/* 4GB(2GBx2 2ch split) */
++ 			dram_config[1] = 0x80000000ULL;
++-			dram_config[2] = 0x600000000ULL;
++-			dram_config[3] = 0x80000000ULL;
+++			dram_config[5] = 0x80000000ULL;
++ #endif
++ 		} else {
++ 			/* 8GB(2GBx4 2ch split) */
++ 			dram_config[1] = 0x100000000ULL;
++-			dram_config[2] = 0x600000000ULL;
++-			dram_config[3] = 0x100000000ULL;
+++			dram_config[5] = 0x100000000ULL;
++ 		}
++ 		break;
++ 
++-- 
++2.30.2
++
+diff --git a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0003-rcar_gen3-plat-Factor-out-DT-memory-node-generation.patch b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0003-rcar_gen3-plat-Factor-out-DT-memory-node-generation.patch
+new file mode 100644
+index 0000000..185396b
+--- /dev/null
++++ b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0003-rcar_gen3-plat-Factor-out-DT-memory-node-generation.patch
+@@ -0,0 +1,105 @@
++From 78d13b9acf6e76ad536f6352a3f73e48e5790822 Mon Sep 17 00:00:00 2001
++From: Marek Vasut <marek.vasut+renesas@gmail.com>
++Date: Fri, 16 Apr 2021 21:25:27 +0200
++Subject: [PATCH 3/4] rcar_gen3: plat: Factor out DT memory node generation
++
++Move the code that adds single new memory@ node into the DT fragment passed
++to system software into separate function. Adjust the failure message to be
++more specific and print the address range of node which failed to be added.
++No functional change.
++
++Signed-off-by: Marek Vasut <marek.vasut+renesas@gmail.com>
++Change-Id: Ie42cd7756b045271f070bca93c524fff6238f5a2
++---
++ plat/renesas/rcar/bl2_plat_setup.c | 64 +++++++++++++++++-------------
++ 1 file changed, 36 insertions(+), 28 deletions(-)
++
++diff --git a/plat/renesas/rcar/bl2_plat_setup.c b/plat/renesas/rcar/bl2_plat_setup.c
++index 038601188..d4fcc3900 100644
++--- a/plat/renesas/rcar/bl2_plat_setup.c
+++++ b/plat/renesas/rcar/bl2_plat_setup.c
++@@ -566,12 +566,44 @@ static void bl2_populate_compatible_string(void *dt)
++ 	}
++ }
++ 
++-static void bl2_advertise_dram_entries(uint64_t dram_config[8])
+++static void bl2_add_dram_entry(uint64_t start, uint64_t size)
++ {
++ 	char nodename[32] = { 0 };
++-	uint64_t start, size;
++ 	uint64_t fdtsize;
++-	int ret, node, chan;
+++	int ret, node;
+++
+++	fdtsize = cpu_to_fdt64(size);
+++
+++	snprintf(nodename, sizeof(nodename), "memory@");
+++	unsigned_num_print(start, 16, nodename + strlen(nodename));
+++	node = ret = fdt_add_subnode(fdt, 0, nodename);
+++	if (ret < 0)
+++		goto err;
+++
+++	ret = fdt_setprop_string(fdt, node, "device_type", "memory");
+++	if (ret < 0)
+++		goto err;
+++
+++	ret = fdt_setprop_u64(fdt, node, "reg", start);
+++	if (ret < 0)
+++		goto err;
+++
+++	ret = fdt_appendprop(fdt, node, "reg", &fdtsize,
+++			     sizeof(fdtsize));
+++	if (ret < 0)
+++		goto err;
+++
+++	return;
+++err:
+++	NOTICE("BL2: Cannot add memory node [%llx - %llx] to FDT (ret=%i)\n",
+++		start, start + size - 1, ret);
+++	panic();
+++}
+++
+++static void bl2_advertise_dram_entries(uint64_t dram_config[8])
+++{
+++	uint64_t start, size;
+++	int chan;
++ 
++ 	for (chan = 0; chan < 4; chan++) {
++ 		start = dram_config[2 * chan];
++@@ -606,32 +638,8 @@ static void bl2_advertise_dram_entries(uint64_t dram_config[8])
++ 			size -= 0x8000000;
++ 		}
++ 
++-		fdtsize = cpu_to_fdt64(size);
++-
++-		snprintf(nodename, sizeof(nodename), "memory@");
++-		unsigned_num_print(start, 16, nodename + strlen(nodename));
++-		node = ret = fdt_add_subnode(fdt, 0, nodename);
++-		if (ret < 0)
++-			goto err;
++-
++-		ret = fdt_setprop_string(fdt, node, "device_type", "memory");
++-		if (ret < 0)
++-			goto err;
++-
++-		ret = fdt_setprop_u64(fdt, node, "reg", start);
++-		if (ret < 0)
++-			goto err;
++-
++-		ret = fdt_appendprop(fdt, node, "reg", &fdtsize,
++-				     sizeof(fdtsize));
++-		if (ret < 0)
++-			goto err;
+++		bl2_add_dram_entry(start, size);
++ 	}
++-
++-	return;
++-err:
++-	NOTICE("BL2: Cannot add memory node to FDT (ret=%i)\n", ret);
++-	panic();
++ }
++ 
++ static void bl2_advertise_dram_size(uint32_t product)
++-- 
++2.30.2
++
+diff --git a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0004-rcar_gen3-plat-Generate-two-memory-nodes-for-larger-.patch b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0004-rcar_gen3-plat-Generate-two-memory-nodes-for-larger-.patch
+new file mode 100644
+index 0000000..480bcd4
+--- /dev/null
++++ b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware/0004-rcar_gen3-plat-Generate-two-memory-nodes-for-larger-.patch
+@@ -0,0 +1,83 @@
++From c84e650cf4ba6bef46d23c769fb23ae715400437 Mon Sep 17 00:00:00 2001
++From: Marek Vasut <marek.vasut+renesas@gmail.com>
++Date: Fri, 16 Apr 2021 21:39:36 +0200
++Subject: [PATCH V2 4/4] rcar_gen3: plat: Generate two memory nodes for larger
++ than 2 GiB channel 0
++
++The DRAM channel 0 memory area in 32bit space is limited to 2 GiB window.
++Furthermore, the first 128 MiB of this memory window are reserved and not
++accessible by the system software, hence the 32bit area memory node is
++limited to range 0x4800_0000..0xbfff_ffff.
++
++In case there are more than 2 GiB of DRAM populated in channel 0, it is
++necessary to generate two memory nodes, once covering the 2 GiB - 128 MiB
++area in the 32bit space, and another covering the rest of the memory in
++64bit space. This patch implements handling of such a case.
++
++Signed-off-by: Marek Vasut <marek.vasut+renesas@gmail.com>
++Change-Id: I3495241fb938e355352e817afaca8f01d04c81d2
++---
++V2: Actually decrement the size32 by 128 MiB, so that on 1 GiB bank
++    we won't end up generating [ 48000000 -  87ffffff] node, but
++    rather [ 48000000 -  7fffffff] node.
++---
++ plat/renesas/rcar/bl2_plat_setup.c | 34 ++++++++++++++++++++++++++----
++ 1 file changed, 30 insertions(+), 4 deletions(-)
++
++diff --git a/plat/renesas/rcar/bl2_plat_setup.c b/plat/renesas/rcar/bl2_plat_setup.c
++index d4fcc3900..4d4f8220b 100644
++--- a/plat/renesas/rcar/bl2_plat_setup.c
+++++ b/plat/renesas/rcar/bl2_plat_setup.c
++@@ -602,7 +602,7 @@ err:
++ 
++ static void bl2_advertise_dram_entries(uint64_t dram_config[8])
++ {
++-	uint64_t start, size;
+++	uint64_t start, size, size32;
++ 	int chan;
++ 
++ 	for (chan = 0; chan < 4; chan++) {
++@@ -631,11 +631,37 @@ static void bl2_advertise_dram_entries(uint64_t dram_config[8])
++ 
++ 		/*
++ 		 * Channel 0 is mapped in 32bit space and the first
++-		 * 128 MiB are reserved
+++		 * 128 MiB are reserved and the maximum size is 2GiB.
++ 		 */
++ 		if (chan == 0) {
++-			start = 0x48000000;
++-			size -= 0x8000000;
+++			/* Limit the 32bit entry to 2 GiB - 128 MiB */
+++			size32 = size - 0x8000000;
+++			if (size32 >= 0x78000000)
+++				size32 = 0x78000000;
+++
+++			/* Emit 32bit entry, up to 2 GiB - 128 MiB long. */
+++			bl2_add_dram_entry(0x48000000, size32);
+++
+++			/*
+++			 * If channel 0 is less than 2 GiB long, the
+++			 * entire memory fits into the 32bit space entry,
+++			 * so move on to the next channel.
+++			 */
+++			if (size <= 0x80000000)
+++				continue;
+++
+++			/*
+++			 * If channel 0 is more than 2 GiB long, emit
+++			 * another entry which covers the rest of the
+++			 * memory in channel 0, in the 64bit space.
+++			 *
+++			 * Start of this new entry is at 2 GiB offset
+++			 * from the beginning of the 64bit channel 0
+++			 * address, size is 2 GiB shorter than total
+++			 * size of the channel.
+++			 */
+++			start += 0x80000000;
+++			size -= 0x80000000;
++ 		}
++ 
++ 		bl2_add_dram_entry(start, size);
++-- 
++2.30.2
++
+diff --git a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb
+index 688e60d..fbd6213 100644
+--- a/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb
++++ b/meta-rcar-gen3/recipes-bsp/arm-trusted-firmware/arm-trusted-firmware_git.bb
+@@ -16,6 +16,13 @@ SRCREV = "7638cfbe68760358a4bbad2d12a7b1b93a02e9f5"
+ 
+ PV = "v2.3+renesas+git${SRCPV}"
+ 
++SRC_URI_append = " \
++   file://0001-Revert-rcar_gen3-plat-Delete-FDT-function-calls.patch \
++   file://0002-rcar_gen3-plat-Fix-DRAM-size-judgment-by-PRR-registe.patch \
++   file://0003-rcar_gen3-plat-Factor-out-DT-memory-node-generation.patch \
++   file://0004-rcar_gen3-plat-Generate-two-memory-nodes-for-larger-.patch \
++"
++
+ COMPATIBLE_MACHINE = "(salvator-x|ulcb|ebisu|draak)"
+ PLATFORM = "rcar"
+ ATFW_OPT_LOSSY = "${@oe.utils.conditional("USE_MULTIMEDIA", "1", "RCAR_LOSSY_ENABLE=1", "", d)}"
+diff --git a/meta-rcar-gen3/recipes-bsp/u-boot/u-boot/0001-ARM-renesas-Scrub-duplicate-memory-nodes-from-DT-on-.patch b/meta-rcar-gen3/recipes-bsp/u-boot/u-boot/0001-ARM-renesas-Scrub-duplicate-memory-nodes-from-DT-on-.patch
+new file mode 100755
+index 0000000..4c519a0
+--- /dev/null
++++ b/meta-rcar-gen3/recipes-bsp/u-boot/u-boot/0001-ARM-renesas-Scrub-duplicate-memory-nodes-from-DT-on-.patch
+@@ -0,0 +1,125 @@
++From db71cb44a352f20cefecb29279543d5662c09808 Mon Sep 17 00:00:00 2001
++From: Marek Vasut <marek.vasut+renesas@gmail.com>
++Date: Sat, 3 Apr 2021 16:58:49 +0200
++Subject: [PATCH] ARM: renesas: Scrub duplicate memory nodes from DT on Gen3
++
++Scrub duplicate /memory@* node entries here. Some R-Car DTs might
++contain multiple /memory@* nodes, however fdt_fixup_memory_banks()
++either generates single /memory node or updates the first /memory
++node. Any remaining memory nodes are thus potential duplicates.
++
++However, it is not possible to delete all the memory nodes right
++away, since some of those might not be DRAM memory nodes, but some
++sort of other memory. Thus, delete only the memory nodes which are
++in the R-Car3 DBSC ranges.
++
++Signed-off-by: Marek Vasut <marek.vasut+renesas@gmail.com>
++---
++ arch/arm/mach-rmobile/Kconfig      |  1 +
++ board/renesas/rcar-common/common.c | 80 ++++++++++++++++++++++++++++++
++ 2 files changed, 81 insertions(+)
++
++diff --git a/arch/arm/mach-rmobile/Kconfig b/arch/arm/mach-rmobile/Kconfig
++index 8cef3f5675..41322b2c4c 100644
++--- a/arch/arm/mach-rmobile/Kconfig
+++++ b/arch/arm/mach-rmobile/Kconfig
++@@ -13,6 +13,7 @@ config RCAR_GEN3
++ 	select ARM64
++ 	select PHY
++ 	select CMD_CACHE
+++	select OF_BOARD_SETUP
++ 	select PINCTRL
++ 	select PINCONF
++ 	select PINCTRL_PFC
++diff --git a/board/renesas/rcar-common/common.c b/board/renesas/rcar-common/common.c
++index e77357968a..c53a74ae74 100644
++--- a/board/renesas/rcar-common/common.c
+++++ b/board/renesas/rcar-common/common.c
++@@ -43,4 +43,84 @@ int dram_init_banksize(void)
++ 
++ 	return 0;
++ }
+++
+++#if defined(CONFIG_OF_BOARD_SETUP)
+++static int is_mem_overlap(void *blob, int first_mem_node, int curr_mem_node)
+++{
+++	struct fdt_resource first_mem_res, curr_mem_res;
+++	int curr_mem_reg, first_mem_reg = 0;
+++	int ret;
+++
+++	for (;;) {
+++		ret = fdt_get_resource(blob, first_mem_node, "reg",
+++				       first_mem_reg++, &first_mem_res);
+++		if (ret) /* No more entries, no overlap found */
+++			return 0;
+++
+++		curr_mem_reg = 0;
+++		for (;;) {
+++			ret = fdt_get_resource(blob, curr_mem_node, "reg",
+++					       curr_mem_reg++, &curr_mem_res);
+++			if (ret) /* No more entries, check next tuple */
+++				break;
+++
+++			if (curr_mem_res.end < first_mem_res.start)
+++				continue;
+++
+++			if (curr_mem_res.start >= first_mem_res.end)
+++				continue;
+++
+++			/*FIXME:debug*/printf("Overlap found: 0x%llx..0x%llx / 0x%llx..0x%llx\n",
+++				first_mem_res.start, first_mem_res.end,
+++				curr_mem_res.start, curr_mem_res.end);
+++
+++			return 1;
+++		}
+++	}
+++
+++	return 0;
+++}
+++
+++int ft_board_setup(void *blob, struct bd_info *bd)
+++{
+++	/*
+++	 * Scrub duplicate /memory@* node entries here. Some R-Car DTs might
+++	 * contain multiple /memory@* nodes, however fdt_fixup_memory_banks()
+++	 * either generates single /memory node or updates the first /memory
+++	 * node. Any remaining memory nodes are thus potential duplicates.
+++	 *
+++	 * However, it is not possible to delete all the memory nodes right
+++	 * away, since some of those might not be DRAM memory nodes, but some
+++	 * sort of other memory. Thus, delete only the memory nodes which are
+++	 * in the R-Car3 DBSC ranges.
+++	 */
+++	int mem = 0, first_mem_node = 0;
+++
+++	for (;;) {
+++		mem = fdt_node_offset_by_prop_value(blob, mem,
+++						    "device_type", "memory", 7);
+++		if (mem < 0)
+++			break;
+++		if (!fdtdec_get_is_enabled(blob, mem))
+++			continue;
+++
+++		/* First memory node, patched by U-Boot */
+++		if (!first_mem_node) {
+++			first_mem_node = mem;
+++			continue;
+++		}
+++
+++		/* Check the remaining nodes and delete duplicates */
+++		if (!is_mem_overlap(blob, first_mem_node, mem))
+++			continue;
+++
+++		/* Delete duplicate node, start again */
+++		fdt_del_node(blob, mem);
+++		first_mem_node = 0;
+++		mem = 0;
+++	}
+++
+++	return 0;
+++}
+++#endif
++ #endif
++-- 
++2.30.2
++
+diff --git a/meta-rcar-gen3/recipes-bsp/u-boot/u-boot_2020.10.bb b/meta-rcar-gen3/recipes-bsp/u-boot/u-boot_2020.10.bb
+index 3cd70e5..c99e7db 100644
+--- a/meta-rcar-gen3/recipes-bsp/u-boot/u-boot_2020.10.bb
++++ b/meta-rcar-gen3/recipes-bsp/u-boot/u-boot_2020.10.bb
+@@ -10,6 +10,10 @@ SRC_URI = "${UBOOT_URL};branch=${BRANCH}"
+ SRCREV = "050acee119b3757fee3bd128f55d720fdd9bb890"
+ PV = "v2020.10+git${SRCPV}"
+ 
++SRC_URI_append = " \
++   file://0001-ARM-renesas-Scrub-duplicate-memory-nodes-from-DT-on-.patch \
++"
++
+ UBOOT_SREC_SUFFIX = "srec"
+ UBOOT_SREC ?= "u-boot-elf.${UBOOT_SREC_SUFFIX}"
+ UBOOT_SREC_IMAGE ?= "u-boot-elf-${MACHINE}-${PV}-${PR}.${UBOOT_SREC_SUFFIX}"
+diff --git a/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/0001-arm64-dts-r8a77961-Fix-video-codec-relation-node.patch b/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/0001-arm64-dts-r8a77961-Fix-video-codec-relation-node.patch
+new file mode 100755
+index 0000000..493da12
+--- /dev/null
++++ b/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/0001-arm64-dts-r8a77961-Fix-video-codec-relation-node.patch
+@@ -0,0 +1,68 @@
++From 53250952a7a183b1e56b2acb0dcf07b84b5fb787 Mon Sep 17 00:00:00 2001
++From: Koji Matsuoka <koji.matsuoka.xm@renesas.com>
++Date: Thu, 13 May 2021 11:21:57 +0900
++Subject: [PATCH] arm64: dts: r8a77961: Fix video codec relation node
++
++Since there is a device difference between r8a77960 and r8a77961,
++This patch modified the device node related to the video codec
++of r8a77961 according to the H/W manual.
++
++Signed-off-by: Koji Matsuoka <koji.matsuoka.xm@renesas.com>
++---
++ arch/arm64/boot/dts/renesas/r8a77961.dtsi | 19 +++++--------------
++ 1 file changed, 5 insertions(+), 14 deletions(-)
++
++diff --git a/arch/arm64/boot/dts/renesas/r8a77961.dtsi b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
++index 10abfc4..dc2f501 100644
++--- a/arch/arm64/boot/dts/renesas/r8a77961.dtsi
+++++ b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
++@@ -2883,15 +2883,6 @@
++ 			renesas,#ch = <0>;
++ 		};
++ 
++-		fcpci0: vcp4@fe8df000 {
++-			compatible = "renesas,vcp4-fcpci0";
++-			reg = <0 0xfe8df000 0 0x200>;
++-			clocks = <&cpg CPG_MOD 617>;
++-			power-domains = <&sysc R8A77961_PD_A3VC>;
++-			resets = <&cpg 617>;
++-			renesas,#ch = <1>;
++-		};
++-
++ 		imp_distributer: impdes0 {
++ 			compatible = "renesas,impx4-distributer";
++ 			reg = <0 0xffa00000 0 0x4000>;
++@@ -2958,7 +2949,7 @@
++ 			compatible = "renesas,vcp4-fcpcs";
++ 			reg = <0 0xfe90f000 0 0x200>;
++ 			clocks = <&cpg CPG_MOD 619>;
++-			power-domains = <&sysc R8A77961_PD_A3VC>;
+++			power-domains = <&sysc R8A77961_PD_A2VC1>;
++ 			resets = <&cpg 619>;
++ 			renesas,#ch = <0>;
++ 		};
++@@ -2969,9 +2960,9 @@
++ 			interrupts = <GIC_SPI 380 IRQ_TYPE_LEVEL_HIGH>,
++ 			     <GIC_SPI 381 IRQ_TYPE_LEVEL_HIGH>,
++ 			     <GIC_SPI 223 IRQ_TYPE_LEVEL_HIGH>;
++-			clocks = <&cpg CPG_MOD 128>;
++-			power-domains = <&sysc R8A77961_PD_A2VC0>;
++-			resets = <&cpg 128>;
+++			clocks = <&cpg CPG_MOD 130>;
+++			power-domains = <&sysc R8A77961_PD_A2VC1>;
+++			resets = <&cpg 130>;
++ 			renesas,#ch = <2>;
++ 			renesas,#fcp_ch = <1>;
++ 		};
++@@ -2994,7 +2985,7 @@
++ 			interrupts = <GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>,
++ 				     <GIC_SPI 241 IRQ_TYPE_LEVEL_HIGH>;
++ 			clocks = <&cpg CPG_MOD 131>;
++-			power-domains = <&sysc R8A77961_PD_A2VC0>;
+++			power-domains = <&sysc R8A77961_PD_A2VC1>;
++ 			resets = <&cpg 131>;
++ 			renesas,#ch = <1>;
++ 			renesas,#fcp_ch = <0>;
++-- 
++2.7.4
++
+diff --git a/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/add-intc_ex-for-r8a77961.patch b/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/add-intc_ex-for-r8a77961.patch
+new file mode 100644
+index 0000000..cabd29d
+--- /dev/null
++++ b/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/add-intc_ex-for-r8a77961.patch
+@@ -0,0 +1,23 @@
++diff --git a/arch/arm64/boot/dts/renesas/r8a77961.dtsi b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
++index 83a67c9..67ecda2 100644
++--- a/arch/arm64/boot/dts/renesas/r8a77961.dtsi
+++++ b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
++@@ -1000,10 +1000,17 @@
++ 		};
++ 
++ 		intc_ex: interrupt-controller@e61c0000 {
+++			compatible = "renesas,intc-ex-r8a7796", "renesas,irqc";
++ 			#interrupt-cells = <2>;
++ 			interrupt-controller;
++ 			reg = <0 0xe61c0000 0 0x200>;
++-			/* placeholder */
+++			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
+++				<GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
+++				<GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
+++				<GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
+++				<GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>,
+++				<GIC_SPI 161 IRQ_TYPE_LEVEL_HIGH>;
+++			power-domains = <&sysc R8A77961_PD_ALWAYS_ON>;
++ 		};
++ 
++ 		i2c0: i2c@e6500000 {
+diff --git a/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/cpufreq-boost-for-rcar-5.0.0.rc4.patch b/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/cpufreq-boost-for-rcar-5.0.0.rc4.patch
+new file mode 100755
+index 0000000..bd1123a
+--- /dev/null
++++ b/meta-rcar-gen3/recipes-kernel/linux/linux-renesas/cpufreq-boost-for-rcar-5.0.0.rc4.patch
+@@ -0,0 +1,53 @@
++diff --git a/drivers/clk/renesas/rcar-gen3-cpg.c b/drivers/clk/renesas/rcar-gen3-cpg.c
++index b2cd31ee3bc4..2bf5d9d9551c 100644
++--- a/drivers/clk/renesas/rcar-gen3-cpg.c
+++++ b/drivers/clk/renesas/rcar-gen3-cpg.c
++@@ -236,6 +236,7 @@ struct cpg_z_clk {
++ 	unsigned long mask;
++ 	unsigned int fixed_div;
++ 	unsigned long max_freq;
+++	unsigned long max_rate;
++ };
++ 
++ #define to_z_clk(_hw)	container_of(_hw, struct cpg_z_clk, hw)
++@@ -267,7 +268,18 @@ static int cpg_z_clk_determine_rate(struct clk_hw *hw,
++ {
++ 	struct cpg_z_clk *zclk = to_z_clk(hw);
++ 	unsigned int min_mult, max_mult, mult;
++-	unsigned long prate;
+++	unsigned long rate, prate;
+++
+++	rate = min(req->rate, req->max_rate);
+++	if (rate <= zclk->max_rate) {
+++               /* Set parent rate to initial value for normal modes */
+++               prate = zclk->max_rate;
+++       } else {
+++               /* Set increased parent rate for boost modes */
+++               prate = rate;
+++       }
+++       req->best_parent_rate = clk_hw_round_rate(clk_hw_get_parent(hw),
+++                                                 prate * zclk->fixed_div);
++ 
++ 	prate = req->best_parent_rate / zclk->fixed_div;
++ 	min_mult = max(div64_ul(req->min_rate * 32ULL, prate), 1ULL);
++@@ -275,10 +287,10 @@ static int cpg_z_clk_determine_rate(struct clk_hw *hw,
++ 	if (max_mult < min_mult)
++ 		return -EINVAL;
++ 
++-	mult = div64_ul(req->rate * 32ULL, prate);
+++	mult = DIV_ROUND_CLOSEST_ULL(rate * 32ULL, prate);
++ 	mult = clamp(mult, min_mult, max_mult);
++ 
++-	req->rate = div_u64((u64)prate * mult, 32);
+++	req->rate = DIV_ROUND_CLOSEST_ULL((u64)prate * mult, 32);
++ 	return 0;
++ }
++ 
++@@ -370,6 +382,7 @@ static struct clk * __init cpg_z_clk_register(const char *name,
++ 	} else {
++ 		parent = clk_get_parent(clk);
++ 		zclk->max_freq = clk_get_rate(parent) / zclk->fixed_div;
+++		zclk->max_rate = clk_hw_get_rate(clk_hw_get_parent(&zclk->hw)) / zclk->fixed_div;
++ 	}
++ 
++ 	return clk;
+diff --git a/meta-rcar-gen3/recipes-kernel/linux/linux-renesas_5.10.bb b/meta-rcar-gen3/recipes-kernel/linux/linux-renesas_5.10.bb
+index 2e4c988..3f1b630 100644
+--- a/meta-rcar-gen3/recipes-kernel/linux/linux-renesas_5.10.bb
++++ b/meta-rcar-gen3/recipes-kernel/linux/linux-renesas_5.10.bb
+@@ -28,6 +28,9 @@ KBUILD_DEFCONFIG = "defconfig"
+ SRC_URI_append = " \
+     file://touch.cfg \
+     ${@oe.utils.conditional("USE_AVB", "1", " file://usb-video-class.cfg", "", d)} \
++    file://add-intc_ex-for-r8a77961.patch \
++    file://cpufreq-boost-for-rcar-5.0.0.rc4.patch \
++    file://0001-arm64-dts-r8a77961-Fix-video-codec-relation-node.patch \
+ "
+ 
+ # Add module.lds
+-- 
+2.17.1
+
