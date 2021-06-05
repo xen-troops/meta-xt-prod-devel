@@ -1,8 +1,8 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-BRANCH = "v5.4.72/rcar-4.1.0.rc2-xt0.1"
+BRANCH = "v5.10/rcar-5.0.0.rc4-xt0.1"
 SRCREV = "${AUTOREV}"
-LINUX_VERSION = "5.4.72"
+LINUX_VERSION = "5.10.0"
 
 KERNEL_FEATURES_remove = "cfg/virtio.scc"
 

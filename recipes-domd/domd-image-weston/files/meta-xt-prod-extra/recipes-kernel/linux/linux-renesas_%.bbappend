@@ -4,9 +4,9 @@ require inc/xt_shared_env.inc
 
 RENESAS_BSP_URL = "git://github.com/xen-troops/linux.git"
 
-BRANCH = "v5.4.72/rcar-4.1.0.rc2-xt0.1"
+BRANCH = "v5.10/rcar-5.0.0.rc4-xt0.1"
 SRCREV = "${AUTOREV}"
-LINUX_VERSION = "5.4.72"
+LINUX_VERSION = "5.10.0"
 
 KBUILD_DEFCONFIG_rcar = ""
 SRC_URI_append = " \
@@ -19,7 +19,6 @@ SRC_URI_append_rcar = " \
     file://salvator-generic-doma.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://salvator-generic-domu.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://xen-chosen.dtsi;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://0001-mmc-add-feature-of-setting-slot-index-via-devicetree.patch \
 "
 
 KERNEL_DEVICETREE_append_rcar = " \
