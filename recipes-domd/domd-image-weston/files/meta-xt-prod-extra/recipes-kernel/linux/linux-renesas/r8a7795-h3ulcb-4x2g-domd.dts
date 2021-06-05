@@ -6,7 +6,7 @@
  * Copyright (C) 2018 Renesas Electronics Corp.
  */
 
-#include "r8a7795-h3ulcb-4x2g.dts"
+#include "r8a77951-ulcb.dts"
 
 /*
  * The device tree compiler (DTC) is allocating the phandle from 1 to
@@ -15,11 +15,6 @@
 #define PHANDLE_GIC (65000)
 
 / {
-	aliases {
-		mmc0 = &sdhi2;
-		mmc1 = &sdhi0;
-	};
-
 	soc {
 		/* This must point to Xen interrupt-parent */
 		interrupt-parent = <PHANDLE_GIC>;
@@ -53,6 +48,22 @@
 };
 
 /delete-node/&adsp;
+
+&sdhi0 {
+	/delete-property/iommus;
+};
+
+&sdhi1 {
+	/delete-property/iommus;
+};
+
+&sdhi2 {
+	/delete-property/iommus;
+};
+
+&sdhi3 {
+	/delete-property/iommus;
+};
 
 /* Xen will provide its own GIC, mask ours */
 &gic {

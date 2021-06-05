@@ -10,7 +10,7 @@
  * kind, whether express or implied.
  */
 
-#include "r8a7795-h3ulcb.dts"
+#include "r8a77951-ulcb.dts"
 
 /*
  * The device tree compiler (DTC) is allocating the phandle from 1 to
