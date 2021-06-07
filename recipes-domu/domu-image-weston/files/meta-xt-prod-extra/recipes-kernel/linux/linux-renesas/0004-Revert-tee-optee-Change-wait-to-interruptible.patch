@@ -1,15 +1,15 @@
-From f03396664f4efdb1cfdc74f152e702291013b73e Mon Sep 17 00:00:00 2001
-From: Valerii Chubar <valerii_chubar@epam.com>
-Date: Thu, 25 Mar 2021 22:24:40 +0200
+From 846bbee43fd2d57845801c7ae6f38f568057c24c Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Mon, 7 Jun 2021 17:13:20 +0300
 Subject: [PATCH 4/7] Revert "tee: optee: Change wait to interruptible"
 
-This reverts commit 77d58c0b63b908d929e356a217a8ba3566b38128.
+This reverts commit 1c732a107c4541b40f38a70ad937495f1729ed28.
 ---
  drivers/tee/optee/rcar.c | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/tee/optee/rcar.c b/drivers/tee/optee/rcar.c
-index e1a1a8d4805f..61c142f968d3 100644
+index 6bb281b..89c5e76 100644
 --- a/drivers/tee/optee/rcar.c
 +++ b/drivers/tee/optee/rcar.c
 @@ -1,6 +1,6 @@
@@ -25,11 +25,11 @@ index e1a1a8d4805f..61c142f968d3 100644
  		if (thread_exit)
  			break;
 -		wait_event_interruptible(dlog->waitq,
--					 !list_empty(&dlog->queue));
+-			!list_empty(&dlog->queue));
 +		wait_event(dlog->waitq, !list_empty(&dlog->queue));
  	}
  
  	pr_info("%s Exit\n", __func__);
 -- 
-2.17.1
+2.7.4
 

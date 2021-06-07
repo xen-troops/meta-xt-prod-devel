@@ -1,0 +1,30 @@
+From 0954b5b2b23401bc377ddbe66c93dc3f33b1efa4 Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Mon, 7 Jun 2021 17:12:52 +0300
+Subject: [PATCH 1/7] Revert "tee: optee: replace use of ioremap_nocache() with
+ ioremap()"
+
+This reverts commit 5884a89752e0ac1231e00c698e0adb16b29ec1bd.
+---
+ drivers/tee/optee/rcar.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/tee/optee/rcar.c b/drivers/tee/optee/rcar.c
+index 38e5fea..c368da7 100644
+--- a/drivers/tee/optee/rcar.c
++++ b/drivers/tee/optee/rcar.c
+@@ -193,9 +193,9 @@ static int rcar_optee_init_debug_log(struct optee *optee)
+ 	struct task_struct *thread;
+ 	struct arm_smccc_res smccc;
+ 
+-	remaped_log_buffer = ioremap(TEE_LOG_NS_BASE, TEE_LOG_NS_SIZE);
++	remaped_log_buffer = ioremap_nocache(TEE_LOG_NS_BASE, TEE_LOG_NS_SIZE);
+ 	if (!remaped_log_buffer) {
+-		pr_err("failed to ioremap(TEE_LOG_NS_BASE)\n");
++		pr_err("failed to ioremap_nocache(TEE_LOG_NS_BASE)\n");
+ 		ret = -ENOMEM;
+ 	}
+ 	if (ret == 0) {
+-- 
+2.7.4
+

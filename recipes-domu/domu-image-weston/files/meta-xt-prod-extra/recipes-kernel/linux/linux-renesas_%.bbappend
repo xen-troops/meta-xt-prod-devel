@@ -11,12 +11,12 @@ LINUX_VERSION = "5.10.0"
 KBUILD_DEFCONFIG_rcar = ""
 SRC_URI_append = " \
     file://defconfig \
-	file://0001-Revert-tee-optee-remove-calling-optee_enumerate_devi.patch \
+	file://0001-Revert-tee-optee-replace-use-of-ioremap_nocache-with.patch \
 	file://0002-Revert-tee-optee-add-SMC-of-START_DLOG_OUTPUT-to-rca.patch \
 	file://0003-Revert-tee-optee-Modify-duration-of-spinlock-for-lis.patch \
 	file://0004-Revert-tee-optee-Change-wait-to-interruptible.patch \
 	file://0005-Revert-tee-optee-Change-workqueue-to-kthread-in-debu.patch \
-	file://0006-Revert-tee-tee_shm-Fix-the-release-function-to-the-s.patch \
+	file://0006-Revert-tee-Add-a-macro-to-provide-a-register-functio.patch \
 	file://0007-Revert-tee-optee-add-r-car-original-function.patch \
 "
 
