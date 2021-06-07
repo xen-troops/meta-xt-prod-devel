@@ -1,18 +1,18 @@
-From 88e8fa3e99e4455e9c9ad782e980aaf9d79030dd Mon Sep 17 00:00:00 2001
-From: Valerii Chubar <valerii_chubar@epam.com>
-Date: Thu, 25 Mar 2021 22:24:28 +0200
+From 0840f94be5da78a686761a85502013902eee122a Mon Sep 17 00:00:00 2001
+From: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Date: Mon, 7 Jun 2021 17:13:04 +0300
 Subject: [PATCH 2/7] Revert "tee: optee: add SMC of START_DLOG_OUTPUT to
  rcar_optee_init_debug_log()"
 
-This reverts commit 2e228d29c1aca1084966c4044064340d225d0cef.
+This reverts commit d91a70942b3ceda1b13f2a347878d29775221ef3.
 ---
- drivers/tee/optee/optee_rcar.h   | 10 +---------
- drivers/tee/optee/rcar.c         | 15 ++++-----------
- drivers/tee/optee/rcar_version.h |  2 +-
- 3 files changed, 6 insertions(+), 21 deletions(-)
+ drivers/tee/optee/optee_rcar.h   |  9 +--------
+ drivers/tee/optee/rcar.c         | 16 ++++------------
+ drivers/tee/optee/rcar_version.h |  4 ++--
+ 3 files changed, 7 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/tee/optee/optee_rcar.h b/drivers/tee/optee/optee_rcar.h
-index d47c34808ade..279a5fbe2267 100644
+index 6d516d7..2fa00c9 100644
 --- a/drivers/tee/optee/optee_rcar.h
 +++ b/drivers/tee/optee/optee_rcar.h
 @@ -1,6 +1,6 @@
@@ -23,23 +23,22 @@ index d47c34808ade..279a5fbe2267 100644
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License Version 2 as
-@@ -23,14 +23,6 @@
+@@ -22,13 +22,6 @@
+ #include "rcar_version.h"
  
- #define OPTEE_MSG_RPC_CMD_DEBUG_LOG	(0x3F000000U)
- 
+ #define OPTEE_MSG_RPC_CMD_DEBUG_LOG    (0x3F000000U)
 -/*
 - * Define the information of debug log that communicates between Normal
 - * World and Secure World.
 - */
--#define SMC_RCAR_CMD		(12345U)
+-#define SMC_RCAR_CMD       (12345U)
 -
--#define START_DLOG_OUTPUT	(1U)
--
+-#define START_DLOG_OUTPUT  (1U)
+ 
  struct rcar_debug_log_info {
  	wait_queue_head_t waitq;
- 	struct list_head queue;
 diff --git a/drivers/tee/optee/rcar.c b/drivers/tee/optee/rcar.c
-index f58f7432f1f3..24d1b6fb5a29 100644
+index c368da7..12dbce94 100644
 --- a/drivers/tee/optee/rcar.c
 +++ b/drivers/tee/optee/rcar.c
 @@ -1,6 +1,6 @@
@@ -51,7 +50,7 @@ index f58f7432f1f3..24d1b6fb5a29 100644
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License Version 2 as
 @@ -46,7 +46,7 @@ static int tz_rcar_power_event(struct notifier_block *this,
- 			       unsigned long event, void *ptr);
+ 	unsigned long event, void *ptr);
  static int rcar_optee_add_suspend_callback(void);
  static void rcar_optee_del_suspend_callback(void);
 -static int rcar_optee_init_debug_log(struct optee *optee);
@@ -72,7 +71,7 @@ index f58f7432f1f3..24d1b6fb5a29 100644
  
  	remaped_log_buffer = ioremap_nocache(TEE_LOG_NS_BASE, TEE_LOG_NS_SIZE);
  	if (!remaped_log_buffer) {
-@@ -209,15 +208,9 @@ static int rcar_optee_init_debug_log(struct optee *optee)
+@@ -208,16 +207,9 @@ static int rcar_optee_init_debug_log(struct optee *optee)
  		if (IS_ERR(thread)) {
  			pr_err("failed to kthread_run\n");
  			ret = -ENOMEM;
@@ -82,13 +81,14 @@ index f58f7432f1f3..24d1b6fb5a29 100644
  
 -	/* Notify the start of debug log output to optee_os */
 -	optee->invoke_fn(OPTEE_SMC_GET_SHM_CONFIG, SMC_RCAR_CMD,
--		START_DLOG_OUTPUT, 0, 0, 0, 0, 0, &smccc);
+-			START_DLOG_OUTPUT, 0, 0, 0, 0, 0, &smccc);
 -
 -end:
+-
  	return ret;
  }
  
-@@ -248,7 +241,7 @@ int optee_rcar_probe(struct optee *optee)
+@@ -248,7 +240,7 @@ int optee_rcar_probe(struct optee *optee)
  
  	ret = rcar_optee_add_suspend_callback();
  	if (ret == 0) {
@@ -98,17 +98,24 @@ index f58f7432f1f3..24d1b6fb5a29 100644
  			rcar_optee_del_suspend_callback();
  	}
 diff --git a/drivers/tee/optee/rcar_version.h b/drivers/tee/optee/rcar_version.h
-index 3d3c6b144693..2d97587da87b 100644
+index c14e7f9..bc3e9447 100644
 --- a/drivers/tee/optee/rcar_version.h
 +++ b/drivers/tee/optee/rcar_version.h
-@@ -7,6 +7,6 @@
+@@ -1,12 +1,12 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- * Copyright (c) 2015-2020, Renesas Electronics Corporation
++ * Copyright (c) 2015-2018, Renesas Electronics Corporation
+  * All rights reserved.
+  */
+ 
  #ifndef RCAR_VERSION_H
  #define RCAR_VERSION_H
  
--#define VERSION_OF_RENESAS	"1.0.11"
-+#define VERSION_OF_RENESAS	"1.0.10"
+-#define VERSION_OF_RENESAS "1.0.11"
++#define VERSION_OF_RENESAS "1.0.10"
  
  #endif /* RCAR_VERSION_H */
 -- 
-2.17.1
+2.7.4
 
