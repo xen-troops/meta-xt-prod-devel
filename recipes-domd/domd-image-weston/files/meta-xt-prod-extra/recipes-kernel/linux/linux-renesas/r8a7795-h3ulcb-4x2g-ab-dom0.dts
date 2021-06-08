@@ -223,6 +223,10 @@
 	iommus = <&ipmmu_vi1 12>;
 };
 
+&hdmi1 {
+	iommus = <&ipmmu_vi1 13>;
+};
+
 &fdp0 {
 	iommus = <&ipmmu_vp0 0>;
 };
@@ -309,6 +313,7 @@
 &gpio7			{ xen,passthrough; };
 &gsx			{ xen,passthrough; };
 &hdmi0			{ xen,passthrough; };
+&hdmi1			{ xen,passthrough; };
 &i2c2			{ xen,passthrough; };
 &i2c4			{ xen,passthrough; };
 
