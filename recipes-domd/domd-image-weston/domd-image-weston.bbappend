@@ -102,7 +102,6 @@ configure_versions_rcar() {
     local local_conf="${S}/build/conf/local.conf"
 
     cd ${S}
-    base_update_conf_value ${local_conf} PREFERRED_VERSION_u-boot_rcar "v2020.01\%"
     if [ -z ${XT_RCAR_EVAPROPRIETARY_DIR} ];then
         base_update_conf_value ${local_conf} PREFERRED_PROVIDER_gles-user-module "gles-user-module"
         base_update_conf_value ${local_conf} PREFERRED_VERSION_gles-user-module ${GLES_VERSION}
