@@ -1,28 +1,17 @@
+// SPDX-License-Identifier: GPL-2.0
 /*
  * Device Tree Source for the Salvator-X 2nd version board with R-Car M3 ES3.0+
+ * running XEN hypervisor
  *
  * Copyright (C) 2018-2019 Renesas Electronics Corp.
- *
- * This file is licensed under the terms of the GNU General Public License
- * version 2.  This program is licensed "as is" without any warranty of any
- * kind, whether express or implied.
  */
 
-#include "r8a7796-salvator-xs-2x4g.dts"
+#include "r8a77961-salvator-xs.dts"
 #include "xen-chosen.dtsi"
-/ {
-	model = "Renesas Salvator-X 2nd version board based on r8a7796 ES3.0+ with 8GiB (2 x 4 GiB)";
-	compatible = "renesas,salvator-xs", "renesas,r8a7796";
 
-	memory@48000000 {
-		device_type = "memory";
-		/* first 128MB is reserved for secure area. */
-		reg = <0x0 0x48000000 0x0 0x78000000>,
-		      <0x4 0x80000000 0x0 0x80000000>,
-		      <0x6 0x00000000 0x1 0x00000000>;
-	};
-	/delete-node/memory@400000000;
-	/delete-node/memory@600000000;
+/ {
+	model = "Renesas Salvator-X 2nd version board based on r8a77961, running XEN hypervisor";
+	compatible = "renesas,salvator-xs", "renesas,r8a77961";
 
 	reserved-memory {
 		/delete-node/linux,adsp@57000000;
@@ -69,7 +58,12 @@
 };
 
 &ipmmu_vc0 {
-	compatible = "renesas,ipmmu-r8a7796";
+	/*
+	 * The "renesas,ipmmu-mmu-r8a77961" string is known for mmngr, but is not
+	 * known for the Xen's IPMMU driver. Overwrite compatible string as these
+	 * IPMMU devices need to be picked up by Xen.
+	 */
+	compatible = "renesas,ipmmu-r8a77961";
 	status = "okay";
 };
 
@@ -94,6 +88,10 @@
 };
 
 &ipmmu_ds1 {
+	status = "okay";
+};
+
+&ipmmu_rt {
 	status = "okay";
 };
 
@@ -215,16 +213,13 @@
 	};
 };
 
-&imrlx4_ch0 {
-	xen,passthrough;
-	iommus = <&ipmmu_vc0 0>;
+&pciec0 {
+	iommus = <&ipmmu_hc 0>;
 };
 
-&imrlx4_ch1 {
-	xen,passthrough;
-	iommus = <&ipmmu_vc0 0>;
+&pciec1 {
+	iommus = <&ipmmu_hc 1>;
 };
-
 
 &ehci0 {
 	iommus = <&ipmmu_hc 4>;
@@ -270,8 +265,20 @@
 	iommus = <&ipmmu_ds1 35>;
 };
 
-/* ============================ Xen pass through section =====================*/
+&rt_dmac0 {
+	iommus = <&ipmmu_rt 4>, <&ipmmu_rt 5>,
+			 <&ipmmu_rt 6>, <&ipmmu_rt 7>,
+			 <&ipmmu_rt 8>, <&ipmmu_rt 9>,
+			 <&ipmmu_rt 10>, <&ipmmu_rt 11>,
+			 <&ipmmu_rt 12>, <&ipmmu_rt 13>,
+			 <&ipmmu_rt 14>, <&ipmmu_rt 15>,
+			 <&ipmmu_rt 16>, <&ipmmu_rt 17>,
+			 <&ipmmu_rt 18>, <&ipmmu_rt 19>;
+};
 
+/* ============================ Xen pass through section =====================*/
+/*&adsp			{ xen,passthrough; };*/
+&arm_cc630p		{ xen,passthrough; };
 &csi20			{ xen,passthrough; };
 &csi40			{ xen,passthrough; };
 &du			{ xen,passthrough; };
@@ -300,6 +307,8 @@
 &mfis_as		{ xen,passthrough; };
 &pciec1			{ xen,passthrough; };
 &pciec0			{ xen,passthrough; };
+&rpc0			{ xen,passthrough; };
+&hscif1			{ xen,passthrough; };
 &sdhi0			{ xen,passthrough; };
 &sdhi2			{ xen,passthrough; };
 &sdhi3			{ xen,passthrough; };
@@ -356,4 +365,5 @@
 &tsc			{ xen,passthrough; };
 &i2c_dvfs		{ xen,passthrough; };
 &pmic			{ xen,passthrough; };
+&rt_dmac0		{ xen,passthrough; };
 

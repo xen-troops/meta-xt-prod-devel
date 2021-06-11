@@ -218,6 +218,7 @@ MACHINE_NAME         Board name         SoC       RAM  prod-devel-unsafe only?  
 salvator-x-h3        Salvator-X         H3 ES2.0  4GB  prod-devel-unsafe only
 salvator-x-h3-4x2g   Salvator-X         H3 ES3.0  8GB
 salvator-x-m3        Salvator-X         M3        4GB  prod-devel-unsafe only   Not supported for DomA
+salvator-xs-m3-2x4g  Salvator-XS        M3 ES3.0  8GB
 salvator-xs-h3       Salvator-XS        H3 ES2.0  4GB  prod-devel-unsafe only
 salvator-xs-h3-4x2g  Salvator-XS        H3 ES3.0  8GB
 salvator-xs-m3n      Salvator-XS        M3N       2GB                           Not supported for DomA
