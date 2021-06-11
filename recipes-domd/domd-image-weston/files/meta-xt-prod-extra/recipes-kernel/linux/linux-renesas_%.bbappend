@@ -182,7 +182,6 @@ KERNEL_DEVICETREE_h3ulcb-4x2g-kf-xt = " \
 SRC_URI_append_salvator-xs-m3-2x4g-xt = " \
     file://r8a7796-salvator-xs-2x4g-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7796-salvator-xs-2x4g-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
-    file://0001-Update-gntdev-drm_front-DMA-tweaks.patch \
 "
 
 KERNEL_DEVICETREE_salvator-xs-m3-2x4g-xt = " \
