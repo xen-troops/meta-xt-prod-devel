@@ -265,6 +265,38 @@
 	iommus = <&ipmmu_ds1 35>;
 };
 
+&vin0 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin1 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin2 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin3 {
+	iommus = <&ipmmu_vi0 0>;
+};
+
+&vin4 {
+	iommus = <&ipmmu_vi0 1>;
+};
+
+&vin5 {
+	iommus = <&ipmmu_vi0 1>;
+};
+
+&vin6 {
+	iommus = <&ipmmu_vi0 1>;
+};
+
+&vin7 {
+	iommus = <&ipmmu_vi0 1>;
+};
+
 &rt_dmac0 {
 	iommus = <&ipmmu_rt 4>, <&ipmmu_rt 5>,
 			 <&ipmmu_rt 6>, <&ipmmu_rt 7>,
