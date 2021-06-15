@@ -59,12 +59,18 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+PCIE="-device ioh3420,id=root_port1,chassis=1,slot=1,bus=pcie.0 \
+      -device x3130-upstream,id=upstream_port1,bus=root_port1 \
+      -device xio3130-downstream,id=downstream_port1,bus=upstream_port1,chassis=1,slot=2 \
+      -device xio3130-downstream,id=downstream_port2,bus=upstream_port1,chassis=1,slot=3 \
+      -device xio3130-downstream,id=downstream_port3,bus=upstream_port1,chassis=1,slot=4"
+
 if [ -z "${PCI_CFG_FILE}" ] || [ ! -f ${PCI_CFG_FILE} ] ; then
     echo "Please provide valid configuration file with --config option if you don't want the defaults"
-    DEV_PCIE="-device rtl8139,bus=pcie.2,addr=02.0,netdev=hostnet1,romfile= \
-              -device rtl8139,bus=pcie.2,addr=03.0,netdev=hostnet2,romfile= \
-              -netdev user,id=hostnet1,net=10.0.3.0/24 \
-              -netdev user,id=hostnet2,net=10.0.4.0/24"
+    PCIE="$PCIE -device rtl8139,bus=downstream_port1,netdev=hostnet1,romfile= \
+                -device rtl8139,bus=downstream_port2,netdev=hostnet2,romfile= \
+                -netdev user,id=hostnet1,net=10.0.3.0/24 \
+                -netdev user,id=hostnet2,net=10.0.4.0/24"
 else
     source ${PCI_CFG_FILE}
 fi
@@ -72,9 +78,6 @@ fi
 if [ -z "${PCI_BRIDGE_ADDRESS}" ] ; then
     PCI_BRIDGE_ADDRESS="00.0"
 fi
-
-PCIE_BASE="-device xlnx-pcie-rp,bus=pcie.0,id=pcie.1,port=1,chassis=1 \
-           -device pci-bridge,addr=${PCI_BRIDGE_ADDRESS},bus=pcie.1,id=pcie.2,chassis_nr=2"
 
 echo "################################################################################"
 echo "# PCI config:      $PCIE_BASE"
@@ -103,8 +106,7 @@ ${QEMU} -M arm-generic-fdt,linux=on -m 2G -hw-dtb ${HW_DTB}	\
 	-device ide-hd,drive=sata-drive-dom0,bus=ahci@0xFD0C0000.0 \
 	-drive file=${QEMU_DOMU_ROOTFS},format=raw,id=sata-drive-domu \
 	-device ide-hd,drive=sata-drive-domu,bus=ahci@0xFD0C0000.1 \
-	${PCIE_BASE}						\
-	${DEV_PCIE}						\
+	${PCIE}							\
 	${GIC_SETUP}						\
 	${RESET_APU}						\
 	${NET_SOC}						\
