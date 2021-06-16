@@ -16,6 +16,8 @@ IMAGE_INSTALL_remove = " \
     libx11-locale \
 "
 
+SPLASH = ""
+
 # Use only provided proprietary graphic modules
 IMAGE_INSTALL_remove = " \
     packagegroup-graphics-renesas-proprietary \
