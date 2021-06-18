@@ -207,6 +207,14 @@
 	iommus = <&ipmmu_hc 4>;
 };
 
+&xhci0 {
+    iommus = <&ipmmu_hc 12>;
+};
+
+&usb3_peri0 {
+    iommus = <&ipmmu_hc 13>;
+};
+
 &fcpvd0 {
 	iommus = <&ipmmu_vi0 8>;
 };
@@ -442,6 +450,8 @@
 &ssi9			{ xen,passthrough; };
 &usb2_phy0		{ xen,passthrough; };
 &hsusb			{ xen,passthrough; };
+&xhci0			{ xen,passthrough; };
+&usb3_peri0		{ xen,passthrough; };
 &ohci0			{ xen,passthrough; };
 &ehci0			{ xen,passthrough; };
 &ohci1			{ xen,passthrough; };
