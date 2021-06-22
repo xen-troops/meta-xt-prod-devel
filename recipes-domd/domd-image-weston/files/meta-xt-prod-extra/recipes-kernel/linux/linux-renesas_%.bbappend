@@ -159,6 +159,19 @@ KERNEL_DEVICETREE_h3ulcb-4x2g-xt = " \
 "
 
 ##############################################################################
+# H3ULCB ES3.0 4x2G AB
+###############################################################################
+SRC_URI_append_h3ulcb-4x2g-ab-xt = " \
+    file://r8a7795-h3ulcb-4x2g-ab-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://r8a7795-h3ulcb-4x2g-ab-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+"
+
+KERNEL_DEVICETREE_h3ulcb-4x2g-ab-xt = " \
+    renesas/r8a7795-h3ulcb-4x2g-ab-dom0.dtb \
+    renesas/r8a7795-h3ulcb-4x2g-ab-domd.dtb \
+"
+
+##############################################################################
 # H3ULCB ES3.0 4x2G KF
 ###############################################################################
 # FIXME: ulcb.cfg comes from CogentEmbedded's meta-rcar layer, but is only used
