@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * Device Tree Source for the H3ULCB (R-Car Starter Kit Premier) board
+ * Device Tree Source for the H3ULCB Aos box (CCPF Starter kit) board
  * running XEN hypervisor
  *
- * Copyright (C) 2018 Renesas Electronics Corp.
+ * Copyright (C) 2021 Renesas Electronics Corp.
+ * Copyright (C) 2021 EPAM Systems, Inc.
  */
 
 #include "r8a77951-ulcb.dts"
+#include "ulcb-ab.dtsi"
+
 
 /*
  * The device tree compiler (DTC) is allocating the phandle from 1 to
