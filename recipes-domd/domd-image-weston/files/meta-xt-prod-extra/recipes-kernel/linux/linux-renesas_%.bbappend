@@ -164,6 +164,7 @@ KERNEL_DEVICETREE_h3ulcb-4x2g-xt = " \
 SRC_URI_append_h3ulcb-4x2g-ab-xt = " \
     file://r8a7795-h3ulcb-4x2g-ab-dom0.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
     file://r8a7795-h3ulcb-4x2g-ab-domd.dts;subdir=git/arch/${ARCH}/boot/dts/renesas \
+    file://ulcb-ab.dtsi;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
 KERNEL_DEVICETREE_h3ulcb-4x2g-ab-xt = " \
