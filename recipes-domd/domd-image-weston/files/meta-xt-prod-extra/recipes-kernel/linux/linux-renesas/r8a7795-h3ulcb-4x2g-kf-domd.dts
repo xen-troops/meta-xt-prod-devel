@@ -1,16 +1,13 @@
+// SPDX-License-Identifier: GPL-2.0
 /*
  * Device Tree Source for the H3ULCB Kingfisher board
  * running XEN hypervisor
  *
  * Copyright (C) 2016-2018 Renesas Electronics Corp.
  * Copyright (C) 2016 Cogent Embedded, Inc.
- *
- * This file is licensed under the terms of the GNU General Public License
- * version 2.  This program is licensed "as is" without any warranty of any
- * kind, whether express or implied.
  */
 
-#include "r8a7795-h3ulcb-4x2g-kf.dts"
+#include "r8a77951-ulcb-kf.dts"
 
 /*
  * The device tree compiler (DTC) is allocating the phandle from 1 to
@@ -52,6 +49,22 @@
 };
 
 /delete-node/&adsp;
+
+&sdhi0 {
+	/delete-property/iommus;
+};
+
+&sdhi1 {
+	/delete-property/iommus;
+};
+
+&sdhi2 {
+	/delete-property/iommus;
+};
+
+&sdhi3 {
+	/delete-property/iommus;
+};
 
 /* Xen will provide its own GIC, mask ours */
 &gic {
