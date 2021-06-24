@@ -1,35 +1,19 @@
+// SPDX-License-Identifier: GPL-2.0
 /*
  * Device Tree Source for the H3ULCB Kingfisher board
  * running XEN hypervisor
  *
  * Copyright (C) 2016-2018 Renesas Electronics Corp.
  * Copyright (C) 2016 Cogent Embedded, Inc.
- *
- * This file is licensed under the terms of the GNU General Public License
- * version 2.  This program is licensed "as is" without any warranty of any
- * kind, whether express or implied.
  */
 
-#include "r8a7795-h3ulcb-4x2g-kf.dts"
+#include "r8a77951-ulcb-kf.dts"
 #include "xen-chosen.dtsi"
 
 / {
-	model = "Renesas H3ULCB Kingfisher board based on r8a7795 ES3.0+ with 8GiB (4 x 2 GiB), running XEN hypervisor";
+	model = "Renesas H3ULCB Kingfisher board based on r8a77951, running XEN hypervisor";
 	compatible = "shimafuji,kingfisher", "renesas,h3ulcb",
 		     "renesas,r8a7795";
-
-	memory@48000000 {
-		device_type = "memory";
-		/* first 128MB is reserved for secure area. */
-		reg = <0x0 0x48000000 0x0 0x78000000>,
-		      <0x5 0x00000000 0x0 0x80000000>,
-		      <0x6 0x00000000 0x0 0x80000000>,
-		      <0x7 0x00000000 0x0 0x80000000>;
-	};
-
-	/delete-node/memory@500000000;
-	/delete-node/memory@600000000;
-	/delete-node/memory@700000000;
 
 	reserved-memory {
 		/delete-node/linux,cma@57000000;
@@ -417,6 +401,20 @@
 	iommus = <&ipmmu_ds1 34>;
 };
 
+&rt_dmac0 {
+	iommus = <&ipmmu_rt 4>, <&ipmmu_rt 5>,
+			 <&ipmmu_rt 6>, <&ipmmu_rt 7>,
+			 <&ipmmu_rt 8>, <&ipmmu_rt 9>,
+			 <&ipmmu_rt 10>, <&ipmmu_rt 11>;
+};
+
+&rt_dmac1 {
+	iommus = <&ipmmu_rt 12>, <&ipmmu_rt 13>,
+			 <&ipmmu_rt 14>, <&ipmmu_rt 15>,
+			 <&ipmmu_rt 16>, <&ipmmu_rt 17>,
+			 <&ipmmu_rt 18>, <&ipmmu_rt 19>;
+};
+
 /* ============================ Xen pass through section =====================*/
 
 &can0			{ xen,passthrough; };
@@ -509,3 +507,5 @@
 &vspbd			{ xen,passthrough; };
 &vspi0			{ xen,passthrough; };
 &vspi1			{ xen,passthrough; };
+&rt_dmac0		{ xen,passthrough; };
+&rt_dmac1		{ xen,passthrough; };
