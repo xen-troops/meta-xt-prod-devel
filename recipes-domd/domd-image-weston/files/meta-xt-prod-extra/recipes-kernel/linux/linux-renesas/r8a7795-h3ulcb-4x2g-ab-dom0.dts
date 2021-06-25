@@ -423,6 +423,9 @@
 	};
 };
 
+&can0			{ xen,passthrough; };
+&can1			{ xen,passthrough; };
+&canfd			{ xen,passthrough; };
 &intc_ex		{ xen,passthrough; };
 &mfis_as		{ xen,passthrough; };
 &rpc0			{ xen,passthrough; };
