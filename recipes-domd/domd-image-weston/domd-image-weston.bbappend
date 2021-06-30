@@ -5,7 +5,8 @@ python __anonymous () {
     product_name = d.getVar('XT_PRODUCT_NAME', True)
     folder_name = product_name.replace("-", "_")
     d.setVar('XT_MANIFEST_FOLDER', folder_name)
-    if product_name == "prod-devel-src" and not "domu" in d.getVar('XT_GUESTS_BUILD', True).split():
+
+    if d.getVar('XT_USE_VIS_SERVER', True):
         d.appendVar("XT_QUIRK_BB_ADD_LAYER", "meta-aos")
 
     if product_name == "prod-devel-src": 
@@ -158,15 +159,23 @@ configure_versions_rcar() {
         base_set_conf_value ${local_conf} DISTRO_FEATURES_remove "ivi-shell"
     fi
 
-    if [ ! -z "${AOS_VIS_PLUGINS}" ];then
-        base_update_conf_value ${local_conf} AOS_VIS_PLUGINS "${AOS_VIS_PLUGINS}"
+    if [ -n "${XT_USE_VIS_SERVER}" ]; then
+        base_set_conf_value ${local_conf} DISTRO_FEATURES_append "vis"
+        if [ ! -z "${AOS_VIS_PLUGINS}" ];then
+            base_update_conf_value ${local_conf} AOS_VIS_PLUGINS "${AOS_VIS_PLUGINS}"
+        fi
+    else
+        # Mask bbappend to avoid warning "No recipes available for"
+        base_add_conf_value ${local_conf} BBMASK "meta-xt-prod-extra/recipes-aos/aos-vis/"
     fi
 
     # Disable shared link for GO packages
     base_set_conf_value ${local_conf} GO_LINKSHARED ""
 
-    if [ ! -z "${AOS_VIS_PACKAGE_DIR}" ];then
-        base_update_conf_value ${local_conf} AOS_VIS_PACKAGE_DIR "${AOS_VIS_PACKAGE_DIR}"
+    if [ -n "${XT_USE_VIS_SERVER}" ]; then
+        if [ ! -z "${AOS_VIS_PACKAGE_DIR}" ];then
+            base_update_conf_value ${local_conf} AOS_VIS_PACKAGE_DIR "${AOS_VIS_PACKAGE_DIR}"
+        fi
     fi
 
     # Only Kingfisher variants have WiFi and bluetooth
@@ -212,6 +221,8 @@ do_install_append () {
     find ${LAYERDIR}/doc -iname "u-boot-env*" -exec cp -f {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt \; || true
     find ${LAYERDIR}/doc -iname "mk_sdcard_image.sh" -exec cp -f {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt \; \
     -exec cp -f {} ${DEPLOY_DIR} \; || true
-    find ${DEPLOY_DIR}/${PN}/ipk/aarch64 -iname "aos-vis_git*" -exec cp -f {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt \; && \
-    find ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt -iname "aos-vis_git*" -exec ln -sfr {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt/aos-vis \; || true
+    if [ -n "${XT_USE_VIS_SERVER}" ]; then
+        find ${DEPLOY_DIR}/${PN}/ipk/aarch64 -iname "aos-vis_git*" -exec cp -f {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt \; && \
+        find ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt -iname "aos-vis_git*" -exec ln -sfr {} ${DEPLOY_DIR}/domd-image-weston/images/${MACHINE}-xt/aos-vis \; || true
+    fi
 }
