@@ -5,7 +5,7 @@ require inc/xt_shared_env.inc
 ################################################################################
 # Renesas R-Car
 ################################################################################
-SRCREV_rcar = "${AUTOREV}"
+SRCREV_rcar = "389583ed05f4fa309afd5d17fde85c4331bcd424"
 
 SRC_URI_append_rcar = " \
     git://github.com/xen-troops/camera_be.git;protocol=https;branch=master \

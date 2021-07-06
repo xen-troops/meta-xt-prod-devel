@@ -7,7 +7,7 @@ inherit go
 export CGO_ENABLED="1"
 
 SRC_URI = "git://${GO_IMPORT};protocol=https;destsuffix=${PN}-${PV}/src/${GO_IMPORT}"
-SRCREV = "${AUTOREV}"
+SRCREV = "5547b5774f71f75a088e7432fa961778750a0fbd"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://src/${GO_IMPORT}/LICENSE;md5=435b266b3899aa8a959f17d41c56def8"
 

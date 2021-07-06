@@ -1,5 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
+SRCREV = "4f456bb9b7cdc0a444bb2533f4a1cc2074859d74"
+
 SRC_URI_append = "\
     file://aos-vis.service \
     file://aos_vis.cfg \

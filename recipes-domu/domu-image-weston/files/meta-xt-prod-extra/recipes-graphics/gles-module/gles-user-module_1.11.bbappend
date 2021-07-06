@@ -1,5 +1,5 @@
 require gles-user-module.inc
 
 BRANCH = "1.11/5516664"
-SRCREV = "${AUTOREV}"
+SRCREV = "7aa7ae5cd24fc94035a626274ba1652fc529cc66"
 EXCLUDED_APIS = "opencl vulkan"

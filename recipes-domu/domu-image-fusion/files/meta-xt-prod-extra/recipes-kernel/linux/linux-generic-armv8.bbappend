@@ -3,7 +3,7 @@ require inc/xt_shared_env.inc
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 BRANCH = "master"
-SRCREV = "${AUTOREV}"
+SRCREV = "8400886b8424e0af5cf907c13e94534c7dd38ccd"
 LINUX_VERSION = "4.14.35"
 
 SRC_URI = " \
