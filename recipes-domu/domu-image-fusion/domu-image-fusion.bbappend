@@ -18,7 +18,7 @@ XT_QUIRK_BB_ADD_LAYER_append = " \
 # Generic ARMv8
 ################################################################################
 SRC_URI += " \
-    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/domf.xml;scmdata=keep \
+    repo://github.com/xen-troops/manifests;protocol=https;branch=REL-v5.2;manifest=prod_devel/domf.xml;scmdata=keep \
 "
 
 XT_BB_LAYERS_FILE = "meta-xt-prod-extra/doc/bblayers.conf.domf-image-minimal"
