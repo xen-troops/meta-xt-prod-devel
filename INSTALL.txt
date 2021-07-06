@@ -201,16 +201,11 @@ will be just skipped.
 6. Run the build script for current stable release:
 
 python ./build_prod.py --build-type dailybuild --machine MACHINE_NAME --product PRODUCT_NAME \
---branch RELEASE_NAME --with-local-conf --config xt-prod-devel.cfg --with-do-build
+--branch REL-v5.2 --with-local-conf --config xt-prod-devel.cfg --with-do-build
 
 Where the PRODUCT_NAME depends on whether "graphics" packages are used or not:
 - devel (to use "graphics" packages)
 - devel-src (to build Graphics DDK from sources)
-
-Where the RELEASE_NAME name is the name of the release to be built.
-This is done in order to track product releases easily and have a possibility to build any release
-just by pointing a proper release name.
-Please note, if "branch" parameter is not set then the current product's snapshot will be built.
 
 List of supported MACHINE_NAMEs:
 MACHINE_NAME         Board name         SoC       RAM  prod-devel-unsafe only?  DomA supported?
