@@ -2,7 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 require inc/xt_shared_env.inc
 
-SRCREV = "${AUTOREV}"
+SRCREV = "868e703b7652c9a40ae878d7d517f97398b4549c"
 
 SRC_URI_append = " \
     git://github.com/xen-troops/DisplayManager.git;protocol=https;branch=master \

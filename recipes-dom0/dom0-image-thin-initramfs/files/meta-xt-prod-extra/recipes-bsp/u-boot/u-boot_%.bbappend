@@ -7,7 +7,7 @@ GUEST_DOMA = "${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'doma', '', d)}"
 UBOOT_CONFIG[doma] = "xenguest_arm64_android_defconfig"
 UBOOT_CONFIG_prepend = "${GUEST_DOMA} "
 
-SRCREV = "${AUTOREV}"
+SRCREV = "7597374f3b94b45076ffa13fbd63ce231d49a16e"
 SRC_URI = "\
     git://github.com/xen-troops/u-boot.git;protocol=https;branch=android-master; \
 "

@@ -2,7 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 BRANCH = "master"
 
-SRCREV = "${AUTOREV}"
+SRCREV = "8400886b8424e0af5cf907c13e94534c7dd38ccd"
 
 SRC_URI_append = " \
     git://github.com/xen-troops/linux.git;branch=${BRANCH} \

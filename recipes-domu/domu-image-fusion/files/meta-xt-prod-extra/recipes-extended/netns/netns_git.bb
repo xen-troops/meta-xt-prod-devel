@@ -5,7 +5,7 @@ GO_IMPORT = "github.com/genuinetools/netns/"
 inherit go
 
 SRC_URI = "git://${GO_IMPORT};protocol=https;destsuffix=${PN}-${PV}/src/${GO_IMPORT}"
-SRCREV = "${AUTOREV}"
+SRCREV = "00d5d07ab1c8afcf481ffa5958719943b6ecfde4"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://src/${GO_IMPORT}/LICENSE;md5=48ef0979a2bcc3fae14ff30b8a7f5dbf"
 
