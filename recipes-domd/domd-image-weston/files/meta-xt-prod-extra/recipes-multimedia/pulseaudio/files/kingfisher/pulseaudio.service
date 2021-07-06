@@ -1,0 +1,12 @@
+[Unit]
+Description=PulseAudio system server
+
+[Service]
+# We need to start pulse only when both audio cards
+# on kingfisher are properly set
+After=alsa-restore
+Type=notify
+ExecStart=/usr/bin/pulseaudio --daemonize=no --system --realtime --disallow-exit --log-target=journal
+
+[Install]
+WantedBy=multi-user.target
