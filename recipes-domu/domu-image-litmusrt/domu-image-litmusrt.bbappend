@@ -4,7 +4,7 @@ XT_QUIRK_BB_ADD_LAYER += " \
 "
 
 SRC_URI = " \
-    repo://github.com/xen-troops/manifests;protocol=https;branch=master;manifest=prod_devel/domr.xml;scmdata=keep \
+    repo://github.com/xen-troops/manifests;protocol=https;branch=REL-v5.2;manifest=prod_devel/domr.xml;scmdata=keep \
 "
 
 SRCREV = "${AUTOREV}"
