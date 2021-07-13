@@ -172,6 +172,13 @@ configure_versions_rcar() {
     # Only Kingfisher variants have WiFi and bluetooth
     if echo "${MACHINEOVERRIDES}" | grep -qiv "kingfisher"; then
         base_add_conf_value ${local_conf} DISTRO_FEATURES_remove "wifi bluetooth"
+
+        # We have netevent_%.bbappend that modifies
+        # meta-rcar-gen3-adas/recipes-support/netevent/netevent_git.bb
+        # and is intended to be used for Kingfisher only.
+        # For other boards we need to mask our bbappend to avoid
+        # warning "No recipes available for".
+        base_add_conf_value ${local_conf} BBMASK "recipes-support/netevent"
     fi
 
     if [ ! -z "${XT_COMMON_DISTRO_FEATURES_APPEND}" ]; then
@@ -179,13 +186,6 @@ configure_versions_rcar() {
     fi
 
     base_update_conf_value ${local_conf} XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR "${XT_RCAR_PROPRIETARY_MULTIMEDIA_DIR}"
-
-    # We have netevent_%.bbappend that modifies
-    # meta-rcar-gen3-adas/recipes-support/netevent/netevent_git.bb
-    # and is intended to be used for Kingfisher only.
-    # For other boards we need to mask our bbappend to avoid
-    # warning "No recipes available for".
-    base_add_conf_value ${local_conf} BBMASK "recipes-support/netevent"
 }
 
 # In order to copy proprietary "multimedia" packages,
