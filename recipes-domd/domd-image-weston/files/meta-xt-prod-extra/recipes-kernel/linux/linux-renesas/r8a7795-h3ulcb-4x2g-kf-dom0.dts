@@ -122,6 +122,10 @@
 	status = "okay";
 };
 
+&ipmmu_rt {
+	status = "okay";
+};
+
 /*=========================== Bus masters linked to IPMMUS ===================*/
 
 &dmac0 {
