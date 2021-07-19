@@ -86,14 +86,43 @@ In that case step #4 can be omitted.
 
 If you are not going to use multimedia in DomD, please remove that variable. In that case step #5 can be omitted.
 
-3.3.4 Please note, the variables below are only applicable for system with DomA:
-AOS_VIS_PACKAGE_DIR should point to the directory with aos-vis package and symbolic link to
-corresponding *.ipk package.
-AOS_VIS_PLUGINS defines which VIS plugin to use as VIS data provider. This value can be set to
-"telemetryemulator", "renesassimulator".
-The "telemetryemulator" plugin uses prerecorded data which provided by telemetryemulator service launched in DomD.
-The "renesassimulator" plugin uses data provided by Renesas R-Car simulator.
-If the variable is not set, the "telemetryemulator" plugin will be built.
+3.3.4 Building VIS server
+To use the VIS server, you need to set variable XT_USE_VIS_SERVER to any not empty value.
+After that, you have two mutually exclusive options - use prebuilt binary or use proprietary sources.
+
+Prebuilt binary:
+AOS_VIS_PACKAGE_DIR should specify folder containing file `aos-vis`.
+This file is renamed `aos-vis_git-r0_aarch64.ipk`.
+So, you can put `aos-vis_git-r0_aarch64.ipk` into AOS_VIS_PACKAGE_DIR and rename it or create a link to it:
+```
+ln -sfr aos-vis_git-r0_aarch64.ipk aos-vis
+```
+
+Proprietary sources:
+AOS_VIS_PLUGINS allows to specify VIS data provider.
+You can choose "telemetryemulator" or "renesassimulator".
+The "telemetryemulator" plugin uses prerecorded data provided by telemetryemulator service launched in DomD.
+The "renesassimulator" plugin uses data provided by the Renesas R-Car simulator.
+Pay attention that you need to specify "storageadapter" for any of the data providers.
+
+So, VIS related lines in config may look like
+```
+XT_USE_VIS_SERVER = "true"
+AOS_VIS_PLUGINS = "renesassimulatoradapter storageadapter"
+```
+or
+```
+XT_USE_VIS_SERVER = "true"
+AOS_VIS_PLUGINS = "telemetryemulator storageadapter"
+```
+or
+```
+XT_USE_VIS_SERVER = "true"
+AOS_VIS_PACKAGE_DIR = "/home/me/prebuilt_vis/"
+```
+
+If you specify both variables AOS_VIS_PACKAGE_DIR and AOS_VIS_PLUGINS in the same config
+then AOS_VIS_PACKAGE_DIR will be used.
 
 4. Download and copy "graphics" packages to your local filesystem at some directory:
 
