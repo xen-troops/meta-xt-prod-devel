@@ -86,14 +86,28 @@ In that case step #4 can be omitted.
 
 If you are not going to use multimedia in DomD, please remove that variable. In that case step #5 can be omitted.
 
-3.3.4 Please note, the variables below are only applicable for system with DomA:
-AOS_VIS_PACKAGE_DIR should point to the directory with aos-vis package and symbolic link to
-corresponding *.ipk package.
-AOS_VIS_PLUGINS defines which VIS plugin to use as VIS data provider. This value can be set to
-"telemetryemulator", "renesassimulator".
-The "telemetryemulator" plugin uses prerecorded data which provided by telemetryemulator service launched in DomD.
-The "renesassimulator" plugin uses data provided by Renesas R-Car simulator.
-If the variable is not set, the "telemetryemulator" plugin will be built.
+3.3.4 Enabling VIS server
+In order to enable VIS server, you need to provide variable XT_USE_VIS_SERVER.
+After that you may use following variables:
+AOS_VIS_PACKAGE_DIR should be used is you build product with VIS binaries, and it should
+  point to the directory with aos-vis package and symbolic link to corresponding *.ipk package.
+AOS_VIS_PLUGINS allows to specify VIS data provider.
+  You can choose "telemetryemulator" or "renesassimulator".
+  The "telemetryemulator" plugin uses prerecorded data which provided by telemetryemulator
+  service launched in DomD.
+  The "renesassimulator" plugin uses data provided by Renesas R-Car simulator.
+  If the variable is not set, the "telemetryemulator" plugin will be built.
+  Pay attention that you need to specify "storageadapter" for any of data providers.
+So, VIS related lines in config may look like
+```
+XT_USE_VIS_SERVER = "true"
+AOS_VIS_PLUGINS = "renesassimulatoradapter storageadapter"
+```
+or
+```
+XT_USE_VIS_SERVER = "true"
+AOS_VIS_PLUGINS = "telemetryemulator storageadapter"
+```
 
 4. Download and copy "graphics" packages to your local filesystem at some directory:
 
