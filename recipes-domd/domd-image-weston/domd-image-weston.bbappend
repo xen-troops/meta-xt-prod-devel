@@ -7,7 +7,7 @@ python __anonymous () {
     d.setVar('XT_MANIFEST_FOLDER', folder_name)
 
     if d.getVar('XT_USE_VIS_SERVER', True) and not d.getVar("AOS_VIS_PACKAGE_DIR", True):
-        d.appendVar("XT_QUIRK_BB_ADD_LAYER", "meta-aos")
+        d.appendVar("XT_QUIRK_BB_ADD_LAYER", " meta-aos")
 
     if product_name == "prod-devel-src": 
         if d.getVar('XT_RCAR_EVAPROPRIETARY_DIR'):

@@ -18,10 +18,10 @@ python __anonymous () {
     if 'vis' in d.getVar('DISTRO_FEATURES', True):
         if d.getVar("AOS_VIS_PACKAGE_DIR", True):
             # VIS is from prebuilt binaries
-            d.appendVar("IMAGE_INSTALL", "ca-certificates")
+            d.appendVar("IMAGE_INSTALL", " ca-certificates")
         else:
             # VIS is from sources
-            d.appendVar("IMAGE_INSTALL", "aos-vis")
+            d.appendVar("IMAGE_INSTALL", " aos-vis")
 }
 
 # Configuration for ARM Trusted Firmware
