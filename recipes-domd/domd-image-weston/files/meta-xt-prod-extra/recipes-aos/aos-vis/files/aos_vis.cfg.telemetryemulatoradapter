@@ -1,0 +1,7 @@
+		{
+			"Plugin": "telemetryemulatoradapter",
+			"Disabled": false,
+			"Params": {
+				"SensorURL": "http://localhost:8800"
+			}
+		}

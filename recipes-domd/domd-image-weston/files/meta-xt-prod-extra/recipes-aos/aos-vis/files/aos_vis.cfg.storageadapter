@@ -1,0 +1,20 @@
+		{
+			"Plugin": "storageadapter",
+			"Disabled": false,
+			"Params": {
+				"Data": {
+					"Attribute.Vehicle.VehicleIdentification.VIN": {
+						"Value": "",
+						"Public": true,
+						"ReadOnly": true
+					},
+					"Attribute.Vehicle.UserIdentification.Users": {
+						"Value": [],
+						"Public": true
+					},
+					"Attribute.Car.Message": {
+						"Public": true
+					}
+				}
+			}
+		}

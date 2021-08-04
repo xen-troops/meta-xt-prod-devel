@@ -2,7 +2,10 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI_append = "\
     file://aos-vis.service \
-    file://aos_vis.cfg \
+    file://aos_vis.cfg.header \
+    file://aos_vis.cfg.storageadapter \
+    file://aos_vis.cfg.renesassimulatoradapter \
+    file://aos_vis.cfg.telemetryemulatoradapter \
 "
 
 AOS_VIS_PLUGINS ?= "\
@@ -68,7 +71,28 @@ do_install_append() {
     fi
 
     install -d ${D}${sysconfdir}/aos
-    install -m 0644 ${WORKDIR}/aos_vis.cfg ${D}${sysconfdir}/aos
+    # assemble aos_vis.cfg according to plugins specified in AOS_VIS_PLUGINS
+    install -m 0644 ${WORKDIR}/aos_vis.cfg.header ${D}${sysconfdir}/aos/aos_vis.cfg
+    COMMA_IS_REQUIRED="false"
+    if "${@bb.utils.contains('AOS_VIS_PLUGINS', 'storageadapter', 'true', 'false', d)}"; then
+        cat ${WORKDIR}/aos_vis.cfg.storageadapter >> ${D}${sysconfdir}/aos/aos_vis.cfg
+        COMMA_IS_REQUIRED="true"
+    fi
+    if "${@bb.utils.contains('AOS_VIS_PLUGINS', 'renesassimulatoradapter', 'true', 'false', d)}"; then
+        if ${COMMA_IS_REQUIRED}; then
+            echo ",\n" >> ${D}${sysconfdir}/aos/aos_vis.cfg
+        fi
+        cat ${WORKDIR}/aos_vis.cfg.renesassimulatoradapter >> ${D}${sysconfdir}/aos/aos_vis.cfg
+        COMMA_IS_REQUIRED="true"
+    fi
+    if "${@bb.utils.contains('AOS_VIS_PLUGINS', 'telemetryemulatoradapter', 'true', 'false', d)}"; then
+        if ${COMMA_IS_REQUIRED}; then
+            echo ",\n" >> ${D}${sysconfdir}/aos/aos_vis.cfg
+        fi
+        cat ${WORKDIR}/aos_vis.cfg.telemetryemulatoradapter >> ${D}${sysconfdir}/aos/aos_vis.cfg
+    fi
+    echo "\t]" >> ${D}${sysconfdir}/aos/aos_vis.cfg
+    echo "}" >> ${D}${sysconfdir}/aos/aos_vis.cfg
 
     install -d ${D}${systemd_system_unitdir}
     install -m 0644 ${WORKDIR}/aos-vis.service ${D}${systemd_system_unitdir}/aos-vis.service
