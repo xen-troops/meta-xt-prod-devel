@@ -5,10 +5,14 @@ SRC_URI_append = "\
     file://aos_vis.cfg \
 "
 
+# Use renesassimulatoradapter if nothing was specified at this point
 AOS_VIS_PLUGINS ?= "\
-    storageadapter \
-    telemetryemulatoradapter \
     renesassimulatoradapter \
+"
+
+# storageadapter is required for proper work of any data provider
+AOS_VIS_PLUGINS += "\
+    storageadapter \
 "
 
 inherit systemd
