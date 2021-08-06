@@ -103,17 +103,17 @@ AOS_VIS_PLUGINS allows to specify VIS data provider.
 You can choose "telemetryemulator" or "renesassimulator".
 The "telemetryemulator" plugin uses prerecorded data provided by telemetryemulator service launched in DomD.
 The "renesassimulator" plugin uses data provided by the Renesas R-Car simulator.
-Pay attention that you need to specify "storageadapter" for any of the data providers.
+If AOS_VIS_PLUGINS is not specified then "renesassimulatoradapter" will be used.
 
 So, VIS related lines in config may look like
 ```
 XT_USE_VIS_SERVER = "true"
-AOS_VIS_PLUGINS = "renesassimulatoradapter storageadapter"
+AOS_VIS_PLUGINS = "renesassimulatoradapter"
 ```
 or
 ```
 XT_USE_VIS_SERVER = "true"
-AOS_VIS_PLUGINS = "telemetryemulator storageadapter"
+AOS_VIS_PLUGINS = "telemetryemulator"
 ```
 or
 ```
