@@ -77,5 +77,5 @@ do_install_append() {
     install -m 0644 ${S}/src/${GO_IMPORT}/data/*.pem ${D}/var/aos/vis/crypt
 }
 
-addtask configure_adapters after do_install before do_populate_sysroot
+addtask configure_adapters after do_install before do_package
 addtask prepare_adapters after do_unpack before do_compile
