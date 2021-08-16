@@ -349,3 +349,569 @@ state.ak4613 {
 		}
 	}
 }
+state.pcm3168a {
+	control.1 {
+		iface MIXER
+		name 'DAC Power-Save Switch'
+		value false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 1
+		}
+	}
+	control.2 {
+		iface MIXER
+		name 'DAC1 Digital Filter roll-off'
+		value Sharp
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 Sharp
+			item.1 Slow
+		}
+	}
+	control.3 {
+		iface MIXER
+		name 'DAC2 Digital Filter roll-off'
+		value Sharp
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 Sharp
+			item.1 Slow
+		}
+	}
+	control.4 {
+		iface MIXER
+		name 'DAC3 Digital Filter roll-off'
+		value Sharp
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 Sharp
+			item.1 Slow
+		}
+	}
+	control.5 {
+		iface MIXER
+		name 'DAC4 Digital Filter roll-off'
+		value Sharp
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 Sharp
+			item.1 Slow
+		}
+	}
+	control.6 {
+		iface MIXER
+		name 'DAC1 Invert Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.7 {
+		iface MIXER
+		name 'DAC2 Invert Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.8 {
+		iface MIXER
+		name 'DAC3 Invert Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.9 {
+		iface MIXER
+		name 'DAC4 Invert Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.10 {
+		iface MIXER
+		name 'DAC1 Zero Flag'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read volatile'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.11 {
+		iface MIXER
+		name 'DAC2 Zero Flag'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read volatile'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.12 {
+		iface MIXER
+		name 'DAC3 Zero Flag'
+		value.0 true
+		value.1 true
+		comment {
+			access 'read volatile'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.13 {
+		iface MIXER
+		name 'DAC4 Zero Flag'
+		value.0 true
+		value.1 true
+		comment {
+			access 'read volatile'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.14 {
+		iface MIXER
+		name 'DAC Volume Control Type'
+		value Individual
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 Individual
+			item.1 'Master + Individual'
+		}
+	}
+	control.15 {
+		iface MIXER
+		name 'DAC Volume Rate Multiplier'
+		value '2048'
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 '2048'
+			item.1 '4096'
+		}
+	}
+	control.16 {
+		iface MIXER
+		name 'DAC De-Emphasis'
+		value Disabled
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 Disabled
+			item.1 '48khz'
+			item.2 '44.1khz'
+			item.3 '32khz'
+		}
+	}
+	control.17 {
+		iface MIXER
+		name 'DAC Zero Flag Function'
+		value 'DAC 1/2/3/4 AND'
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 'DAC 1/2/3/4 AND'
+			item.1 'DAC 1/2/3/4 OR'
+			item.2 'DAC 1/2/3 AND'
+			item.3 'DAC 1/2/3 OR'
+			item.4 'DAC 4 AND'
+			item.5 'DAC 4 OR'
+		}
+	}
+	control.18 {
+		iface MIXER
+		name 'DAC Zero Flag Polarity'
+		value 'Active High'
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 'Active High'
+			item.1 'Active Low'
+		}
+	}
+	control.19 {
+		iface MIXER
+		name 'Master Playback Volume'
+		value 161
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 201'
+			dbmin -9999999
+			dbmax 0
+			dbvalue.0 -2000
+		}
+	}
+	control.20 {
+		iface MIXER
+		name 'DAC1 Playback Volume'
+		value.0 201
+		value.1 201
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 201'
+			dbmin -9999999
+			dbmax 0
+			dbvalue.0 0
+			dbvalue.1 0
+		}
+	}
+	control.21 {
+		iface MIXER
+		name 'DAC2 Playback Volume'
+		value.0 201
+		value.1 201
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 201'
+			dbmin -9999999
+			dbmax 0
+			dbvalue.0 0
+			dbvalue.1 0
+		}
+	}
+	control.22 {
+		iface MIXER
+		name 'DAC3 Playback Volume'
+		value.0 201
+		value.1 201
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 201'
+			dbmin -9999999
+			dbmax 0
+			dbvalue.0 0
+			dbvalue.1 0
+		}
+	}
+	control.23 {
+		iface MIXER
+		name 'DAC4 Playback Volume'
+		value.0 201
+		value.1 201
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 201'
+			dbmin -9999999
+			dbmax 0
+			dbvalue.0 0
+			dbvalue.1 0
+		}
+	}
+	control.24 {
+		iface MIXER
+		name 'ADC1 High-Pass Filter Switch'
+		value true
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 1
+		}
+	}
+	control.25 {
+		iface MIXER
+		name 'ADC2 High-Pass Filter Switch'
+		value true
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 1
+		}
+	}
+	control.26 {
+		iface MIXER
+		name 'ADC3 High-Pass Filter Switch'
+		value true
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 1
+		}
+	}
+	control.27 {
+		iface MIXER
+		name 'ADC1 Connection Type'
+		value.0 Differential
+		value.1 Differential
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 2
+			item.0 Differential
+			item.1 Single-Ended
+		}
+	}
+	control.28 {
+		iface MIXER
+		name 'ADC2 Connection Type'
+		value.0 Differential
+		value.1 Differential
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 2
+			item.0 Differential
+			item.1 Single-Ended
+		}
+	}
+	control.29 {
+		iface MIXER
+		name 'ADC3 Connection Type'
+		value.0 Differential
+		value.1 Differential
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 2
+			item.0 Differential
+			item.1 Single-Ended
+		}
+	}
+	control.30 {
+		iface MIXER
+		name 'ADC1 Invert Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.31 {
+		iface MIXER
+		name 'ADC2 Invert Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.32 {
+		iface MIXER
+		name 'ADC3 Invert Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.33 {
+		iface MIXER
+		name 'ADC1 Mute Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.34 {
+		iface MIXER
+		name 'ADC2 Mute Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.35 {
+		iface MIXER
+		name 'ADC3 Mute Switch'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read write'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.36 {
+		iface MIXER
+		name 'ADC1 Overflow Flag'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read volatile'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.37 {
+		iface MIXER
+		name 'ADC2 Overflow Flag'
+		value.0 false
+		value.1 false
+		comment {
+			access 'read volatile'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.38 {
+		iface MIXER
+		name 'ADC3 Overflow Flag'
+		value.0 true
+		value.1 true
+		comment {
+			access 'read volatile'
+			type BOOLEAN
+			count 2
+		}
+	}
+	control.39 {
+		iface MIXER
+		name 'ADC Volume Control Type'
+		value Individual
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 Individual
+			item.1 'Master + Individual'
+		}
+	}
+	control.40 {
+		iface MIXER
+		name 'ADC Volume Rate Multiplier'
+		value '2048'
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 '2048'
+			item.1 '4096'
+		}
+	}
+	control.41 {
+		iface MIXER
+		name 'ADC Overflow Flag Polarity'
+		value 'Active High'
+		comment {
+			access 'read write'
+			type ENUMERATED
+			count 1
+			item.0 'Active High'
+			item.1 'Active Low'
+		}
+	}
+	control.42 {
+		iface MIXER
+		name 'Master Capture Volume'
+		value 197
+		comment {
+			access 'read write'
+			type INTEGER
+			count 1
+			range '0 - 241'
+			dbmin -9999999
+			dbmax 2000
+			dbvalue.0 -200
+		}
+	}
+	control.43 {
+		iface MIXER
+		name 'ADC1 Capture Volume'
+		value.0 197
+		value.1 197
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 241'
+			dbmin -9999999
+			dbmax 2000
+			dbvalue.0 -200
+			dbvalue.1 -200
+		}
+	}
+	control.44 {
+		iface MIXER
+		name 'ADC2 Capture Volume'
+		value.0 197
+		value.1 197
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 241'
+			dbmin -9999999
+			dbmax 2000
+			dbvalue.0 -200
+			dbvalue.1 -200
+		}
+	}
+	control.45 {
+		iface MIXER
+		name 'ADC3 Capture Volume'
+		value.0 197
+		value.1 197
+		comment {
+			access 'read write'
+			type INTEGER
+			count 2
+			range '0 - 241'
+			dbmin -9999999
+			dbmax 2000
+			dbvalue.0 -200
+			dbvalue.1 -200
+		}
+	}
+}
+state.radio {
+	control {
+	}
+}
+state.wl18xx {
+	control {
+	}
+}
