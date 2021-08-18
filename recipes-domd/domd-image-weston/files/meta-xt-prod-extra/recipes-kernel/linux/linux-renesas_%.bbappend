@@ -21,7 +21,7 @@ SRC_URI_append_rcar = " \
     file://xen-chosen.dtsi;subdir=git/arch/${ARCH}/boot/dts/renesas \
 "
 
-KERNEL_DEVICETREE_append_rcar = " \
+KERNEL_DEVICETREE_prepend_rcar = " \
     renesas/salvator-generic-doma.dtb \
     renesas/salvator-generic-domu.dtb \
 "
