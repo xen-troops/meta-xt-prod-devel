@@ -10,8 +10,6 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 SRC_URI = " \
     file://bridge-nfsroot.sh \
     file://bridge.sh \
-    file://doma_loop_detach.sh \
-    file://doma_loop_setup.sh \
     file://android-disks.sh \
     file://android-disks.service \
     file://android-disks.conf \
@@ -90,8 +88,6 @@ do_install() {
         install -d ${D}${sysconfdir}/tmpfiles.d
         install -m 0644 ${WORKDIR}/android-disks.conf ${D}${sysconfdir}/tmpfiles.d/android-disks.conf
 
-        install -m 0744 ${WORKDIR}/doma_loop_detach.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
-        install -m 0744 ${WORKDIR}/doma_loop_setup.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
         install -m 0744 ${WORKDIR}/android-disks.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
 
         install -m 0644 ${WORKDIR}/android-disks.service ${D}${systemd_system_unitdir}
