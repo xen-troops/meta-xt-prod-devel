@@ -10,9 +10,6 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 SRC_URI = " \
     file://bridge-nfsroot.sh \
     file://bridge.sh \
-    file://android-disks.sh \
-    file://android-disks.service \
-    file://android-disks.conf \
     file://bridge-up-notification.service \
     file://eth0.network \
     file://xenbr0.netdev \
@@ -28,7 +25,6 @@ inherit systemd
 
 PACKAGES += " \
     ${PN}-bridge-config \
-    ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
 
@@ -42,19 +38,10 @@ FILES_${PN}-bridge-config = " \
 "
 
 SYSTEMD_PACKAGES = " \
-    ${PN}-android-disks-service \
     ${PN}-bridge-up-notification-service \
 "
 
-SYSTEMD_SERVICE_${PN}-android-disks-service = "${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'android-disks.service', '', d)}"
-
 SYSTEMD_SERVICE_${PN}-bridge-up-notification-service = " bridge-up-notification.service"
-
-FILES_${PN}-android-disks-service = " \
-    ${systemd_system_unitdir}/android-disks.service \
-    ${sysconfdir}/tmpfiles.d/android-disks.conf \
-    ${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}/android-disks.sh \
-"
 
 FILES_${PN}-bridge-up-notification-service = " \
     ${systemd_system_unitdir}/bridge-up-notification.service \
@@ -82,16 +69,6 @@ do_install() {
 
     install -d ${D}${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d
     install -m 0644 ${WORKDIR}/systemd-networkd-wait-online.conf ${D}${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d
-
-    if ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'true', 'false', d)}; then
-        # Install android-disks artifacts
-        install -d ${D}${sysconfdir}/tmpfiles.d
-        install -m 0644 ${WORKDIR}/android-disks.conf ${D}${sysconfdir}/tmpfiles.d/android-disks.conf
-
-        install -m 0744 ${WORKDIR}/android-disks.sh ${D}${base_prefix}${XT_DIR_ABS_ROOTFS_SCRIPTS}
-
-        install -m 0644 ${WORKDIR}/android-disks.service ${D}${systemd_system_unitdir}
-    fi
 }
 
 FILES_${PN} = " \
