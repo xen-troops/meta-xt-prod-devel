@@ -19,7 +19,6 @@ SRC_URI = " \
     file://eth0.network \
     file://xenbr0.netdev \
     file://xenbr0.network \
-    file://xenbr0-systemd-networkd.conf \
     file://port-forward-systemd-networkd.conf \
     file://systemd-networkd-wait-online.conf \
 "
@@ -38,7 +37,6 @@ FILES_${PN}-bridge-config = " \
     ${sysconfdir}/systemd/network/eth0.network \
     ${sysconfdir}/systemd/network/xenbr0.netdev \
     ${sysconfdir}/systemd/network/xenbr0.network \
-    ${sysconfdir}/systemd/system/systemd-networkd.service.d/xenbr0-systemd-networkd.conf \
     ${sysconfdir}/systemd/system/systemd-networkd.service.d/port-forward-systemd-networkd.conf \
     ${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d/systemd-networkd-wait-online.conf \
 "
@@ -79,7 +77,6 @@ do_install() {
     install -m 0644 ${WORKDIR}/*.netdev ${D}${sysconfdir}/systemd/network
 
     install -d ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d
-    install -m 0644 ${WORKDIR}/xenbr0-systemd-networkd.conf ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d
     install -m 0644 ${WORKDIR}/port-forward-systemd-networkd.conf ${D}${sysconfdir}/systemd/system/systemd-networkd.service.d
 
     install -d ${D}${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d
