@@ -19,6 +19,8 @@ SRC_URI = " \
     file://eth0.network \
     file://xenbr0.netdev \
     file://xenbr0.network \
+    ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'file://xenbr1.netdev', '', d)} \
+    ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', 'file://xenbr1.network', '', d)} \
     file://port-forward-systemd-networkd.conf \
     file://systemd-networkd-wait-online.conf \
 "
@@ -37,6 +39,8 @@ FILES_${PN}-bridge-config = " \
     ${sysconfdir}/systemd/network/eth0.network \
     ${sysconfdir}/systemd/network/xenbr0.netdev \
     ${sysconfdir}/systemd/network/xenbr0.network \
+    ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', '${sysconfdir}/systemd/network/xenbr1.netdev', '', d)} \
+    ${@bb.utils.contains('XT_GUESTS_INSTALL', 'doma', '${sysconfdir}/systemd/network/xenbr1.network', '', d)} \
     ${sysconfdir}/systemd/system/systemd-networkd.service.d/port-forward-systemd-networkd.conf \
     ${sysconfdir}/systemd/system/systemd-networkd-wait-online.service.d/systemd-networkd-wait-online.conf \
 "
