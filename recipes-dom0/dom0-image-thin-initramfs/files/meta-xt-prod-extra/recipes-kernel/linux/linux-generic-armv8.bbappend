@@ -7,7 +7,7 @@ LINUX_VERSION = "5.10.0"
 KERNEL_FEATURES_remove = "cfg/virtio.scc"
 
 SRC_URI = " \
-    git://github.com/xen-troops/linux.git;branch=${BRANCH} \
+    git://github.com/xen-troops/linux.git;branch=${BRANCH};protocol=https \
     file://defconfig \
   "
 do_deploy_append () {
