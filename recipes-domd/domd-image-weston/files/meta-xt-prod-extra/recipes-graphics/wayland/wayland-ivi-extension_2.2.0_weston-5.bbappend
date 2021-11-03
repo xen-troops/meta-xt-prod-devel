@@ -1,6 +1,6 @@
 FILESEXTRAPATHS_append := ":${THISDIR}/${PN}"
 
-SRC_URI = "git://github.com/GENIVI/${BPN}.git;protocol=http"
+SRC_URI = "git://github.com/GENIVI/${BPN}.git;protocol=https"
 SRCREV = "2.2.0_weston_5_compartible"
 
 SRC_URI_IVI_ID_AGENT = " \
