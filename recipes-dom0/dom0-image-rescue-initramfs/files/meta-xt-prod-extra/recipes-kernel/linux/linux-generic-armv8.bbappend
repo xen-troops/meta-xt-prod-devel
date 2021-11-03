@@ -5,7 +5,7 @@ BRANCH = "master"
 SRCREV = "${AUTOREV}"
 
 SRC_URI_append = " \
-    git://github.com/xen-troops/linux.git;branch=${BRANCH} \
+    git://github.com/xen-troops/linux.git;branch=${BRANCH};protocol=https \
     file://defconfig \
   "
 
