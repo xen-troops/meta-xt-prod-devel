@@ -7,7 +7,7 @@ SRCREV = "79b42d9fbd28b13d882a8c60b7e89b497662ae96"
 LINUX_VERSION = "4.14.35"
 
 SRC_URI = " \
-    git://github.com/xen-troops/linux.git;branch=${BRANCH} \
+    git://github.com/xen-troops/linux.git;branch=${BRANCH};protocol=https \
     file://defconfig \
   "
 
