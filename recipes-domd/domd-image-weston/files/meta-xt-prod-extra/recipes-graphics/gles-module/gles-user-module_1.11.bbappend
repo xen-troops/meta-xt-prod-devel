@@ -7,3 +7,7 @@ EXCLUDED_APIS = "opencl vulkan"
 EXTRA_OEMAKE += "\
     ${@bb.utils.contains('XT_GUESTS_INSTALL', 'domu', 'EXCLUDE_FENCE_SYNC_SUPPORT:=1', '', d)} \
 "
+
+DEPENDS += " \
+   bison-native \
+"
