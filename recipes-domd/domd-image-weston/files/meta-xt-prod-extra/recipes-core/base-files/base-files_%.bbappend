@@ -9,4 +9,7 @@ do_install_append () {
 	echo "	shopt -s checkwinsize" >> ${D}${sysconfdir}/profile
 	echo "  resize 1> /dev/null" >> ${D}${sysconfdir}/profile
 	echo "fi" >> ${D}${sysconfdir}/profile
+       if [ ! -z "${AOS_VIS_PLUGINS}" ]; then
+           echo "192.168.0.1 wwwivi" >> ${D}${sysconfdir}/hosts
+       fi
 }
