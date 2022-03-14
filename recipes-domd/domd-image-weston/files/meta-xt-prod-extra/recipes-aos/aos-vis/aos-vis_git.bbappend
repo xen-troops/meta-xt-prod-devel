@@ -32,7 +32,7 @@ do_prepare_adapters() {
     echo 'import (' >> ${file}
 
     for plugin in ${AOS_VIS_PLUGINS}; do
-        echo "\t_ \"aos_vis/plugins/${plugin}\"" >> ${file}
+        echo "\t_ \"${GO_IMPORT}/plugins/${plugin}\"" >> ${file}
     done
 
     echo ')' >> ${file}
