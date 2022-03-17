@@ -18,6 +18,11 @@ SRC_URI = " \
     repo://github.com/xen-troops/manifests;protocol=https;branch=REL-v7.0;manifest=${XT_MANIFEST_FOLDER}/domu.xml;scmdata=keep \
 "
 
+XT_QUIRK_PATCH_SRC_URI_rcar = "\
+    file://0001-gstreamer1.0-plugins-bad-change-git-protcol-at-https.patch;patchdir=meta-renesas \
+    file://0001-gstreamer1.0-plugins-good-change-git-protocol-at-htt.patch;patchdir=meta-renesas \
+"
+
 XT_QUIRK_UNPACK_SRC_URI += " \
     file://meta-xt-prod-extra;subdir=repo \
     file://meta-xt-prod-domx;subdir=repo \

@@ -83,6 +83,9 @@ XT_QUIRK_PATCH_SRC_URI_rcar = "\
     file://0001-recipes-kernel-Load-multimedia-related-modules-autom.patch;patchdir=meta-renesas \
     file://0001-armtf-Clarify-check-for-the-h3ulcb-based-machines-in.patch;patchdir=meta-renesas \
     file://0001-Update-meta-rcar-for-Yv510.patch;patchdir=meta-renesas \
+    file://0001-0002-meta-renesas-gstreamer-change-git-protocol-at-h.patch;patchdir=meta-rcar \
+    file://0001-gstreamer1.0-plugins-good-change-git-protocol-at-htt.patch;patchdir=meta-renesas \
+    file://0001-gstreamer1.0-plugins-bad-change-git-protcol-at-https.patch;patchdir=meta-renesas \
 "
 
 XT_QUIRK_PATCH_SRC_URI_append_h3ulcb-4x2g-kf = "\
