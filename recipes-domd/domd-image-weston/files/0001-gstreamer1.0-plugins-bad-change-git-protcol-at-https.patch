@@ -1,0 +1,25 @@
+From 2bac735f9d6024effa8039b8f0a88182e3823a10 Mon Sep 17 00:00:00 2001
+From: Ihor Usyk <ihor_usyk@epam.com>
+Date: Wed, 16 Mar 2022 11:22:32 +0000
+Subject: [PATCH] gstreamer1.0-plugins-bad: change git protcol at https.
+
+Reason: avoid error 'The unauthenticated git protocol on port 9418 is no longer supported.'
+
+Signed-off-by: Ihor Usyk <Ihor_Usyk@epam.com>
+---
+ .../gstreamer/gstreamer1.0-plugins-bad_1.16.3.bbappend          | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugins-bad_1.16.3.bbappend b/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugins-bad_1.16.3.bbappend
+index 7ff5e62..445d205 100644
+--- a/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugins-bad_1.16.3.bbappend
++++ b/meta-rcar-gen3/recipes-multimedia/gstreamer/gstreamer1.0-plugins-bad_1.16.3.bbappend
+@@ -1,4 +1,4 @@
+-RENESAS_GST_PLUGINS_BAD_URL ?= "gitsm://github.com/renesas-rcar/gst-plugins-bad.git;branch=RCAR-GEN3e/1.16.3"
++RENESAS_GST_PLUGINS_BAD_URL ?= "gitsm://github.com/renesas-rcar/gst-plugins-bad.git;branch=RCAR-GEN3e/1.16.3;protocol=https"
+ 
+ SRC_URI_remove = "https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-${PV}.tar.xz"
+ SRC_URI_append = " ${RENESAS_GST_PLUGINS_BAD_URL}"
+-- 
+2.17.1
+
