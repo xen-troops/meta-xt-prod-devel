@@ -1,0 +1,46 @@
+From cdca26a16cd59b69de8eb168250fa9b22df1c897 Mon Sep 17 00:00:00 2001
+From: Ihor Usyk <ihor_usyk@epam.com>
+Date: Wed, 16 Mar 2022 10:59:06 +0000
+Subject: [PATCH] 0002-meta-renesas-gstreamer: change git protocol at https.
+
+The reason: error 'The unauthenticated git protocol on port 9418 is no longer supported.'
+
+Signed-off-by: xen-troops-buildbot <not.real.email@epam.com>
+---
+ ...002-meta-renesas-gstreamer-fix-BB_NO_NETWORK-build.patch | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/meta-rcar-gen3-adas/docs/sample/patch/0002-meta-renesas-gstreamer-fix-BB_NO_NETWORK-build.patch b/meta-rcar-gen3-adas/docs/sample/patch/0002-meta-renesas-gstreamer-fix-BB_NO_NETWORK-build.patch
+index 3dcb6beb..2d8b6525 100644
+--- a/meta-rcar-gen3-adas/docs/sample/patch/0002-meta-renesas-gstreamer-fix-BB_NO_NETWORK-build.patch
++++ b/meta-rcar-gen3-adas/docs/sample/patch/0002-meta-renesas-gstreamer-fix-BB_NO_NETWORK-build.patch
+@@ -21,7 +21,7 @@ index 9a30dd9..4606392 100644
+ @@ -1,5 +1,5 @@
+  SRC_URI_remove = "http://gstreamer.freedesktop.org/src/gst-omx/gst-omx-${PV}.tar.xz"
+ -SRC_URI_append = " git://github.com/renesas-rcar/gst-omx.git;branch=RCAR-GEN3/1.2.0"
+-+SRC_URI_append = " gitsm://github.com/renesas-rcar/gst-omx.git;branch=RCAR-GEN3/1.2.0"
+++SRC_URI_append = " gitsm://github.com/renesas-rcar/gst-omx.git;branch=RCAR-GEN3/1.2.0;protocol=https"
+  
+  DEPENDS += "omx-user-module mmngrbuf-user-module"
+  
+@@ -32,7 +32,7 @@ index 73b5529..b44408c 100644
+ @@ -1,5 +1,5 @@
+  SRC_URI_remove = "http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-${PV}.tar.xz"
+ -SRC_URI_append = " git://github.com/renesas-rcar/gst-plugins-bad.git;branch=RCAR-GEN3/1.6.3"
+-+SRC_URI_append = " gitsm://github.com/renesas-rcar/gst-plugins-bad.git;branch=RCAR-GEN3/1.6.3"
+++SRC_URI_append = " gitsm://github.com/renesas-rcar/gst-plugins-bad.git;branch=RCAR-GEN3/1.6.3;protocol=https"
+  
+  SRCREV = "e336b2dacf29a155dc8f6896ee0f3a89d87d805e"
+  
+@@ -63,7 +63,7 @@ index 1d353ec..76a3979 100644
+ @@ -1,5 +1,5 @@
+  SRC_URI_remove = "http://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-${PV}.tar.xz"
+ -SRC_URI_append = " git://github.com/renesas-rcar/gst-plugins-good.git;branch=RCAR-GEN3/1.6.3"
+-+SRC_URI_append = " gitsm://github.com/renesas-rcar/gst-plugins-good.git;branch=RCAR-GEN3/1.6.3"
+++SRC_URI_append = " gitsm://github.com/renesas-rcar/gst-plugins-good.git;branch=RCAR-GEN3/1.6.3;protocol=https"
+  
+  SRCREV = "00beed48b36e0b7f2c92199806cc4cb9e0990166"
+  
+-- 
+2.17.1
+
