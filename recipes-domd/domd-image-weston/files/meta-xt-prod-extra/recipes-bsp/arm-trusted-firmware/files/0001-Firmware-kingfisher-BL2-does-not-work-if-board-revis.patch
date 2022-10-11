@@ -1,0 +1,43 @@
+From 8af8b60b84e0716be666dd1379c6c915928d46a8 Mon Sep 17 00:00:00 2001
+From: Ihor Usyk <ihor_usyk@epam.com>
+Date: Thu, 13 Jan 2022 17:33:01 +0000
+Subject: [PATCH] Firmware, kingfisher: BL2 does not work if board revision is
+ 0x10
+
+BL2 fires the following error
+NOTICE:  BL2: R-Car Gen3 Initial Program Loader(CA57) Rev.3.0.1
+NOTICE:  BL2: PRR is R-Car H3 Ver.3.0
+NOTICE:  BL2: Board is Starter Kit Premier Rev.1.0
+NOTICE:  BL2: Boot device is HyperFlash(80MHz)
+NOTICE:  BL2: LCM state is CM
+NOTICE:  AVS setting succeeded. DVFS_SetVID=0x53
+NOTICE:  BL2: DDR2800(rev.0.41)
+NOTICE:  BL2: [COLD_BOOT]
+NOTICE:  BL2: Failed to DRAM initialize (-1).
+
+The reason is the wrong determination of the memory slots number.
+BL2 considers that board has 2 slots, but really one.
+The fix considers the board (revision 0x10) like board with one memory slot.
+
+Signed-off-by: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Signed-off-by: Ihor Usyk <ihor_usyk@epam.com>
+---
+ drivers/renesas/rcar/ddr/ddr_b/boot_init_dram_config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/renesas/rcar/ddr/ddr_b/boot_init_dram_config.c b/drivers/renesas/rcar/ddr/ddr_b/boot_init_dram_config.c
+index 6b760e3b2..263d7df1c 100644
+--- a/drivers/renesas/rcar/ddr/ddr_b/boot_init_dram_config.c
++++ b/drivers/renesas/rcar/ddr/ddr_b/boot_init_dram_config.c
+@@ -1732,7 +1732,7 @@ static uint32_t ddr_rank_judge(void)
+ 				brd = 8U;
+ 			}
+ 		} else if (type == (uint32_t)BOARD_STARTER_KIT_PRE) {
+-			if (rev == 0x21U) {
++			if (rev == 0x21U || rev == 0x10) {
+ 				brd = 14U;
+ 			} else {
+ 				brd = 8U;
+-- 
+2.17.1
+
